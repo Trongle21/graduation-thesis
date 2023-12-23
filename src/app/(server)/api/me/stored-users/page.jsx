@@ -234,7 +234,7 @@ const StoredUser = () => {
                 <Th textAlign="center" fontSize="xl">
                   Email
                 </Th>
-                <Th textAlign="center" textAlign="center" fontSize="xl">
+                <Th textAlign="center" fontSize="xl">
                   Edit
                 </Th>
               </Tr>
