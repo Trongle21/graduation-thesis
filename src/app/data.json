@@ -1,0 +1,398 @@
+{
+  "navigation": [
+    {
+      "name": "Home",
+      "url": "/home"
+    },
+    {
+      "name": "Service",
+      "url": "/service"
+    },
+    {
+      "name": "Product",
+      "url": "/products"
+    },
+    {
+      "name": "About",
+      "url": "/about"
+    },
+    {
+      "name": "Contact",
+      "url": "/contact"
+    }
+  ],
+  "footerInfoSp": [
+    {
+      "name": "Contact Us",
+      "url": "contact.html"
+    },
+    {
+      "name": "Service",
+      "url": "service.html"
+    },
+    {
+      "name": "Product",
+      "url": "product.html"
+    },
+    {
+      "name": "Signup",
+      "url": "signup.html"
+    }
+  ],
+  "footerInfoAbout": [
+    {
+      "name": "About Us",
+      "url": "about.html"
+    },
+    {
+      "name": "Blog",
+      "url": "https://pawpartner.com/throw-me-a-bone---525-w-52nd-st"
+    },
+    {
+      "name": "Google",
+      "url": "https://google.com.vn"
+    },
+    {
+      "name": "Youtube",
+      "url": "https://www.youtube.com"
+    }
+  ],
+  "linkContact": [
+    {
+      "name": "Facebook",
+      "url": "https://www.facebook.com",
+      "icon": "fa-brands fa-square-facebook"
+    },
+    {
+      "name": "Instagram",
+      "url": "https://www.instagram.com",
+      "icon": "fa-brands fa-square-instagram"
+    },
+    {
+      "name": "Twitter",
+      "url": "https://twitter.com",
+      "icon": "fa-brands fa-square-twitter"
+    }
+  ],
+  "homeHero": [
+    {
+      "name": "Your pet is part of our family",
+      "description": "Let us treat your pet like our own family with best service and special package",
+      "image": "https://i.ibb.co/wK82T7m/hero-bg-1.jpg",
+      "button": "btn btn--primary"
+    },
+    {
+      "name": "Your pet is part of our family",
+      "description": "Let us treat your pet like our own family with best service and special package",
+      "image": "https://i.ibb.co/Gv3cg61/hero-bg-2.jpg",
+      "button": "btn btn--primary"
+    },
+    {
+      "name": "Your pet is part of our family",
+      "description": "Let us treat your pet like our own family with best service and special package",
+      "image": "https://i.ibb.co/M6XgBtz/hero-bg-3.jpg",
+      "button": "btn btn--primary"
+    },
+    {
+      "name": "Your pet is part of our family",
+      "description": "Let us treat your pet like our own family with best service and special package",
+      "image": "https://i.ibb.co/zNtPfvB/hero-bg-4.jpg",
+      "button": "btn btn--primary"
+    },
+    {
+      "name": "Your pet is part of our family",
+      "description": "Let us treat your pet like our own family with best service and special package",
+      "image": "https://i.ibb.co/ZgZfQyY/hero-bg-5.jpg",
+      "button": "btn btn--primary"
+    },
+    {
+      "name": "Your pet is part of our family",
+      "description": "Let us treat your pet like our own family with best service and special package",
+      "image": "https://i.ibb.co/Swvkkn2/hero-bg-6.jpg",
+      "button": "btn btn--primary"
+    }
+  ],
+  "homeService": [
+    {
+      "name": "Service",
+      "description": "Vaccination are carried oit to keep pets in excellent condition",
+      "image": "https://i.ibb.co/54FGPQm/service-Vaccination.png",
+      "href": "/service"
+    },
+    {
+      "name": "Product",
+      "description": "Tidy up, full body wash to keep them stay clean",
+      "image": "https://i.ibb.co/QMjKtn5/service-teth-cleaning.jpg",
+      "href": "/products"
+    },
+    {
+      "name": "About",
+      "description": "General cart to keep your pet healthy as always",
+      "image": "https://i.ibb.co/gyTKSVc/service-bath-tub.png",
+      "href": "/about"
+    },
+    {
+      "name": "Contact",
+      "description": "Continuous control should be made for gum care",
+      "image": "https://i.ibb.co/31zF81y/service-veterinarian.png",
+      "href": "/contact"
+    }
+  ],
+  "homePackage": [
+    {
+      "name": "Frendly Pack",
+      "price": 100,
+      "image": "https://i.ibb.co/zH6QSDH/service-price-1.jpg",
+      "packages": [
+        "5 Day service",
+        "Dog Walking",
+        "Grooming",
+        "Boarding",
+        "Pet Sitting"
+      ]
+    },
+    {
+      "name": "Recommend pack",
+      "price": 175,
+      "image": "https://i.ibb.co/rvj5HhS/service-price-2.jpg",
+      "packages": [
+        "15 Day service",
+        "Dog Walking",
+        "Grooming",
+        "Boarding",
+        "Pet Sitting"
+      ]
+    },
+    {
+      "name": "Premium  Pack",
+      "price": 200,
+      "image": "https://i.ibb.co/vcKJ4X4/service-price-3.jpg",
+      "packages": [
+        "30 Day service",
+        "Dog Walking",
+        "Grooming",
+        "Boarding",
+        "Pet Sitting"
+      ]
+    }
+  ],
+  "homeMember": [
+    {
+      "image": "https://i.ibb.co/28N1d0V/staff-1.jpg",
+      "info": [
+        {
+          "name": "Ariana Grande",
+          "job": "Veterinarian",
+          "social": [
+            "fa-brands fa-square-facebook",
+            "fa-brands fa-square-youtube",
+            "fa-brands fa-square-instagram",
+            "fa-brands fa-square-twitter"
+          ]
+        }
+      ]
+    },
+    {
+      "image": "https://i.ibb.co/tzD7gPc/staff-2.jpg",
+      "info": [
+        {
+          "name": "The Weeknd",
+          "job": "Doctor",
+          "social": [
+            "fa-brands fa-square-facebook",
+            "fa-brands fa-square-youtube",
+            "fa-brands fa-square-instagram",
+            "fa-brands fa-square-twitter"
+          ]
+        }
+      ]
+    },
+    {
+      "image": "https://i.ibb.co/3yX1J1L/staff-3.png",
+      "info": [
+        {
+          "name": "Adele",
+          "job": "Pet Bather",
+          "social": [
+            "fa-brands fa-square-facebook",
+            "fa-brands fa-square-youtube",
+            "fa-brands fa-square-instagram",
+            "fa-brands fa-square-twitter"
+          ]
+        }
+      ]
+    },
+    {
+      "image": "https://i.ibb.co/6NcRdqh/staff-4.png",
+      "info": [
+        {
+          "name": "G-Dragon",
+          "job": "Pet Training",
+          "social": [
+            "fa-brands fa-square-facebook",
+            "fa-brands fa-square-youtube",
+            "fa-brands fa-square-instagram",
+            "fa-brands fa-square-twitter"
+          ]
+        }
+      ]
+    }
+  ],
+
+  "data_service": [
+    {
+      "id": "service-1",
+      "name": "Dog Walking"
+    },
+    {
+      "id": "service-2",
+      "name": "Grooming"
+    },
+    {
+      "id": "service-3",
+      "name": "Boarding"
+    },
+    {
+      "id": "service-4",
+      "name": "Pet Sitting"
+    }
+  ],
+  "dog_walking": {
+    "30 minus": [
+      {
+        "name": "10 Walk Pack",
+        "price": 285
+      },
+      {
+        "name": "20 Walk Pack",
+        "price": 540
+      },
+      {
+        "name": "50 Walk Pack",
+        "price": 1020
+      }
+    ],
+    "60 minus": [
+      {
+        "name": "10 Walk Pack",
+        "price": 475
+      },
+      {
+        "name": "20 Walk Pack",
+        "price": 900
+      },
+      {
+        "name": "50 Walk Pack",
+        "price": 1700
+      }
+    ]
+  },
+  "grooming": {
+    "luxuryBath": [
+      {
+        "name": "Bath & blow dry"
+      },
+      {
+        "name": "Ear cleaning"
+      },
+      {
+        "name": "Nail trim"
+      },
+      {
+        "name": "Paw pad trim"
+      },
+      {
+        "name": "Blueberry facial"
+      }
+    ],
+    "fullGroom": [
+      {
+        "name": "Hair cut & style"
+      },
+      {
+        "name": "Bath & blow dry"
+      },
+      {
+        "name": "Ear cleaning"
+      },
+      {
+        "name": "Nail trim"
+      },
+      {
+        "name": "Paw pad trim"
+      },
+      {
+        "name": "Sanitary trim"
+      }
+    ]
+  },
+  "boarding": [
+    {
+      "name": "Bath & blow dry",
+      "price": 100,
+      "time": "Night"
+    },
+    {
+      "name": "Ear cleaning",
+      "price": 95,
+      "time": "Night"
+    },
+    {
+      "name": "Nail trim",
+      "price": 90,
+      "time": "Night"
+    }
+  ],
+  "petSitting": [
+    {
+      "name": "Cat Visit",
+      "price": 40
+    },
+    {
+      "name": "Puppy Visit",
+      "price": 40
+    }
+  ],
+  "principles": [
+    {
+      "name": "Excellence",
+      "description": "Be the best while doing our best, both in our personal lives and as a company"
+    },
+    {
+      "name": "Integrity",
+      "description": "The foundation of trust and the fabric of all meaningful relationships – not only with our clients and the pets who rely on us, but also with our team, who we rely on every day"
+    },
+    {
+      "name": "Passion",
+      "description": "For what we do, and the pets we do it for – otherwise why do it?"
+    },
+    {
+      "name": "Hospitality",
+      "description": "How we welcome others into our family – with open arms, courtesy, kindness and a sense of belonging"
+    }
+  ],
+  "selectedPetTypes": [
+    {
+      "name": "Cat and Dog",
+      "value": "cat and dog"
+    },
+    {
+      "name": "Cat",
+      "value": "cat"
+    },
+    {
+      "name": "Dog",
+      "value": "dog"
+    }
+  ],
+  "paymentMethods": [
+    {
+      "name": "Bank transfer",
+      "value": "bank"
+    },
+    {
+      "name": "Delivery",
+      "value": "delivery"
+    }
+  ]
+}

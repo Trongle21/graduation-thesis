@@ -1,0 +1,95 @@
+/* Container */
+
+.container {
+  max-width: 120rem;
+  margin: 0 auto;
+  padding: 0 4rem;
+}
+
+.container-padding {
+  padding-top: var(--section-gap);
+}
+
+.padding-bottom {
+  padding-bottom: 4rem;
+}
+
+.padding--top {
+  padding-top: 4rem;
+}
+
+/* TYPOGRAPHY */
+
+.text-center {
+  text-align: center;
+}
+
+.uppercase {
+  text-transform: uppercase;
+}
+
+.fw-500 {
+  font-weight: 500;
+}
+
+.fw-600 {
+  font-weight: 600;
+}
+
+.fw-700 {
+  font-weight: 700;
+}
+
+.fw-800 {
+  font-weight: 800;
+}
+
+.text-white {
+  color: white;
+}
+
+.text-grey {
+  color: rgba(255, 255, 255, 0.25);
+}
+
+.heading-lg {
+  font-size: 4rem;
+}
+
+.heading-sm {
+  font-size: 1.6rem;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.margin-top {
+  margin-top: 2rem;
+}
+
+.margin-bottom {
+  margin-bottom: 4rem;
+}
+
+/* Box Shadow*/
+
+.box-sd-violet {
+  box-shadow: 0 5px 20px rgba(0, 0, 255, 0.4);
+}
+
+.box-sd-orange {
+  box-shadow: 0 5px 20px rgba(255, 165, 0, 0.4);
+}
+
+/* hover service */
+
+.violet:hover {
+  color: #fff;
+  background-color: rgba(0, 0, 255, 0.4);
+}
+
+.orange:hover {
+  color: #fff;
+  background-color: rgba(255, 165, 0, 0.7);
+}
+
+/* Loading */

@@ -1,0 +1,576 @@
+import React, { useState } from "react";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionButton,
+  AccordionPanel,
+  Box,
+  Flex,
+  Button,
+  Drawer,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
+  DrawerBody,
+  DrawerHeader,
+  DrawerFooter,
+  AccordionIcon,
+  useDisclosure,
+  Input,
+  Stack,
+  InputGroup,
+  InputRightElement,
+  FormLabel,
+  Select,
+  Textarea,
+} from "@chakra-ui/react";
+import axios from "axios";
+
+import { FaProductHunt, FaUserAlt } from "react-icons/fa";
+
+import Link from "next/link";
+import { useDispatch, useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
+import { createProduct, registerUser } from "@/redux/features/apiRequest";
+
+const Navigation = () => {
+  const {
+    isOpen: userDrawerOpen,
+    onOpen: onUserDrawerOpen,
+    onClose: onUserDrawerClose,
+  } = useDisclosure();
+  const {
+    isOpen: productDrawerOpen,
+    onOpen: onProductDrawerOpen,
+    onClose: onProductDrawerClose,
+  } = useDisclosure();
+
+  const [userInput, setUserInput] = useState("");
+  const [productInput, setProductInput] = useState("");
+
+  const isUserError = userInput === "";
+  const isProductError = productInput === "";
+  const firstField = React.useRef();
+
+  const [show, setShow] = React.useState(false);
+  const handleClick = () => setShow(!show);
+
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const [name, setName] = useState("");
+  const [type, setType] = useState("dog");
+  const [price, setPrice] = useState("");
+  const [quantityProduct, setQuantityProduct] = useState("");
+  const [description, setDescription] = useState("");
+  const [detail, setDetail] = useState("");
+  const [thumbnail, setThumbnail] = useState("");
+  const [images, setImages] = useState([]);
+
+  const dispatch = useDispatch();
+  const navigate = useRouter();
+
+  const user = useSelector((state) => state.auth.login?.currentUser);
+  const axiosJWT = axios.create();
+
+  const refreshToken = async () => {
+    try {
+      const res = await axios.post("http://localhost:8000/api/auth/refresh", {
+        withCredentials: true,
+      });
+
+      return res.data;
+    } catch (err) {
+      console.error("Error refreshing token:", err);
+    }
+  };
+
+  axiosJWT.interceptors.request.use(
+    async (config) => {
+      let date = new Date();
+      const decodedToken = jwtDecode(user?.accessToken);
+      if (decodedToken.exp < date.getTime() / 1000) {
+        const data = await refreshToken();
+        const refreshUser = {
+          ...user,
+          accessToken: data.accessToken,
+          refreshToken: data.refreshToken,
+        };
+        dispatch(loginSuccess(refreshUser));
+        config.headers["token"] = "Bearer" + data.accessToken;
+      }
+      return config;
+    },
+    (err) => {
+      return Promise.reject(err);
+    }
+  );
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const newUser = {
+      username: username,
+      email: email,
+      password: password,
+    };
+    registerUser(newUser, dispatch, navigate, axiosJWT);
+  };
+
+  const handleSubmitProduct = (e) => {
+    e.preventDefault();
+    const newProduct = {
+      name: name,
+      type: type,
+      price: price,
+      quantityProduct: quantityProduct,
+      description: description,
+      detail: detail,
+      thumbnail: thumbnail.name,
+      images: images.map((image) => image.name),
+    };
+    createProduct(newProduct, dispatch, navigate);
+  };
+
+  return (
+    <Box
+      h="calc(100vh - 75px)"
+      w="250px"
+      bg="#f6a25e"
+      color="white"
+      boxShadow="2xl"
+      p="6"
+      rounded="md"
+      marginBottom="10px"
+    >
+      <Accordion allowToggle>
+        <AccordionItem>
+          <h2>
+            <Link href="http://localhost:3000/api/dash-board">
+              <AccordionButton fontSize="20px">Dash board</AccordionButton>
+            </Link>
+          </h2>
+        </AccordionItem>
+
+        <AccordionItem>
+          <h2>
+            <AccordionButton fontSize="20px">
+              <Flex flex="1" textAlign="left" alignItems="center" gap="10px">
+                <FaUserAlt />
+                User
+              </Flex>
+              <AccordionIcon />
+            </AccordionButton>
+          </h2>
+          <AccordionPanel pb={4}>
+            <Box>
+              <Flex flexDirection="column" gap="4px">
+                <Link href="#" fontSize="20px" onClick={onUserDrawerOpen}>
+                  Thêm user
+                </Link>
+                <Link href="http://localhost:3000/api/me/stored-users">
+                  Danh sách người dùng
+                </Link>
+                <Link href="http://localhost:3000/api/me/trash-users">
+                  Danh sách người dùng đã xóa
+                </Link>
+              </Flex>
+              <Drawer
+                isOpen={userDrawerOpen}
+                placement="right"
+                onClose={onUserDrawerClose}
+                size="md"
+              >
+                <form onSubmit={handleSubmit}>
+                  <DrawerOverlay />
+                  <DrawerContent>
+                    <DrawerCloseButton />
+                    <DrawerHeader fontSize="26px">Create User</DrawerHeader>
+                    <DrawerBody>
+                      <Stack pacing="24px">
+                        <Box>
+                          <FormLabel htmlFor="username" fontSize="20px">
+                            Name
+                          </FormLabel>
+                          <Input
+                            ref={firstField}
+                            id="username"
+                            placeholder="Please enter user name"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                          />
+                        </Box>
+                        <Box>
+                          <FormLabel htmlFor="email" fontSize="20px">
+                            Email
+                          </FormLabel>
+                          <Input
+                            ref={firstField}
+                            id="email"
+                            placeholder="Please enter user name"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                          />
+                        </Box>
+                        <Box>
+                          <FormLabel htmlFor="password" fontSize="20px">
+                            Password
+                          </FormLabel>
+                          <InputGroup size="md">
+                            <Input
+                              pr="4.5rem"
+                              type={show ? "text" : "password"}
+                              placeholder="Enter password"
+                              value={password}
+                              onChange={(e) => setPassword(e.target.value)}
+                            />
+                            <InputRightElement width="4.5rem">
+                              <Button
+                                h="1.75rem"
+                                size="sm"
+                                onClick={handleClick}
+                              >
+                                {show ? "Hide" : "Show"}
+                              </Button>
+                            </InputRightElement>
+                          </InputGroup>
+                        </Box>
+                      </Stack>
+                    </DrawerBody>
+
+                    <DrawerFooter>
+                      <Button
+                        variant="outline"
+                        mr={3}
+                        onClick={onUserDrawerClose}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        colorScheme="blue"
+                        onClick={onUserDrawerClose}
+                        disabled={isUserError}
+                        type="submit"
+                      >
+                        Save
+                      </Button>
+                    </DrawerFooter>
+                  </DrawerContent>
+                </form>
+              </Drawer>
+            </Box>
+          </AccordionPanel>
+        </AccordionItem>
+
+        <AccordionItem>
+          <h2>
+            <AccordionButton fontSize="20px">
+              <Flex flex="1" textAlign="left" alignItems="center" gap="10px">
+                <FaProductHunt />
+                Product
+              </Flex>
+              <AccordionIcon />
+            </AccordionButton>
+          </h2>
+          <AccordionPanel pb={4}>
+            <Box>
+              <Flex flexDirection="column" gap="4px">
+                <Link href="#" fontSize="20px" onClick={onProductDrawerOpen}>
+                  Thêm sản phẩm
+                </Link>
+                <Link href="http://localhost:3000/api/me/stored-products">
+                  Danh sách sản phẩm
+                </Link>
+                <Link href="http://localhost:3000/api/me/trash-products">
+                  Danh sách sản phẩm đã xóa
+                </Link>
+              </Flex>
+              <Drawer
+                isOpen={productDrawerOpen}
+                placement="right"
+                onClose={onProductDrawerClose}
+                size="md"
+              >
+                <form onSubmit={handleSubmitProduct}>
+                  <DrawerOverlay />
+                  <DrawerContent>
+                    <DrawerCloseButton />
+                    <DrawerHeader fontSize="26px">Create Product</DrawerHeader>
+
+                    <DrawerBody>
+                      <Stack pacing="24px">
+                        <Box>
+                          <FormLabel htmlFor="name" fontSize="20px">
+                            Tên sản phẩm
+                          </FormLabel>
+                          <Input
+                            ref={firstField}
+                            id="name"
+                            placeholder="Tên sản phẩm ..."
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                          />
+                        </Box>
+                        <Box>
+                          <FormLabel htmlFor="type" fontSize="20px">
+                            Loại
+                          </FormLabel>
+                          <Select
+                            name="type"
+                            id="typeSelect"
+                            defaultValue={type}
+                            onChange={(e) => setType(e.target.value)}
+                          >
+                            <option value="dog">Dog</option>
+                            <option value="cat">Cat</option>
+                          </Select>
+                        </Box>
+                        <Box>
+                          <FormLabel htmlFor="price" fontSize="20px">
+                            Giá
+                          </FormLabel>
+                          <Input
+                            ref={firstField}
+                            id="price"
+                            placeholder="Giá ..."
+                            value={price}
+                            onChange={(e) => setPrice(e.target.value)}
+                          />
+                        </Box>
+                        <Box>
+                          <FormLabel htmlFor="quantity" fontSize="20px">
+                            Số lượng
+                          </FormLabel>
+                          <Input
+                            ref={firstField}
+                            id="quantity"
+                            placeholder="Số lượng ..."
+                            value={quantityProduct}
+                            onChange={(e) => setQuantityProduct(e.target.value)}
+                          />
+                        </Box>
+                        <Box>
+                          <FormLabel htmlFor="description" fontSize="20px">
+                            Mô tả
+                          </FormLabel>
+                          <Input
+                            ref={firstField}
+                            id="description"
+                            placeholder="Mô tả ..."
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                          />
+                        </Box>
+                        <Box>
+                          <FormLabel htmlFor="detail" fontSize="20px">
+                            Chi tiết
+                          </FormLabel>
+                          <Textarea
+                            ref={firstField}
+                            id="detail"
+                            placeholder="Chi tiết sản phẩm ..."
+                            value={detail}
+                            onChange={(e) => setDetail(e.target.value)}
+                          />
+                        </Box>
+                        <Box>
+                          <FormLabel htmlFor="thumbnail" fontSize="20px">
+                            Thumbnail
+                          </FormLabel>
+                          <Input
+                            type="file"
+                            id="thumbnail"
+                            onChange={(e) => setThumbnail(e.target.files[0])}
+                          />
+                        </Box>
+                        <Box>
+                          <FormLabel htmlFor="images" fontSize="20px">
+                            Images
+                          </FormLabel>
+                          <Input
+                            type="file"
+                            id="images"
+                            onChange={(e) => setImages([...e.target.files])}
+                            multiple
+                          />
+                        </Box>
+                      </Stack>
+                    </DrawerBody>
+
+                    <DrawerFooter>
+                      <Button
+                        variant="outline"
+                        mr={3}
+                        onClick={onProductDrawerClose}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        colorScheme="blue"
+                        onClick={onProductDrawerClose}
+                        disabled={isProductError}
+                        type="submit"
+                      >
+                        Save
+                      </Button>
+                    </DrawerFooter>
+                  </DrawerContent>
+                </form>
+              </Drawer>
+            </Box>
+          </AccordionPanel>
+        </AccordionItem>
+        <AccordionItem>
+          <h2>
+            <AccordionButton fontSize="20px">
+              <Flex flex="1" textAlign="left" alignItems="center" gap="10px">
+                <FaUserAlt />
+                Pet
+              </Flex>
+              <AccordionIcon />
+            </AccordionButton>
+          </h2>
+          <AccordionPanel pb={4}>
+            <Box>
+              <Flex flexDirection="column" gap="4px">
+                <Link href="http://localhost:3000/api/me/stored-pets">
+                  Danh sách pet
+                </Link>
+              </Flex>
+            </Box>
+          </AccordionPanel>
+        </AccordionItem>
+        <AccordionItem>
+          <h2>
+            <AccordionButton fontSize="20px">
+              <Flex flex="1" textAlign="left" alignItems="center" gap="10px">
+                <FaUserAlt />
+                Dịch vụ
+              </Flex>
+              <AccordionIcon />
+            </AccordionButton>
+          </h2>
+          <AccordionPanel pb={4}>
+            <Box>
+              <Flex flexDirection="column" gap="4px">
+                <Link href="#" fontSize="20px" onClick={onUserDrawerOpen}>
+                  Thêm dịch vụ
+                </Link>
+                <Link href="http://localhost:3000/api/me/stored-service-pack">
+                  Danh sách dịch vụ
+                </Link>
+              </Flex>
+              <Drawer
+                isOpen={userDrawerOpen}
+                placement="right"
+                onClose={onUserDrawerClose}
+                size="md"
+              >
+                <form onSubmit={handleSubmit}>
+                  <DrawerOverlay />
+                  <DrawerContent>
+                    <DrawerCloseButton />
+                    <DrawerHeader fontSize="26px">
+                      Thêm dịch vụ mới
+                    </DrawerHeader>
+                    <DrawerBody>
+                      <Stack pacing="24px">
+                        <Box>
+                          <FormLabel htmlFor="username" fontSize="20px">
+                            Name
+                          </FormLabel>
+                          <Input
+                            ref={firstField}
+                            id="username"
+                            placeholder="Please enter user name"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                          />
+                        </Box>
+                        <Box>
+                          <FormLabel htmlFor="email" fontSize="20px">
+                            Email
+                          </FormLabel>
+                          <Input
+                            ref={firstField}
+                            id="email"
+                            placeholder="Please enter user name"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                          />
+                        </Box>
+                        <Box>
+                          <FormLabel htmlFor="password" fontSize="20px">
+                            Password
+                          </FormLabel>
+                          <InputGroup size="md">
+                            <Input
+                              pr="4.5rem"
+                              type={show ? "text" : "password"}
+                              placeholder="Enter password"
+                              value={password}
+                              onChange={(e) => setPassword(e.target.value)}
+                            />
+                            <InputRightElement width="4.5rem">
+                              <Button
+                                h="1.75rem"
+                                size="sm"
+                                onClick={handleClick}
+                              >
+                                {show ? "Hide" : "Show"}
+                              </Button>
+                            </InputRightElement>
+                          </InputGroup>
+                        </Box>
+                      </Stack>
+                    </DrawerBody>
+
+                    <DrawerFooter>
+                      <Button
+                        variant="outline"
+                        mr={3}
+                        onClick={onUserDrawerClose}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        colorScheme="blue"
+                        onClick={onUserDrawerClose}
+                        disabled={isUserError}
+                        type="submit"
+                      >
+                        Save
+                      </Button>
+                    </DrawerFooter>
+                  </DrawerContent>
+                </form>
+              </Drawer>
+            </Box>
+          </AccordionPanel>
+        </AccordionItem>
+        <AccordionItem>
+          <h2>
+            <AccordionButton fontSize="20px">
+              <Flex flex="1" textAlign="left" alignItems="center" gap="10px">
+                <FaUserAlt />
+                Lịch đặt hẹn
+              </Flex>
+              <AccordionIcon />
+            </AccordionButton>
+          </h2>
+          <AccordionPanel pb={4}>
+            <Box>
+              <Flex flexDirection="column" gap="4px">
+                <Link href="http://localhost:3000/api/me/stored-appointment">
+                  Danh sách lịch đặt hẹn
+                </Link>
+              </Flex>
+            </Box>
+          </AccordionPanel>
+        </AccordionItem>
+      </Accordion>
+    </Box>
+  );
+};
+
+export default Navigation;
