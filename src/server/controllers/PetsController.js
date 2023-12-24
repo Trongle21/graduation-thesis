@@ -6,13 +6,13 @@ const petsController = {
     try {
       const newPet = new Pets(req.body);
       await newPet.save();
-
       return res.status(201).json(newPet);
     } catch (err) {
       console.error(err);
       res.status(500).send(err);
     }
   },
+
   // [GET] "api/pets/:id/edit"
   edit: async (req, res) => {
     try {

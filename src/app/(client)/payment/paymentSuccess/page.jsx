@@ -1,13 +1,28 @@
-"use client"
+"use client";
 
 import React from "react";
 import HeroSection from "@/app/_components/HeroSection";
 import Link from "next/link";
 import PathLink from "@/app/_components/PathLink";
 import useAppContext from "@/app/_hooks/useAppContext";
+import { useDispatch, useSelector } from "react-redux";
+import { deleteAllProduct } from "@/redux/features/cartSlice";
 
 const PaymentSuccess = () => {
   const { form, productInCart, totalProductPrice } = useAppContext();
+
+  const user = useSelector((state) => state.auth?.login?.currentUser);
+
+  const dispatch = useDispatch();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (user) {
+      dispatch(deleteAllProduct());
+    } else {
+      window.alert("Bạn cần đăng nhập để hoàn tất dịch vụ!");
+    }
+  };
 
   return (
     <>
@@ -39,18 +54,17 @@ const PaymentSuccess = () => {
                 <div className="infor--user row">
                   <div className="infor--name l-6 m-5 c-12">
                     <h2>Customer information</h2>
-                    <h4>{form.info.email}</h4>
-                    <h4>{form.info.name}</h4>
-                    <h4>{form.info.phone_number}</h4>
+                    <h4>{user.username}</h4>
+                    <h4>{user.email}</h4>
+                    <h4>{form?.info?.phone_number}</h4>
                   </div>
                   <div className="infor--method l-6 m-5 c-12">
                     <h2>Payment methods</h2>
-                    <h4>{form.info.paymentMethod}</h4>
+                    <h4>{form?.info?.paymentMethod}</h4>
                   </div>
                   <div className="info--address l-6 m-5 c-12">
                     <h2>Address</h2>
-                    <h4>{form.info.country}</h4>
-                    <h4>{form.info.address}</h4>
+                    <h4>{form?.info?.address}</h4>
                   </div>
                   <div className="info--delivery-method l-6 m-5 c-12">
                     <h2>Shipping method</h2>
@@ -66,12 +80,15 @@ const PaymentSuccess = () => {
                     productInCart.map((product) => (
                       <div
                         className="section--pay__info--product"
-                        key={product.product.id}
+                        key={product.product._id}
                       >
                         <div
                           className="pay--image"
                           style={{
-                            backgroundImage: `url(${product.product.thumbnail})`,
+                            backgroundImage: `url(${
+                              "http://localhost:8000/images/" +
+                              product.product.thumbnail
+                            })`,
                           }}
                         >
                           <p>{product.quantity}</p>
@@ -92,16 +109,13 @@ const PaymentSuccess = () => {
                 </div>
               </div>
             </div>
-            <div
-              className="continue--shopping__btn l-12 m-12 c-12"
-              href="product.html"
-            >
-              <Link href="/products">
-                <button className="btn btn--primary">Continue shopping</button>
-              </Link>
-              <Link href="/">
-                <button className="btn btn--secondary">Home</button>
-              </Link>
+            <div className="continue--shopping__btn l-12 m-12 c-12">
+              <button className="btn btn--primary" onClick={handleSubmit}>
+                <Link href="/products">Continue shopping</Link>
+              </button>
+              <button className="btn btn--secondary" onClick={handleSubmit}>
+                <Link href="/home">Home</Link>
+              </button>
             </div>
           </div>
         </div>

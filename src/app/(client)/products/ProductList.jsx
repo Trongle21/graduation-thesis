@@ -21,11 +21,11 @@ const ProductList = () => {
       ) : (
         currentProducts &&
         currentProducts.map((product) => (
-          <div className="product--item l-3 m-6 c-11" key={product.productId}>
+          <div className="product--item l-3 m-6 c-11" key={product._id}>
             <div className="product--item__wrapper">
               <div className="product--item__wrapper">
                 <Link
-                  href={`/products/${product.productId}`}
+                  href={`/products/${product._id}`}
                   className="product--item__image"
                   style={{ backgroundImage: `url(${"http://localhost:8000/images/" + product.thumbnail})` }}
                 ></Link>
@@ -42,7 +42,7 @@ const ProductList = () => {
                 <Button
                   className="btn btn--primary"
                   onClick={() => {
-                    handleAddProductToCart(product.productId);
+                    handleAddProductToCart(product._id);
                     handleShowCart();
                   }}
                   content="Add To Cart"

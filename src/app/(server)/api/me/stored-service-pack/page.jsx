@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  Box,
   Button,
   Checkbox,
   Flex,
@@ -13,31 +12,36 @@ import {
   Th,
   Td,
   TableContainer,
-  AlertDialogBody,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogContent,
-  AlertDialogOverlay,
   useDisclosure,
-  DrawerOverlay,
-  DrawerContent,
-  DrawerHeader,
-  DrawerBody,
-  Input,
-  DrawerFooter,
   Drawer,
-  FormLabel,
-  InputGroup,
-  FormControl,
-  InputRightElement,
   Select,
   Text,
+  AlertDialogOverlay,
+  AlertDialogContent,
+  AlertDialog,
+  AlertDialogHeader,
+  AlertDialogBody,
+  AlertDialogFooter,
+  DrawerContent,
   DrawerCloseButton,
+  DrawerHeader,
+  DrawerBody,
+  Box,
+  DrawerFooter,
+  Input,
+  FormControl,
+  FormLabel,
+  Stack,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
-import { getAllServicePack } from "@/redux/features/apiRequest";
+import {
+  getAllServicePack,
+  deleteServicePack,
+  updateServicePack,
+  handleActionServicePackForm,
+} from "@/redux/features/apiRequest";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 const { jwtDecode } = require("jwt-decode");
@@ -98,25 +102,125 @@ const StoredUser = () => {
   }, []);
 
   const {
+    isOpen: isOpenDelete,
+    onOpen: OnOpenDelete,
+    onClose: onCloseDelete,
+  } = useDisclosure();
+  const cancelRef = React.useRef();
+
+  const {
     isOpen: isOpenEdit,
     onOpen: OnOpenEdit,
     onClose: onCloseEdit,
   } = useDisclosure();
   const btnRef = React.useRef();
 
+  const [servicePackId, setServicePackId] = useState(null);
+  const [currentServicePack, setCurrentServicePack] = useState(null);
+
+  const [serviceName, setServiceName] = useState("");
+  const [packages, setPackages] = useState([
+    { name: "", price: "" },
+    { name: "", price: "" },
+  ]);
+
+  const handleDelete = (id) => {
+    setServicePackId(id);
+    OnOpenDelete();
+  };
+
+  const handleDeleteServicePack = (id) => {
+    deleteServicePack(user?.accessToken, dispatch, id, axiosJWT);
+  };
+
+  const handleEdit = (id) => {
+    const findServicePack = servicePackList.find(
+      (servicePack) => servicePack._id === id
+    );
+    setCurrentServicePack(findServicePack);
+    OnOpenEdit();
+  };
+
+  const handlePackageChange = (index, field, value) => {
+    const updatedPackages = [...packages];
+    updatedPackages[index][field] = value;
+    setPackages(updatedPackages);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const newServicePack = {
+      _id: currentServicePack._id,
+      serviceName: serviceName,
+      packages: packages,
+    };
+    updateServicePack(newServicePack, user?.accessToken, dispatch, navigate);
+  };
+
+  const [selectAll, setSelectAll] = useState(false);
+  const [selectedItems, setSelectedItems] = useState([]);
+
+  const handleSelectAll = () => {
+    setSelectAll(!selectAll);
+    const allServicePackIds = servicePackList.map((service) => service._id);
+    setSelectedItems(selectAll ? [] : allServicePackIds);
+  };
+
+  const handleSelectItem = (servicePackId) => {
+    setSelectedItems((prevSelectedItems) => {
+      const newSelectedItems = prevSelectedItems.includes(servicePackId)
+        ? prevSelectedItems.filter((id) => id !== servicePackId)
+        : [...prevSelectedItems, servicePackId];
+
+      setSelectAll(
+        newSelectedItems.length === servicePackList.length &&
+          newSelectedItems.length > 0
+      );
+
+      return newSelectedItems;
+    });
+  };
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+  const [actionValue, setActionValue] = useState("");
+
+  useEffect(() => {
+    selectedItems.length > 0
+      ? setIsButtonDisabled(false)
+      : setIsButtonDisabled(true);
+  }, [selectedItems]);
+
+  const handleSubmitForm = (e) => {
+    handleActionServicePackForm(
+      user?.accessToken,
+      dispatch,
+      selectedItems,
+      actionValue
+    );
+  };
+
   return (
     <Flex gap="20px">
       <Navigation />
 
-      <form style={{ width: "100%" }}>
+      <form style={{ width: "100%" }} onSubmit={handleSubmitForm}>
         <Flex gap={10} alignItems="center" padding="10px 0 0 18px">
-          <Checkbox size="lg">
+          <Checkbox size="lg" onChange={handleSelectAll} isChecked={selectAll}>
             <Text fontSize="2xl">Chọn tất cả</Text>
           </Checkbox>
-          <Select w="100px" size="lg" placeholder="Select option">
+          <Select
+            w="100px"
+            size="lg"
+            placeholder="Select option"
+            value={actionValue}
+            onChange={(e) => setActionValue(e.target.value)}
+          >
             <option value="delete">Xóa tấc cả</option>
           </Select>
-          <Button colorScheme="blue" type="submit">
+          <Button
+            colorScheme="blue"
+            isDisabled={isButtonDisabled}
+            type="submit"
+          >
             Thực hiện
           </Button>
         </Flex>
@@ -135,13 +239,16 @@ const StoredUser = () => {
               </Tr>
             </Thead>
             <Tbody>
-              {servicePackList?.map((servicePack) => {
+              {servicePackList?.map((servicePack, index) => {
                 return (
                   <Tr key={servicePack._id}>
                     <Td>
-                      <Checkbox></Checkbox>
+                      <Checkbox
+                        isChecked={selectedItems.includes(servicePack._id)}
+                        onChange={() => handleSelectItem(servicePack._id)}
+                      ></Checkbox>
                     </Td>
-                    <Td>{servicePack.servicePackId}</Td>
+                    <Td>{index + 1}</Td>
                     <Td>{servicePack.serviceName}</Td>
                     <Td>
                       {servicePack.packages.map((pack) => (
@@ -161,7 +268,7 @@ const StoredUser = () => {
                       <Link paddingRight={1}>
                         <Button
                           colorScheme="facebook"
-                          onClick={() => handleEdit(user._id)}
+                          onClick={() => handleEdit(servicePack._id)}
                         >
                           Sửa
                         </Button>
@@ -171,7 +278,94 @@ const StoredUser = () => {
                           size="md"
                           onClose={onCloseEdit}
                           finalFocusRef={btnRef}
-                        ></Drawer>
+                        >
+                          <form onSubmit={handleSubmit}>
+                            <DrawerContent>
+                              <DrawerCloseButton />
+                              <DrawerHeader fontSize="26px">
+                                Sửa dịch vụ
+                              </DrawerHeader>
+
+                              <DrawerBody>
+                                <Box>
+                                  <FormControl>
+                                    <FormLabel fontSize="20px">
+                                      Tên dịch vụ{" "}
+                                    </FormLabel>
+                                    <Input
+                                      id="serviceName"
+                                      placeholder="Please enter user name"
+                                      value={serviceName}
+                                      onChange={(e) =>
+                                        setServiceName(e.target.value)
+                                      }
+                                      autoComplete="serviceName"
+                                    />
+                                  </FormControl>
+                                </Box>
+                                <Stack spacing={4}>
+                                  {packages.map((pack, index) => (
+                                    <Box key={index}>
+                                      <FormLabel
+                                        htmlFor={`packageName${index}`}
+                                        fontSize="20px"
+                                      >
+                                        Tên gói
+                                      </FormLabel>
+                                      <Input
+                                        id={`packageName${index}`}
+                                        placeholder="Nhập tên gói..."
+                                        value={pack.name}
+                                        onChange={(e) =>
+                                          handlePackageChange(
+                                            index,
+                                            "name",
+                                            e.target.value
+                                          )
+                                        }
+                                      />
+                                      <FormLabel
+                                        htmlFor={`packagePrice${index}`}
+                                        fontSize="20px"
+                                      >
+                                        Giá
+                                      </FormLabel>
+                                      <Input
+                                        id={`packagePrice${index}`}
+                                        placeholder="Nhập giá..."
+                                        value={pack.price}
+                                        onChange={(e) =>
+                                          handlePackageChange(
+                                            index,
+                                            "price",
+                                            e.target.value
+                                          )
+                                        }
+                                      />
+                                    </Box>
+                                  ))}
+                                </Stack>
+                              </DrawerBody>
+
+                              <DrawerFooter>
+                                <Button
+                                  variant="outline"
+                                  mr={3}
+                                  onClick={onCloseEdit}
+                                >
+                                  Cancel
+                                </Button>
+                                <Button
+                                  colorScheme="blue"
+                                  type="submit"
+                                  onClick={onCloseEdit}
+                                >
+                                  Save
+                                </Button>
+                              </DrawerFooter>
+                            </DrawerContent>
+                          </form>
+                        </Drawer>
                       </Link>
                       <Link>
                         <Button
@@ -189,6 +383,37 @@ const StoredUser = () => {
           </Table>
         </TableContainer>
       </form>
+      <AlertDialog
+        isOpen={isOpenDelete}
+        leastDestructiveRef={cancelRef}
+        onClose={onCloseDelete}
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+              Xóa dịch vụ này
+            </AlertDialogHeader>
+
+            <AlertDialogBody>Bạn chắc chắn xóa dịch vụ này!</AlertDialogBody>
+
+            <AlertDialogFooter>
+              <Button ref={cancelRef} onClick={onCloseDelete}>
+                Cancel
+              </Button>
+              <Button
+                colorScheme="red"
+                onClick={() => {
+                  handleDeleteServicePack(servicePackId);
+                  onCloseDelete();
+                }}
+                ml={3}
+              >
+                Delete
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
     </Flex>
   );
 };

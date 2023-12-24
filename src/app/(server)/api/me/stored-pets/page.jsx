@@ -27,17 +27,22 @@ import {
   DrawerFooter,
   Drawer,
   FormLabel,
-  InputGroup,
   FormControl,
-  InputRightElement,
   Select,
   Text,
   DrawerCloseButton,
+  AlertDialog,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
-import { getAllPet } from "@/redux/features/apiRequest";
+import {
+  getAllPet,
+  getAllUser,
+  deletePet,
+  updatePet,
+  handleActionPetForm,
+} from "@/redux/features/apiRequest";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 const { jwtDecode } = require("jwt-decode");
@@ -48,7 +53,7 @@ const axiosJWT = axios.create();
 
 const StoredUser = () => {
   const user = useSelector((state) => state.auth.login?.currentUser);
-  const listUser = useSelector((state) => state.users?.users?.allUsers?.users);
+  const userList = useSelector((state) => state.users?.users?.allUsers?.users);
   const petList = useSelector((state) => state.pets?.pets?.allPets?.pets);
 
   const dispatch = useDispatch();
@@ -92,9 +97,12 @@ const StoredUser = () => {
       navigate.push("/home");
     }
     if (user?.accessToken) {
+      getAllUser(user?.accessToken, dispatch, axiosJWT);
       getAllPet(user?.accessToken, dispatch, axiosJWT);
     }
   }, []);
+
+  const [petId, setPetId] = useState(null);
 
   const {
     isOpen: isOpenDelete,
@@ -120,13 +128,18 @@ const StoredUser = () => {
   };
 
   const [currentPet, setCurrentPet] = useState(null);
+  const [nameOwner, setNameOwner] = useState("");
+  const [ownerId, setOwnerId] = useState("");
   const [petName, setPetName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [age, setAge] = useState("");
+  const [choosePetType, setChoosePetType] = useState("cat");
+  const [chooseGender, setChooseGender] = useState("male");
 
-  const handleEdit = (id) => {
+  const handleEdit = (id, ownerId, name) => {
     const findPet = petList.find((pet) => pet._id === id);
     setCurrentPet(findPet);
+    setOwnerId(ownerId);
+    setNameOwner(name);
     OnOpenEdit();
   };
 
@@ -137,9 +150,11 @@ const StoredUser = () => {
     e.preventDefault();
     const newPet = {
       _id: currentPet._id,
-      petName: petName,
-      email: email,
-      password: password,
+      name: petName,
+      age: age,
+      user: ownerId,
+      type: choosePetType,
+      gender: chooseGender,
     };
     updatePet(newPet, user?.accessToken, dispatch, navigate);
   };
@@ -150,7 +165,7 @@ const StoredUser = () => {
   const handleSelectAll = () => {
     setSelectAll(!selectAll);
     const allPetIds = petList.map((product) => product._id);
-    setSelectedItems(selectAll ? [] : allUserIds);
+    setSelectedItems(selectAll ? [] : allPetIds);
   };
 
   const handleSelectItem = (productId) => {
@@ -160,7 +175,7 @@ const StoredUser = () => {
         : [...prevSelectedItems, productId];
 
       setSelectAll(
-        newSelectedItems.length === userList.length &&
+        newSelectedItems.length === petList.length &&
           newSelectedItems.length > 0
       );
 
@@ -178,7 +193,7 @@ const StoredUser = () => {
 
   const handleSubmitForm = (e) => {
     e.preventDefault();
-    handleActionUserForm(
+    handleActionPetForm(
       user?.accessToken,
       dispatch,
       selectedItems,
@@ -190,15 +205,25 @@ const StoredUser = () => {
     <Flex gap="20px">
       <Navigation />
 
-      <form style={{ width: "100%" }}>
+      <form style={{ width: "100%" }} onSubmit={handleSubmitForm}>
         <Flex gap={10} alignItems="center" padding="10px 0 0 18px">
-          <Checkbox size="lg">
+          <Checkbox size="lg" onChange={handleSelectAll} isChecked={selectAll}>
             <Text fontSize="2xl">Chọn tất cả</Text>
           </Checkbox>
-          <Select w="100px" size="lg" placeholder="Select option">
+          <Select
+            w="100px"
+            size="lg"
+            placeholder="Select option"
+            value={actionValue}
+            onChange={(e) => setActionValue(e.target.value)}
+          >
             <option value="delete">Xóa tấc cả</option>
           </Select>
-          <Button colorScheme="blue" type="submit">
+          <Button
+            colorScheme="blue"
+            isDisabled={isButtonDisabled}
+            type="submit"
+          >
             Thực hiện
           </Button>
         </Flex>
@@ -231,24 +256,33 @@ const StoredUser = () => {
               </Tr>
             </Thead>
             <Tbody>
-              {petList?.map((pet) => {
-                const username = listUser.find((user) => user._id === pet.user);
+              {petList?.map((pet, index) => {
+                const username = userList.find((user) => user._id === pet.user);
                 return (
                   <Tr key={pet._id}>
                     <Td>
-                      <Checkbox></Checkbox>
+                      <Checkbox
+                        isChecked={selectedItems.includes(pet._id)}
+                        onChange={() => handleSelectItem(pet._id)}
+                      ></Checkbox>
                     </Td>
-                    <Td textAlign="center">{pet.petId}</Td>
+                    <Td textAlign="center">{index + 1}</Td>
                     <Td textAlign="center">{pet.name}</Td>
                     <Td textAlign="center">{pet.type}</Td>
                     <Td textAlign="center">{pet.age}</Td>
                     <Td textAlign="center">{pet.gender}</Td>
-                    <Td textAlign="center">{username.username}</Td>
+                    <Td textAlign="center">{username?.username}</Td>
                     <Td textAlign="center">
                       <Link paddingRight={1}>
                         <Button
                           colorScheme="facebook"
-                          onClick={() => handleEdit(user._id)}
+                          onClick={() =>
+                            handleEdit(
+                              pet._id,
+                              username?._id,
+                              username?.username
+                            )
+                          }
                         >
                           Sửa
                         </Button>
@@ -258,7 +292,99 @@ const StoredUser = () => {
                           size="md"
                           onClose={onCloseEdit}
                           finalFocusRef={btnRef}
-                        ></Drawer>
+                        >
+                          <form onSubmit={handleSubmit}>
+                            <DrawerContent>
+                              <DrawerCloseButton />
+                              <DrawerHeader fontSize="26px">
+                                Sửa thông tin Pet
+                              </DrawerHeader>
+
+                              <DrawerBody>
+                                <Box>
+                                  <FormControl>
+                                    <FormLabel fontSize="20px">
+                                      Chủ sở hữu: {nameOwner}
+                                    </FormLabel>
+                                  </FormControl>
+                                </Box>
+                                <Box>
+                                  <FormControl>
+                                    <FormLabel fontSize="20px">
+                                      Tên Pet{" "}
+                                    </FormLabel>
+                                    <Input
+                                      value={petName}
+                                      onChange={(e) =>
+                                        setPetName(e.target.value)
+                                      }
+                                    />
+                                  </FormControl>
+                                </Box>
+                                <Box>
+                                  <FormControl>
+                                    <FormLabel fontSize="20px">
+                                      Tháng tuổi{" "}
+                                    </FormLabel>
+                                    <Input
+                                      value={age}
+                                      onChange={(e) => setAge(e.target.value)}
+                                    />
+                                  </FormControl>
+                                </Box>
+                                <Box>
+                                  <FormControl>
+                                    <FormLabel fontSize="20px">
+                                      Loại Pet{" "}
+                                    </FormLabel>
+                                    <Select
+                                      value={choosePetType}
+                                      onChange={(e) =>
+                                        setChoosePetType(e.target.value)
+                                      }
+                                    >
+                                      <option value="cat">Cat</option>
+                                      <option value="dog">Dog</option>
+                                    </Select>
+                                  </FormControl>
+                                </Box>
+                                <Box>
+                                  <FormControl>
+                                    <FormLabel fontSize="20px">
+                                      Giới tính{" "}
+                                    </FormLabel>
+                                    <Select
+                                      value={chooseGender}
+                                      onChange={(e) =>
+                                        setChooseGender(e.target.value)
+                                      }
+                                    >
+                                      <option value="male">Male</option>
+                                      <option value="female">Female</option>
+                                    </Select>
+                                  </FormControl>
+                                </Box>
+                              </DrawerBody>
+
+                              <DrawerFooter>
+                                <Button
+                                  variant="outline"
+                                  mr={3}
+                                  onClick={onCloseEdit}
+                                >
+                                  Cancel
+                                </Button>
+                                <Button
+                                  colorScheme="blue"
+                                  type="submit"
+                                  onClick={onCloseEdit}
+                                >
+                                  Save
+                                </Button>
+                              </DrawerFooter>
+                            </DrawerContent>
+                          </form>
+                        </Drawer>
                       </Link>
                       <Link>
                         <Button
@@ -276,6 +402,37 @@ const StoredUser = () => {
           </Table>
         </TableContainer>
       </form>
+      <AlertDialog
+        isOpen={isOpenDelete}
+        leastDestructiveRef={cancelRef}
+        onClose={onCloseDelete}
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+              Xóa pet
+            </AlertDialogHeader>
+
+            <AlertDialogBody>Bạn chắc chắn xóa pet này</AlertDialogBody>
+
+            <AlertDialogFooter>
+              <Button ref={cancelRef} onClick={onCloseDelete}>
+                Cancel
+              </Button>
+              <Button
+                colorScheme="red"
+                onClick={() => {
+                  handleDeletePet(petId);
+                  onCloseDelete();
+                }}
+                ml={3}
+              >
+                Delete
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
     </Flex>
   );
 };

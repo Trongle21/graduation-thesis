@@ -17,10 +17,19 @@ const appointmentsSlice = createSlice({
       state.appointments.isFetching = true;
     },
     getAppointmentSuccess: (state, action) => {
-      state.appointments.isFetching = false;
       state.appointments.allAppointments = action.payload;
     },
     getAppointmentFailed: (state) => {
+      state.appointments.error = true;
+    },
+    getAppointmentDeletedStart: (state) => {
+      state.appointments.isFetching = true;
+    },
+    getAppointmentDeletedSuccess: (state, action) => {
+      state.appointments.isFetching = false;
+      state.appointments.allAppointmentsDeleted = action.payload;
+    },
+    getAppointmentDeletedFailed: (state) => {
       state.appointments.isFetching = false;
       state.appointments.error = true;
     },
@@ -39,7 +48,7 @@ const appointmentsSlice = createSlice({
     },
     updateAppointmentSuccess: (state, action) => {
       state.appointments.isFetching = false;
-      state.appointments.currentappointment = action.payload;
+      state.appointments.currentAppointment = action.payload;
     },
     updateAppointmentFailed: (state) => {
       state.appointments.isFetching = false;
@@ -75,6 +84,9 @@ export const {
   getAppointmentStart,
   getAppointmentSuccess,
   getAppointmentFailed,
+  getAppointmentDeletedStart,
+  getAppointmentDeletedSuccess,
+  getAppointmentDeletedFailed,
   createAppointmentStart,
   createAppointmentSuccess,
   createAppointmentFailed,

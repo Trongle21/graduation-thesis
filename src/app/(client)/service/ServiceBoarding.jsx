@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import data from "@/app/data.json";
 import Link from "next/link";
 import { AiOutlinePlus } from "react-icons/ai";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
+import { getAllServicePack } from "@/redux/features/apiRequest";
 
 const ServiceBoarding = () => {
   const [isShowBoarding, setIsShowBoarding] = useState();
@@ -14,9 +15,21 @@ const ServiceBoarding = () => {
 
   const router = useRouter();
 
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (!user) {
+      router.push("/service");
+    }
+    if (user?.accessToken) {
+      getAllServicePack(user?.accessToken, dispatch);
+    }
+  }, []);
+
   const handleSubmit = () => {
     if (user) {
       const servicePackId = servicePackList[2]._id;
+
       router.push(`service/${servicePackId}`);
     } else {
       window.alert("Bạn cần đăng nhập để tiếp tục!");

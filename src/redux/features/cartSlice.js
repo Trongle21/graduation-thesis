@@ -27,6 +27,7 @@ const cartSlice = createSlice({
       state.productsCart = [];
     },
     decreaseProduct(state, action) {
+    
       const decreaseProduct = state.productsCart.map((product) =>
         product.productId === action.payload.productId
           ? {

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Accordion,
   AccordionItem,
@@ -31,7 +31,15 @@ import { FaProductHunt, FaUserAlt } from "react-icons/fa";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
-import { createProduct, registerUser } from "@/redux/features/apiRequest";
+import {
+  createProduct,
+  registerUser,
+  getAllAppointment,
+  getAllServicePack,
+  getAllPet,
+  getAllUser,
+  createServicePack,
+} from "@/redux/features/apiRequest";
 
 const Navigation = () => {
   const {
@@ -43,6 +51,12 @@ const Navigation = () => {
     isOpen: productDrawerOpen,
     onOpen: onProductDrawerOpen,
     onClose: onProductDrawerClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: servicePackDrawerOpen,
+    onOpen: onServicePackDrawerOpen,
+    onClose: onServicePackDrawerClose,
   } = useDisclosure();
 
   const [userInput, setUserInput] = useState("");
@@ -67,6 +81,12 @@ const Navigation = () => {
   const [detail, setDetail] = useState("");
   const [thumbnail, setThumbnail] = useState("");
   const [images, setImages] = useState([]);
+
+  const [serviceName, setServiceName] = useState("");
+  const [packages, setPackages] = useState([
+    { name: "", price: "" },
+    { name: "", price: "" },
+  ]);
 
   const dispatch = useDispatch();
   const navigate = useRouter();
@@ -130,6 +150,21 @@ const Navigation = () => {
       images: images.map((image) => image.name),
     };
     createProduct(newProduct, dispatch, navigate);
+  };
+
+  const handlePackageChange = (index, field, value) => {
+    const updatedPackages = [...packages];
+    updatedPackages[index][field] = value;
+    setPackages(updatedPackages);
+  };
+
+  const handleSubmitService = (e) => {
+    const newServicePack = {
+      serviceName: serviceName,
+      packages: packages,
+    };
+    createServicePack(newServicePack, dispatch, navigate);
+    e.preventDefault();
   };
 
   return (
@@ -198,6 +233,7 @@ const Navigation = () => {
                             placeholder="Please enter user name"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
+                            autoComplete="username"
                           />
                         </Box>
                         <Box>
@@ -210,6 +246,7 @@ const Navigation = () => {
                             placeholder="Please enter user name"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
+                            autoComplete="email"
                           />
                         </Box>
                         <Box>
@@ -223,6 +260,7 @@ const Navigation = () => {
                               placeholder="Enter password"
                               value={password}
                               onChange={(e) => setPassword(e.target.value)}
+                              autoComplete="current-password"
                             />
                             <InputRightElement width="4.5rem">
                               <Button
@@ -420,6 +458,7 @@ const Navigation = () => {
             </Box>
           </AccordionPanel>
         </AccordionItem>
+
         <AccordionItem>
           <h2>
             <AccordionButton fontSize="20px">
@@ -436,10 +475,14 @@ const Navigation = () => {
                 <Link href="http://localhost:3000/api/me/stored-pets">
                   Danh sách pet
                 </Link>
+                <Link href="http://localhost:3000/api/me/trash-pets">
+                  Danh sách pet đã xóa
+                </Link>
               </Flex>
             </Box>
           </AccordionPanel>
         </AccordionItem>
+
         <AccordionItem>
           <h2>
             <AccordionButton fontSize="20px">
@@ -453,75 +496,88 @@ const Navigation = () => {
           <AccordionPanel pb={4}>
             <Box>
               <Flex flexDirection="column" gap="4px">
-                <Link href="#" fontSize="20px" onClick={onUserDrawerOpen}>
+                <Link
+                  href="#"
+                  fontSize="20px"
+                  onClick={onServicePackDrawerOpen}
+                >
                   Thêm dịch vụ
                 </Link>
                 <Link href="http://localhost:3000/api/me/stored-service-pack">
                   Danh sách dịch vụ
                 </Link>
+                <Link href="http://localhost:3000/api/me/trash-service-pack">
+                  Danh sách dịch vụ đã xóa
+                </Link>
               </Flex>
               <Drawer
-                isOpen={userDrawerOpen}
+                isOpen={servicePackDrawerOpen}
                 placement="right"
-                onClose={onUserDrawerClose}
+                onClose={onServicePackDrawerClose}
                 size="md"
               >
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmitService}>
                   <DrawerOverlay />
                   <DrawerContent>
                     <DrawerCloseButton />
-                    <DrawerHeader fontSize="26px">
-                      Thêm dịch vụ mới
-                    </DrawerHeader>
+                    <DrawerHeader fontSize="26px">Tạo dịch vụ</DrawerHeader>
                     <DrawerBody>
                       <Stack pacing="24px">
                         <Box>
-                          <FormLabel htmlFor="username" fontSize="20px">
-                            Name
+                          <FormLabel htmlFor="serviceName" fontSize="20px">
+                            Tên dịch vụ
                           </FormLabel>
                           <Input
                             ref={firstField}
-                            id="username"
+                            id="serviceName"
                             placeholder="Please enter user name"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
+                            value={serviceName}
+                            onChange={(e) => setServiceName(e.target.value)}
+                            autoComplete="serviceName"
                           />
                         </Box>
-                        <Box>
-                          <FormLabel htmlFor="email" fontSize="20px">
-                            Email
-                          </FormLabel>
-                          <Input
-                            ref={firstField}
-                            id="email"
-                            placeholder="Please enter user name"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                          />
-                        </Box>
-                        <Box>
-                          <FormLabel htmlFor="password" fontSize="20px">
-                            Password
-                          </FormLabel>
-                          <InputGroup size="md">
-                            <Input
-                              pr="4.5rem"
-                              type={show ? "text" : "password"}
-                              placeholder="Enter password"
-                              value={password}
-                              onChange={(e) => setPassword(e.target.value)}
-                            />
-                            <InputRightElement width="4.5rem">
-                              <Button
-                                h="1.75rem"
-                                size="sm"
-                                onClick={handleClick}
+                        <Stack spacing={4}>
+                          {packages.map((pack, index) => (
+                            <Box key={index}>
+                              <FormLabel
+                                htmlFor={`packageName${index}`}
+                                fontSize="20px"
                               >
-                                {show ? "Hide" : "Show"}
-                              </Button>
-                            </InputRightElement>
-                          </InputGroup>
-                        </Box>
+                                Tên gói
+                              </FormLabel>
+                              <Input
+                                id={`packageName${index}`}
+                                placeholder="Nhập tên gói..."
+                                value={pack.name}
+                                onChange={(e) =>
+                                  handlePackageChange(
+                                    index,
+                                    "name",
+                                    e.target.value
+                                  )
+                                }
+                              />
+                              <FormLabel
+                                htmlFor={`packagePrice${index}`}
+                                fontSize="20px"
+                              >
+                                Giá
+                              </FormLabel>
+                              <Input
+                                id={`packagePrice${index}`}
+                                placeholder="Nhập giá..."
+                                value={pack.price}
+                                onChange={(e) =>
+                                  handlePackageChange(
+                                    index,
+                                    "price",
+                                    e.target.value
+                                  )
+                                }
+                              />
+                            </Box>
+                          ))}
+                        </Stack>
                       </Stack>
                     </DrawerBody>
 
@@ -529,13 +585,13 @@ const Navigation = () => {
                       <Button
                         variant="outline"
                         mr={3}
-                        onClick={onUserDrawerClose}
+                        onClick={onServicePackDrawerClose}
                       >
                         Cancel
                       </Button>
                       <Button
                         colorScheme="blue"
-                        onClick={onUserDrawerClose}
+                        onClick={onServicePackDrawerClose}
                         disabled={isUserError}
                         type="submit"
                       >
@@ -548,6 +604,7 @@ const Navigation = () => {
             </Box>
           </AccordionPanel>
         </AccordionItem>
+
         <AccordionItem>
           <h2>
             <AccordionButton fontSize="20px">
@@ -563,6 +620,33 @@ const Navigation = () => {
               <Flex flexDirection="column" gap="4px">
                 <Link href="http://localhost:3000/api/me/stored-appointment">
                   Danh sách lịch đặt hẹn
+                </Link>
+                <Link href="http://localhost:3000/api/me/trash-appointments">
+                  Danh sách lịch hẹn đã xóa
+                </Link>
+              </Flex>
+            </Box>
+          </AccordionPanel>
+        </AccordionItem>
+
+        <AccordionItem>
+          <h2>
+            <AccordionButton fontSize="20px">
+              <Flex flex="1" textAlign="left" alignItems="center" gap="10px">
+                <FaProductHunt />
+                Order
+              </Flex>
+              <AccordionIcon />
+            </AccordionButton>
+          </h2>
+          <AccordionPanel pb={4}>
+            <Box>
+              <Flex flexDirection="column" gap="4px">
+                <Link href="http://localhost:3000/api/me/stored-order">
+                  Danh sách đơn hàng
+                </Link>
+                <Link href="http://localhost:3000/api/me/trash-order">
+                  Danh sách đơn hàng đã xóa
                 </Link>
               </Flex>
             </Box>

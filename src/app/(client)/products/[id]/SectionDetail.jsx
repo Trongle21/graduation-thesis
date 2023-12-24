@@ -9,8 +9,6 @@ const SectionDetail = ({ id }) => {
   const { findProductById, onAddProductToCart, onOpenCart } = useAppContext();
   const detailProduct = findProductById(id);
 
-  console.log(detailProduct);
-
   const handleAddProductToCart = (id) => {
     onAddProductToCart({ productId: id, quantity: 1 });
   };
@@ -77,7 +75,7 @@ const SectionDetail = ({ id }) => {
                     style={{
                       backgroundImage: `url(${
                         "http://localhost:8000/images/" +
-                        detailProduct.thumbnail
+                        detailProduct?.thumbnail
                       })`,
                     }}
                   ></div>
@@ -87,7 +85,7 @@ const SectionDetail = ({ id }) => {
                     style={{
                       backgroundImage: `url(${
                         "http://localhost:8000/images/" +
-                        detailProduct.thumbnail
+                        detailProduct?.thumbnail
                       })`,
                     }}
                   ></div>
@@ -98,7 +96,7 @@ const SectionDetail = ({ id }) => {
                     style={{
                       backgroundImage: `url(${
                         "http://localhost:8000/images/" +
-                        detailProduct.images[0]
+                        detailProduct?.images[0]
                       })`,
                     }}
                   ></div>
@@ -107,7 +105,7 @@ const SectionDetail = ({ id }) => {
                     style={{
                       backgroundImage: `url(${
                         "http://localhost:8000/images/" +
-                        detailProduct.images[1]
+                        detailProduct?.images[1]
                       })`,
                     }}
                   ></div>
@@ -115,17 +113,17 @@ const SectionDetail = ({ id }) => {
               </div>
               <div className="detail--product__info l-7 m-7 c-12">
                 <div className="detail--product__info--wrapper">
-                  <h2>{detailProduct.description}</h2>
-                  <h3>{detailProduct.name}</h3>
+                  <h2>{detailProduct?.description}</h2>
+                  <h3>{detailProduct?.name}</h3>
                   <h4>
                     <span> $</span>
-                    {detailProduct.price}
+                    {detailProduct?.price}
                   </h4>
                   <div className="detail--product__btn">
                     <button
                       className="btn btn--primary"
                       onClick={() => {
-                        handleAddProductToCart(detailProduct.productId),
+                        handleAddProductToCart(detailProduct?._id),
                           handleOpenCart();
                       }}
                     >
@@ -135,7 +133,7 @@ const SectionDetail = ({ id }) => {
                   <div className="detail--product__info--content">
                     <h2>Description</h2>
                     <div className="line"></div>
-                    <p>{detailProduct.detail}</p>
+                    <p>{detailProduct?.detail}</p>
                   </div>
                 </div>
               </div>

@@ -18,9 +18,20 @@ const servicePacksSlice = createSlice({
     },
     getServicePackSuccess: (state, action) => {
       state.servicePacks.isFetching = false;
-      state.servicePacks.allservicePacks = action.payload;
+      state.servicePacks.allServicePacks = action.payload;
     },
     getServicePackFailed: (state) => {
+      state.servicePacks.isFetching = false;
+      state.servicePacks.error = true;
+    },
+    getServicePackDeletedStart: (state) => {
+      state.servicePacks.isFetching = true;
+    },
+    getServicePackDeletedSuccess: (state, action) => {
+      state.servicePacks.isFetching = false;
+      state.servicePacks.allServicePacksDeleted = action.payload;
+    },
+    getServicePackDeletedFailed: (state) => {
       state.servicePacks.isFetching = false;
       state.servicePacks.error = true;
     },
@@ -75,6 +86,9 @@ export const {
   getServicePackStart,
   getServicePackSuccess,
   getServicePackFailed,
+  getServicePackDeletedStart,
+  getServicePackDeletedSuccess,
+  getServicePackDeletedFailed,
   createServicePackStart,
   createServicePackSuccess,
   createServicePackFailed,

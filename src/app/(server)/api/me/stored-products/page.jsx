@@ -237,7 +237,7 @@ const StoredUser = () => {
               </Tr>
             </Thead>
             <Tbody>
-              {productList?.map((product) => (
+              {productList?.map((product, index) => (
                 <Tr key={product._id}>
                   <Td>
                     <Checkbox
@@ -245,7 +245,7 @@ const StoredUser = () => {
                       onChange={() => handleSelectItem(product._id)}
                     ></Checkbox>
                   </Td>
-                  <Td>{product.productId}</Td>
+                  <Td>{index + 1}</Td>
                   <Td>{product.type}</Td>
                   <Td>{product.price}</Td>
                   <Td>

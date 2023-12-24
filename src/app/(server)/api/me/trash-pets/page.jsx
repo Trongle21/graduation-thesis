@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Box,
   Button,
   Checkbox,
   Flex,
@@ -12,25 +13,38 @@ import {
   Th,
   Td,
   TableContainer,
-  Text,
-  AlertDialog,
   AlertDialogBody,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogContent,
   AlertDialogOverlay,
   useDisclosure,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerHeader,
+  DrawerBody,
+  Input,
+  DrawerFooter,
+  Drawer,
+  FormLabel,
+  FormControl,
   Select,
-  Image,
+  Text,
+  DrawerCloseButton,
+  AlertDialog,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 import {
-  deleteProductForce,
-  getAllProductDeleted,
-  handleActionProductForm,
-  restoreProduct,
+  getAllPet,
+  getAllUser,
+  deletePet,
+  updatePet,
+  getAllPetDeleted,
+  handleActionPetForm,
+  restorePet,
+  deletePetForce,
 } from "@/redux/features/apiRequest";
 import { useRouter } from "next/navigation";
 import axios from "axios";
@@ -40,15 +54,14 @@ import Navigation from "@/app/_components/Navigation";
 
 const axiosJWT = axios.create();
 
-const TrashProduct = () => {
+const StoredUser = () => {
   const user = useSelector((state) => state.auth.login?.currentUser);
-
-  const productDeletedList = useSelector(
-    (state) => state.products.products?.allProductsDeleted?.products
+  const userList = useSelector((state) => state.users?.users?.allUsers?.users);
+  const petListDeleted = useSelector(
+    (state) => state.pets?.pets?.allPetsDeleted?.pets
   );
 
   const dispatch = useDispatch();
-
   const navigate = useRouter();
 
   const refreshToken = async () => {
@@ -58,7 +71,9 @@ const TrashProduct = () => {
       });
 
       return res.data;
-    } catch (err) {}
+    } catch (err) {
+      console.error("Error refreshing token:", err);
+    }
   };
 
   axiosJWT.interceptors.request.use(
@@ -70,6 +85,7 @@ const TrashProduct = () => {
         const refreshUser = {
           ...user,
           accessToken: data.accessToken,
+          refreshToken: data.refreshToken,
         };
         dispatch(loginSuccess(refreshUser));
         config.headers["token"] = "Bearer" + data.accessToken;
@@ -86,11 +102,13 @@ const TrashProduct = () => {
       navigate.push("/home");
     }
     if (user?.accessToken) {
-      getAllProductDeleted(user?.accessToken, dispatch);
+      getAllUser(user?.accessToken, dispatch, axiosJWT);
+      getAllPet(user?.accessToken, dispatch, axiosJWT);
+      getAllPetDeleted(user?.accessToken, dispatch, axiosJWT);
     }
   }, []);
 
-  const [productId, setProductId] = useState(null);
+  const [petId, setPetId] = useState(null);
 
   const {
     isOpen: isOpenDelete,
@@ -100,16 +118,16 @@ const TrashProduct = () => {
   const cancelRef = React.useRef();
 
   const handleDelete = (id) => {
-    setProductId(id);
+    setPetId(id);
     OnOpenDelete();
   };
 
-  const handleDeleteProduct = (id) => {
-    deleteProductForce(user?.accessToken, dispatch, id, axiosJWT);
+  const handleDeletePet = (id) => {
+    deletePetForce(user?.accessToken, dispatch, id, axiosJWT);
   };
 
-  const handleRestoreProduct = (id) => {
-    restoreProduct(user?.accessToken, dispatch, id);
+  const handleRestorePet = (id) => {
+    restorePet(user?.accessToken, dispatch, id);
   };
 
   const [selectAll, setSelectAll] = useState(false);
@@ -117,18 +135,18 @@ const TrashProduct = () => {
 
   const handleSelectAll = () => {
     setSelectAll(!selectAll);
-    const allProductIds = productDeletedList.map((product) => product._id);
-    setSelectedItems(selectAll ? [] : allProductIds);
+    const allPetIds = petListDeleted.map((product) => product._id);
+    setSelectedItems(selectAll ? [] : allPetIds);
   };
 
-  const handleSelectItem = (productId) => {
+  const handleSelectItem = (petId) => {
     setSelectedItems((prevSelectedItems) => {
-      const newSelectedItems = prevSelectedItems.includes(productId)
-        ? prevSelectedItems.filter((id) => id !== productId)
-        : [...prevSelectedItems, productId];
+      const newSelectedItems = prevSelectedItems.includes(petId)
+        ? prevSelectedItems.filter((id) => id !== petId)
+        : [...prevSelectedItems, petId];
 
       setSelectAll(
-        newSelectedItems.length === productDeletedList.length &&
+        newSelectedItems.length === petListDeleted.length &&
           newSelectedItems.length > 0
       );
 
@@ -145,8 +163,7 @@ const TrashProduct = () => {
   }, [selectedItems]);
 
   const handleSubmitForm = (e) => {
-    e.preventDefault();
-    handleActionProductForm(
+    handleActionPetForm(
       user?.accessToken,
       dispatch,
       selectedItems,
@@ -158,11 +175,12 @@ const TrashProduct = () => {
     <Flex gap="20px">
       <Navigation />
 
-      <form onSubmit={handleSubmitForm} style={{ width: "100%" }}>
+      <form style={{ width: "100%" }} onSubmit={handleSubmitForm}>
         <Flex gap={10} alignItems="center" padding="10px 0 0 18px">
           <Checkbox size="lg" onChange={handleSelectAll} isChecked={selectAll}>
             <Text fontSize="2xl">Chọn tất cả</Text>
           </Checkbox>
+
           <Select
             w="100px"
             size="lg"
@@ -171,7 +189,7 @@ const TrashProduct = () => {
             onChange={(e) => setActionValue(e.target.value)}
           >
             <option value="restore">Khôi phục</option>
-            <option value="forceDelete">Xóa vĩnh viễn</option>
+            <option value="forceDelete">Xóa tấc cả</option>
           </Select>
           <Button
             colorScheme="blue"
@@ -185,46 +203,53 @@ const TrashProduct = () => {
           <Table variant="simple" size="lg">
             <Thead>
               <Tr>
-                <Th fontSize="xl"></Th>
-                <Th fontSize="xl">#</Th>
-                <Th fontSize="xl">Type</Th>
-                <Th fontSize="xl">Price</Th>
-                <Th fontSize="xl">Image</Th>
-                <Th fontSize="xl">Description</Th>
+                <Th textAlign="center" fontSize="xl"></Th>
+                <Th textAlign="center" fontSize="xl">
+                  #
+                </Th>
+                <Th textAlign="center" fontSize="xl">
+                  Tên pet
+                </Th>
+                <Th textAlign="center" fontSize="xl">
+                  Loại
+                </Th>
+                <Th textAlign="center" fontSize="xl">
+                  Tháng tuổi
+                </Th>
+                <Th textAlign="center" fontSize="xl">
+                  Giới tính
+                </Th>
+                <Th textAlign="center" fontSize="xl">
+                  Chủ sở hữu
+                </Th>
                 <Th textAlign="center" fontSize="xl">
                   Edit
                 </Th>
               </Tr>
             </Thead>
             <Tbody>
-              {productDeletedList?.map((product) => {
-                if (product.deleted) {
+              {petListDeleted?.map((pet,index) => {
+                const username = userList.find((user) => user._id === pet.user);
+                if (pet.deleted) {
                   return (
-                    <Tr key={product._id}>
+                    <Tr key={pet._id}>
                       <Td>
                         <Checkbox
-                          isChecked={selectedItems.includes(product._id)}
-                          onChange={() => handleSelectItem(product._id)}
+                          isChecked={selectedItems.includes(pet._id)}
+                          onChange={() => handleSelectItem(pet._id)}
                         ></Checkbox>
                       </Td>
-                      <Td>{product.productId}</Td>
-                      <Td>{product.type}</Td>
-                      <Td>{product.price}</Td>
-                      <Td>
-                        <Image
-                          w="60px"
-                          src={
-                            `http://localhost:8000/images/` + product.thumbnail
-                          }
-                        />
-                      </Td>
-                      <Td>{product.description}</Td>
-
+                      <Td textAlign="center">{index + 1}</Td>
+                      <Td textAlign="center">{pet.name}</Td>
+                      <Td textAlign="center">{pet.type}</Td>
+                      <Td textAlign="center">{pet.age}</Td>
+                      <Td textAlign="center">{pet.gender}</Td>
+                      <Td textAlign="center">{username?.username}</Td>
                       <Td textAlign="center">
                         <Link paddingRight={1}>
                           <Button
                             colorScheme="facebook"
-                            onClick={() => handleRestoreProduct(product._id)}
+                            onClick={() => handleRestorePet(pet._id)}
                           >
                             Khôi phục
                           </Button>
@@ -232,7 +257,7 @@ const TrashProduct = () => {
                         <Link>
                           <Button
                             colorScheme="red"
-                            onClick={() => handleDelete(product._id)}
+                            onClick={() => handleDelete(pet._id)}
                           >
                             Xóa vĩnh viễn
                           </Button>
@@ -254,10 +279,10 @@ const TrashProduct = () => {
         <AlertDialogOverlay>
           <AlertDialogContent>
             <AlertDialogHeader fontSize="lg" fontWeight="bold">
-              Xóa vĩnh viễn sản phẩm
+              Xóa pet
             </AlertDialogHeader>
 
-            <AlertDialogBody>Hành động này không thể khôi phục</AlertDialogBody>
+            <AlertDialogBody>Bạn chắc chắn xóa pet này</AlertDialogBody>
 
             <AlertDialogFooter>
               <Button ref={cancelRef} onClick={onCloseDelete}>
@@ -266,7 +291,7 @@ const TrashProduct = () => {
               <Button
                 colorScheme="red"
                 onClick={() => {
-                  handleDeleteProduct(productId);
+                  handleDeletePet(petId);
                   onCloseDelete();
                 }}
                 ml={3}
@@ -281,4 +306,4 @@ const TrashProduct = () => {
   );
 };
 
-export default TrashProduct;
+export default StoredUser;

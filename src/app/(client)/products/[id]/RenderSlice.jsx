@@ -65,30 +65,32 @@ const RenderSlide = () => {
 
   return (
     <Slider {...settings} className="slide">
-      {products.map((product) => (
-        <div className="item" key={product.id}>
-          <div className="product--item" key={product.id}>
+      {products?.map((product) => (
+        <div className="item" key={product?.id}>
+          <div className="product--item" key={product?.id}>
             <div className="product--item__wrapper">
               <Link
-                href={`/product/${product.id}`}
+                href={`/product/${product?.id}`}
                 className="product--item__image"
                 style={{
-                  backgroundImage: `url(${product.thumbnail})`,
+                  backgroundImage: `url(${
+                    "http://localhost:8000/images/" + product?.thumbnail
+                  })`,
                 }}
               ></Link>
               <div className="product--item__info text-center">
-                <h3>{product.name}</h3>
-                <p>${product.description}</p>
+                <h3>{product?.name}</h3>
+                <p>${product?.description}</p>
                 <h5>
                   <span>$</span>
-                  {product.price}
+                  {product?.price}
                 </h5>
               </div>
               <div className="product--item__btn">
                 <button
                   className="btn btn--primary"
                   onClick={() => {
-                    handleAddProductToCart(product._id), handleOpenCart();
+                    handleAddProductToCart(product?._id), handleOpenCart();
                   }}
                 >
                   Add To Cart

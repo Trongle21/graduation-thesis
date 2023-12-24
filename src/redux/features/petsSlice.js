@@ -24,6 +24,17 @@ const petsSlice = createSlice({
       state.pets.isFetching = false;
       state.pets.error = true;
     },
+    getPetDeletedStart: (state) => {
+      state.pets.isFetching = true;
+    },
+    getPetDeletedSuccess: (state, action) => {
+      state.pets.isFetching = false;
+      state.pets.allPetsDeleted = action.payload;
+    },
+    getPetDeletedFailed: (state) => {
+      state.pets.isFetching = false;
+      state.pest.error = true;
+    },
     createPetStart: (state) => {
       state.pets.isFetching = true;
     },
@@ -75,6 +86,9 @@ export const {
   getPetStart,
   getPetSuccess,
   getPetFailed,
+  getPetDeletedStart,
+  getPetDeletedSuccess,
+  getPetDeletedFailed,
   createPetStart,
   createPetSuccess,
   createPetFailed,

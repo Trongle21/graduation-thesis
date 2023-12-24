@@ -21,6 +21,8 @@ const HeaderSignIn = () => {
     logoutUser(dispatch, id, accessToken, navigate);
   };
 
+  
+
   return (
     <div className="header--sign-in">
       {user ? (
@@ -33,10 +35,15 @@ const HeaderSignIn = () => {
           <MenuList marginTop="10px">
             {user.admin ? (
               <MenuItem>
-                <Link href="http://localhost:3000/api/dash-board">Trang quản trị</Link>
+                <Link href="http://localhost:3000/api/dash-board">
+                  Trang quản trị
+                </Link>
               </MenuItem>
             ) : null}
-            <MenuItem onClick={handelLogout}>Đăng xuất</MenuItem>
+
+            <MenuItem onClick={handelLogout}>
+              <Link href="/home">Đăng xuất</Link>
+            </MenuItem>
           </MenuList>
         </Menu>
       ) : (

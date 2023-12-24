@@ -6,6 +6,7 @@ const usersRouter = require("./users");
 const petsRouter = require("./pets");
 const serviceRouter = require("./servicePack");
 const appointmentsRouter = require("./appointments");
+const order = require("./order");
 
 const route = (app) => {
   app.use("/api/products", productRouter);
@@ -14,7 +15,8 @@ const route = (app) => {
   app.use("/api/users", usersRouter);
   app.use("/api/pets", petsRouter);
   app.use("/api/service-pack", serviceRouter);
-  app.use("/api/appointment", appointmentsRouter);
+  app.use("/api/appointments", appointmentsRouter);
+  app.use("/api/order", order);
   app.use("/api/", siteRouter);
 };
 

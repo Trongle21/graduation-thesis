@@ -1,39 +1,39 @@
-const Appointments = require("../models/Appointment");
+const Order = require("../models/Order");
 
-const appointmentController = {
-  // [POST] "api/appointment/store"
+const orderController = {
+  // [POST] "api/Order/store"
   store: async (req, res) => {
     try {
-      const newAppointment = new Appointments(req.body);
-      await newAppointment.save();
-      return res.status(201).json(newAppointment);
+      const newOrder = new Order(req.body);
+      await newOrder.save();
+      return res.status(201).json(newOrder);
     } catch (err) {
       console.error(err);
       res.status(500).send("Lỗi khi thêm dữ liệu!" + err);
     }
   },
-  // [DELETE] "api/appointments/:id"
+  // [DELETE] "api/Order/:id"
   delete: async (req, res) => {
     try {
-      await Appointments.delete({ _id: req.params.id });
+      await Order.delete({ _id: req.params.id });
     } catch (err) {
       res.status(500).send(Error);
     }
   },
 
-  // [PATCH] "api/appointments/:id/restore"
+  // [PATCH] "api/Order/:id/restore"
   restore: async (req, res) => {
     try {
-      await Appointments.restore({ _id: req.params.id });
+      await Order.restore({ _id: req.params.id });
     } catch (err) {
       res.status(500).send(err);
     }
   },
 
-  // [DELETE] "api/appointments/:id/force"
+  // [DELETE] "api/Order/:id/force"
   forceDelete: async (req, res) => {
     try {
-      await Appointments.deleteOne({ _id: req.params.id });
+      await Order.deleteOne({ _id: req.params.id });
     } catch (err) {
       res.status(500).send(err);
     }
@@ -43,15 +43,15 @@ const appointmentController = {
     try {
       switch (req.body.action) {
         case "delete":
-          await Appointments.delete({ _id: { $in: req.body.appointmentId } });
+          await Order.delete({ _id: { $in: req.body.OrderId } });
           await res.redirect("back");
           break;
         case "restore":
-          await Appointments.restore({ _id: { $in: req.body.appointmentId } });
+          await Order.restore({ _id: { $in: req.body.OrderId } });
           await res.redirect("back");
           break;
         case "forceDelete":
-          await Appointments.deleteMany({ _id: { $in: req.body.appointmentId } });
+          await Order.deleteMany({ _id: { $in: req.body.OrderId } });
           await res.redirect("back");
           break;
         default:
@@ -63,4 +63,4 @@ const appointmentController = {
   },
 };
 
-module.exports = appointmentController;
+module.exports = orderController;

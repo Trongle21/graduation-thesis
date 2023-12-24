@@ -27,6 +27,10 @@ const AppointmentSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    status: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );
@@ -35,20 +39,6 @@ const AppointmentSchema = new mongoose.Schema(
 AppointmentSchema.plugin(mongooseDelete, {
   deletedAt: true,
   overrideMethods: true,
-});
-
-// Tạo appointmentId tự động
-AppointmentSchema.pre("save", async function (next) {
-  if (!this.appointmentId) {
-    const lastAppointment = await this.constructor.findOne(
-      {},
-      {},
-      { sort: { appointmentId: -1 } }
-    );
-    this.appointmentId =
-      (lastAppointment && lastAppointment.appointmentId + 1) || 1;
-  }
-  next();
 });
 
 module.exports = mongoose.model("Appointments", AppointmentSchema);

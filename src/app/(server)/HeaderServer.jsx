@@ -32,7 +32,7 @@ const HeaderServer = () => {
     <header>
       <Container bg="#f6a25e" maxW="100%" marginBottom="2px" boxShadow="lg">
         <Flex justifyContent="space-between">
-          <Link className="logo--admin" href="/">Hello Admin: {user.username} </Link>
+          <Link className="logo--admin" href="/">Hello Admin: {user?.username} </Link>
 
           <Flex
             justifyContent="space-between"

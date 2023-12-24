@@ -7,6 +7,7 @@ import productSlice from "./features/productSlice";
 import petsSlice from "./features/petsSlice";
 import servicePackSlice from "./features/servicePackSlice";
 import appointmentSlice from "./features/appointment";
+import orderSlice from "./features/orderSlice";
 
 import {
   persistStore,
@@ -33,6 +34,7 @@ const rootReducer = combineReducers({
   pets: petsSlice,
   appointments: appointmentSlice,
   servicePack: servicePackSlice,
+  order: orderSlice,
   api: apiReducer.reducer,
   cart: cartSlice.reducer,
 });

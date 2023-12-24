@@ -1,13 +1,10 @@
 "use client";
 
 import {
-  Box,
   Button,
   Checkbox,
   Flex,
   Link,
-  Menu,
-  MenuButton,
   Table,
   Thead,
   Tbody,
@@ -15,26 +12,30 @@ import {
   Th,
   Td,
   TableContainer,
-  MenuList,
-  MenuItem,
+  useDisclosure,
+  Drawer,
+  Select,
   Text,
   AlertDialog,
+  AlertDialogOverlay,
+  AlertDialogContent,
+  AlertDialogHeader,
   AlertDialogBody,
   AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogContent,
-  AlertDialogOverlay,
-  useDisclosure,
-  Select,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 import {
-  deleteUserForce,
-  getAllUserDeleted,
-  handleActionUserForm,
-  restoreUser,
+  getAllAppointment,
+  getAllPet,
+  getAllServicePack,
+  getAllUser,
+  deleteAppointment,
+  getAllAppointmentDeleted,
+  restoreAppointment,
+  deleteAppointmentForce,
+  handleActionAppointmentForm,
 } from "@/redux/features/apiRequest";
 import { useRouter } from "next/navigation";
 import axios from "axios";
@@ -44,15 +45,19 @@ import Navigation from "@/app/_components/Navigation";
 
 const axiosJWT = axios.create();
 
-const TrashUser = () => {
+const StoredUser = () => {
   const user = useSelector((state) => state.auth.login?.currentUser);
-
-  const userDeletedList = useSelector(
-    (state) => state.users.users?.allUsersDeleted?.users
+  const userList = useSelector((state) => state.users?.users?.allUsers?.users);
+  const petList = useSelector((state) => state.pets?.pets?.allPets?.pets);
+  const servicePackList = useSelector(
+    (state) => state.servicePack?.servicePacks?.allServicePacks?.servicePack
+  );
+  const appointmentDeletedList = useSelector(
+    (state) =>
+      state.appointments.appointments?.allAppointmentsDeleted?.appointment
   );
 
   const dispatch = useDispatch();
-
   const navigate = useRouter();
 
   const refreshToken = async () => {
@@ -62,7 +67,9 @@ const TrashUser = () => {
       });
 
       return res.data;
-    } catch (err) {}
+    } catch (err) {
+      console.error("Error refreshing token:", err);
+    }
   };
 
   axiosJWT.interceptors.request.use(
@@ -74,6 +81,7 @@ const TrashUser = () => {
         const refreshUser = {
           ...user,
           accessToken: data.accessToken,
+          refreshToken: data.refreshToken,
         };
         dispatch(loginSuccess(refreshUser));
         config.headers["token"] = "Bearer" + data.accessToken;
@@ -90,11 +98,15 @@ const TrashUser = () => {
       navigate.push("/home");
     }
     if (user?.accessToken) {
-      getAllUserDeleted(user?.accessToken, dispatch, axiosJWT);
+      getAllAppointment(user?.accessToken, dispatch, axiosJWT);
+      getAllAppointmentDeleted(user?.accessToken, dispatch, axiosJWT);
+      getAllServicePack(user?.accessToken, dispatch, axiosJWT);
+      getAllPet(user?.accessToken, dispatch, axiosJWT);
+      getAllUser(user?.accessToken, dispatch, axiosJWT);
     }
   }, []);
 
-  const [userId, setUserId] = useState(null);
+  const [appointmentId, setAppointmentId] = useState(null);
 
   const {
     isOpen: isOpenDelete,
@@ -104,16 +116,16 @@ const TrashUser = () => {
   const cancelRef = React.useRef();
 
   const handleDelete = (id) => {
-    setUserId(id);
+    setAppointmentId(id);
     OnOpenDelete();
   };
 
-  const handleDeleteUser = (id) => {
-    deleteUserForce(user?.accessToken, dispatch, id, axiosJWT);
+  const handleDeleteAppointment = (id) => {
+    deleteAppointmentForce(user?.accessToken, dispatch, id, axiosJWT);
   };
 
-  const handleRestoreUser = (id) => {
-    restoreUser(user?.accessToken, dispatch, id);
+  const handleRestoreAppointment = (id) => {
+    restoreAppointment(user?.accessToken, dispatch, id);
   };
 
   const [selectAll, setSelectAll] = useState(false);
@@ -121,18 +133,20 @@ const TrashUser = () => {
 
   const handleSelectAll = () => {
     setSelectAll(!selectAll);
-    const allUserIds = userDeletedList.map((product) => product._id);
-    setSelectedItems(selectAll ? [] : allUserIds);
+    const allAppointmentIds = appointmentDeletedList.map(
+      (appointment) => appointment._id
+    );
+    setSelectedItems(selectAll ? [] : allAppointmentIds);
   };
 
-  const handleSelectItem = (productId) => {
+  const handleSelectItem = (servicePackId) => {
     setSelectedItems((prevSelectedItems) => {
-      const newSelectedItems = prevSelectedItems.includes(productId)
-        ? prevSelectedItems.filter((id) => id !== productId)
-        : [...prevSelectedItems, productId];
+      const newSelectedItems = prevSelectedItems.includes(servicePackId)
+        ? prevSelectedItems.filter((id) => id !== servicePackId)
+        : [...prevSelectedItems, servicePackId];
 
       setSelectAll(
-        newSelectedItems.length === userDeletedList.length &&
+        newSelectedItems.length === appointmentDeletedList.length &&
           newSelectedItems.length > 0
       );
 
@@ -149,8 +163,7 @@ const TrashUser = () => {
   }, [selectedItems]);
 
   const handleSubmitForm = (e) => {
-    e.preventDefault();
-    handleActionUserForm(
+    handleActionAppointmentForm(
       user?.accessToken,
       dispatch,
       selectedItems,
@@ -162,11 +175,12 @@ const TrashUser = () => {
     <Flex gap="20px">
       <Navigation />
 
-      <form onSubmit={handleSubmitForm}>
+      <form style={{ width: "100%" }} onSubmit={handleSubmitForm}>
         <Flex gap={10} alignItems="center" padding="10px 0 0 18px">
           <Checkbox size="lg" onChange={handleSelectAll} isChecked={selectAll}>
             <Text fontSize="2xl">Chọn tất cả</Text>
           </Checkbox>
+
           <Select
             w="100px"
             size="lg"
@@ -175,7 +189,7 @@ const TrashUser = () => {
             onChange={(e) => setActionValue(e.target.value)}
           >
             <option value="restore">Khôi phục</option>
-            <option value="forceDelete">Xóa vĩnh viễn</option>
+            <option value="forceDelete">Xóa tấc cả</option>
           </Select>
           <Button
             colorScheme="blue"
@@ -191,32 +205,66 @@ const TrashUser = () => {
               <Tr>
                 <Th fontSize="xl"></Th>
                 <Th fontSize="xl">#</Th>
-                <Th fontSize="xl">Name</Th>
-                <Th fontSize="xl">Email</Th>
+                <Th fontSize="xl">Tên pet</Th>
+                <Th fontSize="xl">Chủ sở hữu</Th>
+                <Th fontSize="xl">Dịch vụ</Th>
+                <Th fontSize="xl">Gói</Th>
+                <Th fontSize="xl">Giá</Th>
+                <Th fontSize="xl">Ngày đặt</Th>
                 <Th textAlign="center" fontSize="xl">
                   Edit
                 </Th>
               </Tr>
             </Thead>
             <Tbody>
-              {userDeletedList?.map((user) => {
-                if (user.deleted) {
+              {appointmentDeletedList?.map((appointment, index) => {
+                const userName = userList?.find(
+                  (user) => user._id === appointment.user
+                );
+
+                const petName = petList.find(
+                  (pet) => pet._id === appointment.pet
+                );
+
+                const servicePack = servicePackList?.find(
+                  (service) => service._id === appointment.service
+                );
+                const appointmentPackageId = appointment.package;
+
+                const foundServicePack = servicePackList?.find((servicePack) =>
+                  servicePack.packages.some(
+                    (pack) => pack._id === appointmentPackageId
+                  )
+                );
+
+                const foundPackage = foundServicePack
+                  ? foundServicePack.packages.find(
+                      (pack) => pack._id === appointmentPackageId
+                    )
+                  : null;
+                if (appointment.deleted) {
                   return (
-                    <Tr key={user._id}>
+                    <Tr key={appointment._id}>
                       <Td>
                         <Checkbox
-                          isChecked={selectedItems.includes(user._id)}
-                          onChange={() => handleSelectItem(user._id)}
+                          isChecked={selectedItems.includes(appointment._id)}
+                          onChange={() => handleSelectItem(appointment._id)}
                         ></Checkbox>
                       </Td>
-                      <Td>{user.userId}</Td>
-                      <Td>{user.username}</Td>
-                      <Td>{user.email}</Td>
+                      <Td>{index + 1}</Td>
+                      <Td>{petName?.name}</Td>
+                      <Td>{userName?.username}</Td>
+                      <Td>{servicePack?.serviceName}</Td>
+                      <Td>{foundPackage?.name}</Td>
+                      <Td>{foundPackage?.price}</Td>
+                      <Td>{appointment.date}</Td>
                       <Td textAlign="center">
                         <Link paddingRight={1}>
                           <Button
                             colorScheme="facebook"
-                            onClick={() => handleRestoreUser(user._id)}
+                            onClick={() =>
+                              handleRestoreAppointment(appointment._id)
+                            }
                           >
                             Khôi phục
                           </Button>
@@ -224,7 +272,7 @@ const TrashUser = () => {
                         <Link>
                           <Button
                             colorScheme="red"
-                            onClick={() => handleDelete(user._id)}
+                            onClick={() => handleDelete(appointment._id)}
                           >
                             Xóa vĩnh viễn
                           </Button>
@@ -246,10 +294,10 @@ const TrashUser = () => {
         <AlertDialogOverlay>
           <AlertDialogContent>
             <AlertDialogHeader fontSize="lg" fontWeight="bold">
-              Xóa vĩnh viễn người dùng
+              Xóa hóa đơn
             </AlertDialogHeader>
 
-            <AlertDialogBody>Hành động này không thể khôi phục</AlertDialogBody>
+            <AlertDialogBody>Bạn chắc chắn xóa hóa đơn</AlertDialogBody>
 
             <AlertDialogFooter>
               <Button ref={cancelRef} onClick={onCloseDelete}>
@@ -258,7 +306,7 @@ const TrashUser = () => {
               <Button
                 colorScheme="red"
                 onClick={() => {
-                  handleDeleteUser(userId);
+                  handleDeleteAppointment(appointmentId);
                   onCloseDelete();
                 }}
                 ml={3}
@@ -273,4 +321,4 @@ const TrashUser = () => {
   );
 };
 
-export default TrashUser;
+export default StoredUser;

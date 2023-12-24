@@ -33,7 +33,7 @@ const SectionServiceBook = () => {
   const navigate = useRouter();
 
   const handleSubmitForm = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     if (user) {
       const newPet = {
         name: petName,
@@ -42,7 +42,13 @@ const SectionServiceBook = () => {
         gender: chooseGender,
         user: user._id,
       };
-      const petId = await createPet(newPet, dispatch);
+
+      const petId = await createPet(
+        newPet,
+        dispatch,
+        user?.accessToken,
+        user?._id
+      );
       const newAppointment = {
         pet: petId,
         user: user._id,

@@ -116,6 +116,7 @@ const StoredUser = () => {
     onOpen: OnOpenEdit,
     onClose: onCloseEdit,
   } = useDisclosure();
+
   const btnRef = React.useRef();
 
   const handleDelete = (id) => {
@@ -161,11 +162,11 @@ const StoredUser = () => {
     setSelectedItems(selectAll ? [] : allUserIds);
   };
 
-  const handleSelectItem = (productId) => {
+  const handleSelectItem = (userId) => {
     setSelectedItems((prevSelectedItems) => {
-      const newSelectedItems = prevSelectedItems.includes(productId)
-        ? prevSelectedItems.filter((id) => id !== productId)
-        : [...prevSelectedItems, productId];
+      const newSelectedItems = prevSelectedItems.includes(userId)
+        ? prevSelectedItems.filter((id) => id !== userId)
+        : [...prevSelectedItems, userId];
 
       setSelectAll(
         newSelectedItems.length === userList.length &&
@@ -240,7 +241,7 @@ const StoredUser = () => {
               </Tr>
             </Thead>
             <Tbody>
-              {userList?.map((user) => (
+              {userList?.map((user, index) => (
                 <Tr key={user._id}>
                   <Td textAlign="center">
                     <Checkbox
@@ -248,7 +249,7 @@ const StoredUser = () => {
                       onChange={() => handleSelectItem(user._id)}
                     ></Checkbox>
                   </Td>
-                  <Td textAlign="center">{user.userId}</Td>
+                  <Td textAlign="center">{index + 1}</Td>
                   <Td textAlign="center">{user.username}</Td>
                   <Td textAlign="center">{user.email}</Td>
                   <Td textAlign="center">
@@ -270,7 +271,7 @@ const StoredUser = () => {
                           <DrawerContent>
                             <DrawerCloseButton />
                             <DrawerHeader fontSize="26px">
-                              Create your account
+                              Sửa người dùng
                             </DrawerHeader>
 
                             <DrawerBody>

@@ -44,6 +44,9 @@ import {
   deletePetFailed,
   deletePetStart,
   deletePetSuccess,
+  getPetDeletedFailed,
+  getPetDeletedStart,
+  getPetDeletedSuccess,
   getPetFailed,
   getPetStart,
   getPetSuccess,
@@ -57,6 +60,9 @@ import {
   deleteServicePackFailed,
   deleteServicePackStart,
   deleteServicePackSuccess,
+  getServicePackDeletedFailed,
+  getServicePackDeletedStart,
+  getServicePackDeletedSuccess,
   getServicePackFailed,
   getServicePackStart,
   getServicePackSuccess,
@@ -71,6 +77,9 @@ import {
   deleteAppointmentFailed,
   deleteAppointmentStart,
   deleteAppointmentSuccess,
+  getAppointmentDeletedFailed,
+  getAppointmentDeletedStart,
+  getAppointmentDeletedSuccess,
   getAppointmentFailed,
   getAppointmentStart,
   getAppointmentSuccess,
@@ -81,6 +90,23 @@ import {
   updateAppointmentStart,
   updateAppointmentSuccess,
 } from "./appointment";
+import {
+  deleteOrderFailed,
+  deleteOrderStart,
+  deleteOrderSuccess,
+  getOrderDeletedFailed,
+  getOrderDeletedStart,
+  getOrderDeletedSuccess,
+  getOrderFailed,
+  getOrderStart,
+  getOrderSuccess,
+  restoreOrderFailed,
+  restoreOrderStart,
+  restoreOrderSuccess,
+  updateOrderFailed,
+  updateOrderStart,
+  updateOrderSuccess,
+} from "./orderSlice";
 
 export const loginUser = async (user, dispatch, navigate) => {
   dispatch(loginStart());
@@ -90,7 +116,7 @@ export const loginUser = async (user, dispatch, navigate) => {
     const isAdmin = res.data.admin;
     isAdmin
       ? navigate.push("http://localhost:3000/api/me/stored-users")
-      : navigate.push("/");
+      : navigate.push("/home");
   } catch (err) {
     dispatch(loginFailed());
   }
@@ -99,8 +125,7 @@ export const loginUser = async (user, dispatch, navigate) => {
 export const registerUser = async (user, dispatch, navigate, axiosJWT) => {
   dispatch(registerStart());
   try {
-    await axiosJWT.post("http://localhost:8000/api/users/store", user);
-    navigate.push("http://localhost:3000/api/me/stored-users");
+    await axios.post("http://localhost:8000/api/users/store", user);
 
     dispatch(registerSuccess());
   } catch (err) {
@@ -119,11 +144,31 @@ export const createProduct = async (product, dispatch, navigate) => {
   }
 };
 
-export const createPet = async (pet, dispatch) => {
+export const createPet = async (pet, dispatch, accessToken, userId) => {
   dispatch(getPetStart());
   try {
-    const res = await axios.post("http://localhost:8000/api/pets/store", pet);
-    const petId = await res.data._id;
+    const resPet = await axios.get(
+      "http://localhost:8000/api/me/stored/pets/",
+      {
+        headers: { token: `Bearer ${accessToken}` },
+      }
+    );
+
+    const duplicatePet = resPet.data.pets.find((p) => p.user === userId);
+
+    let petId;
+
+    if (duplicatePet) {
+      console.log(`Pet này đã có trong thông tin người dùng rồi`);
+      petId = await duplicatePet._id;
+      dispatch(getPetSuccess());
+    } else {
+      const res = await axios.post("http://localhost:8000/api/pets/store", pet);
+      petId = await res.data._id;
+    }
+
+    console.log(petId);
+
     dispatch(getPetSuccess());
     return petId;
   } catch (err) {
@@ -138,7 +183,6 @@ export const createServicePack = async (servicePack, dispatch, navigate) => {
       "http://localhost:8000/api/service-pack/store",
       servicePack
     );
-    navigate.push("http://localhost:3000/api/me/stored-service-packe");
     dispatch(getServicePackSuccess());
   } catch (err) {
     dispatch(getServicePackFailed());
@@ -149,7 +193,7 @@ export const createAppointment = async (appointment, dispatch, navigate) => {
   dispatch(getAppointmentStart());
   try {
     await axios.post(
-      "http://localhost:8000/api/appointment/store",
+      "http://localhost:8000/api/appointments/store",
       appointment
     );
     navigate.push("http://localhost:3000/service/serviceBookSuccess");
@@ -159,15 +203,23 @@ export const createAppointment = async (appointment, dispatch, navigate) => {
   }
 };
 
+export const createOrder = async (order, dispatch, navigate) => {
+  dispatch(getOrderStart());
+  try {
+    await axios.post("http://localhost:8000/api/order/store", order);
+    navigate.push("http://localhost:3000/payment/paymentSuccess");
+    dispatch(getOrderSuccess());
+  } catch (err) {
+    dispatch(getOrderFailed());
+  }
+};
+
 export const getAllUser = async (accessToken, dispatch, axiosJWT) => {
   dispatch(getUserStart());
   try {
-    const res = await axiosJWT.get(
-      "http://localhost:8000/api/me/stored/users/",
-      {
-        headers: { token: `Bearer ${accessToken}` },
-      }
-    );
+    const res = await axios.get("http://localhost:8000/api/me/stored/users/", {
+      headers: { token: `Bearer ${accessToken}` },
+    });
     dispatch(getUserSuccess(res.data));
   } catch (err) {
     console.error("Error from API:", err);
@@ -197,6 +249,7 @@ export const getAllProduct = async (accessToken, dispatch) => {
         headers: { token: `Bearer ${accessToken}` },
       }
     );
+
     dispatch(getProductSuccess(res.data));
   } catch (err) {
     console.error("Error from API:", err);
@@ -213,6 +266,7 @@ export const getAllProductDeleted = async (accessToken, dispatch) => {
         headers: { token: `Bearer ${accessToken}` },
       }
     );
+
     dispatch(getProductDeletedSuccess(res.data));
   } catch (err) {
     console.error("Error from API:", err);
@@ -237,10 +291,24 @@ export const getAllPet = async (accessToken, dispatch, axiosJWT) => {
   }
 };
 
+export const getAllPetDeleted = async (accessToken, dispatch) => {
+  dispatch(getPetDeletedStart());
+  try {
+    const res = await axios.get("http://localhost:8000/api/me/trash/pets/", {
+      headers: { token: `Bearer ${accessToken}` },
+    });
+
+    dispatch(getPetDeletedSuccess(res.data));
+  } catch (err) {
+    console.error("Error from API:", err);
+    dispatch(getPetDeletedFailed());
+  }
+};
+
 export const getAllServicePack = async (accessToken, dispatch, axiosJWT) => {
   dispatch(getServicePackStart());
   try {
-    const res = await axiosJWT.get(
+    const res = await axios.get(
       "http://localhost:8000/api/me/stored/service-pack/",
       {
         headers: { token: `Bearer ${accessToken}` },
@@ -250,6 +318,23 @@ export const getAllServicePack = async (accessToken, dispatch, axiosJWT) => {
   } catch (err) {
     console.error("Error from API:", err);
     dispatch(getServicePackFailed());
+  }
+};
+
+export const getAllServicePackDeleted = async (accessToken, dispatch) => {
+  dispatch(getServicePackDeletedStart());
+  try {
+    const res = await axios.get(
+      "http://localhost:8000/api/me/trash/service-pack/",
+      {
+        headers: { token: `Bearer ${accessToken}` },
+      }
+    );
+
+    dispatch(getServicePackDeletedSuccess(res.data));
+  } catch (err) {
+    console.error("Error from API:", err);
+    dispatch(getServicePackDeletedFailed());
   }
 };
 
@@ -266,6 +351,51 @@ export const getAllAppointment = async (accessToken, dispatch, axiosJWT) => {
   } catch (err) {
     console.error("Error from API:", err);
     dispatch(getAppointmentFailed());
+  }
+};
+
+export const getAllAppointmentDeleted = async (accessToken, dispatch) => {
+  dispatch(getAppointmentDeletedStart());
+  try {
+    const res = await axios.get(
+      "http://localhost:8000/api/me/trash/appointments/",
+      {
+        headers: { token: `Bearer ${accessToken}` },
+      }
+    );
+
+    dispatch(getAppointmentDeletedSuccess(res.data));
+  } catch (err) {
+    console.error("Error from API:", err);
+    dispatch(getAppointmentDeletedFailed());
+  }
+};
+
+export const getAllOrder = async (accessToken, dispatch, axiosJWT) => {
+  dispatch(getOrderStart());
+
+  try {
+    const res = await axios.get("http://localhost:8000/api/me/stored/order/", {
+      headers: { token: `Bearer ${accessToken}` },
+    });
+    dispatch(getOrderSuccess(res.data));
+  } catch (err) {
+    console.error("Error from API:", err);
+    dispatch(getOrderFailed());
+  }
+};
+
+export const getAllOrderDeleted = async (accessToken, dispatch) => {
+  dispatch(getOrderDeletedStart());
+  try {
+    const res = await axios.get("http://localhost:8000/api/me/trash/order/", {
+      headers: { token: `Bearer ${accessToken}` },
+    });
+
+    dispatch(getOrderDeletedSuccess(res.data));
+  } catch (err) {
+    console.error("Error from API:", err);
+    dispatch(getOrderDeletedFailed());
   }
 };
 
@@ -316,6 +446,7 @@ export const updatePet = async (pet, accessToken, dispatch) => {
         headers: { token: `Bearer ${accessToken}` },
       }
     );
+    console.log(res);
     dispatch(updatePetSuccess(res.data));
   } catch (err) {
     dispatch(updateProductFailed());
@@ -325,8 +456,9 @@ export const updatePet = async (pet, accessToken, dispatch) => {
 export const updateServicePack = async (servicePack, accessToken, dispatch) => {
   dispatch(updateServicePackStart());
   try {
+    console.log(servicePack);
     const res = await axios.put(
-      "http://localhost:8000/api/servicePacks/" + servicePack._id,
+      "http://localhost:8000/api/service-pack/" + servicePack._id,
       servicePack,
       {
         headers: { token: `Bearer ${accessToken}` },
@@ -351,6 +483,22 @@ export const updateAppointment = async (appointment, accessToken, dispatch) => {
     dispatch(updateAppointmentSuccess(res.data));
   } catch (err) {
     dispatch(updateAppointmentFailed());
+  }
+};
+
+export const updateOrder = async (order, accessToken, dispatch, navigate) => {
+  dispatch(updateOrderStart());
+  try {
+    const res = await axios.put(
+      "http://localhost:8000/api/Order/" + order._id,
+      order,
+      {
+        headers: { token: `Bearer ${accessToken}` },
+      }
+    );
+    dispatch(updateOrderSuccess(res.data));
+  } catch (err) {
+    dispatch(updateOrderFailed());
   }
 };
 
@@ -412,7 +560,7 @@ export const deleteServicePack = async (accessToken, dispatch, id) => {
   dispatch(deleteServicePackStart());
   try {
     const res = await axios.delete(
-      "http://localhost:8000/api/servicePacks/" + id,
+      "http://localhost:8000/api/service-pack/" + id,
       {
         headers: { token: `Bearer ${accessToken}` },
       }
@@ -427,7 +575,7 @@ export const deleteServicePackForce = async (accessToken, dispatch, id) => {
   dispatch(deleteServicePackStart());
   try {
     const res = await axios.delete(
-      "http://localhost:8000/api/servicePacks/" + id + "/force",
+      "http://localhost:8000/api/service-pack/" + id + "/force",
       {
         headers: { token: `Bearer ${accessToken}` },
       }
@@ -495,6 +643,33 @@ export const deletePetForce = async (accessToken, dispatch, id) => {
   }
 };
 
+export const deleteOrder = async (accessToken, dispatch, id) => {
+  dispatch(deleteOrderStart());
+  try {
+    const res = await axios.delete("http://localhost:8000/api/order/" + id, {
+      headers: { token: `Bearer ${accessToken}` },
+    });
+    dispatch(deleteOrderSuccess(res.data));
+  } catch (err) {
+    dispatch(deleteOrderFailed());
+  }
+};
+
+export const deleteOrderForce = async (accessToken, dispatch, id) => {
+  dispatch(deleteOrderStart());
+  try {
+    const res = await axios.delete(
+      "http://localhost:8000/api/order/" + id + "/force",
+      {
+        headers: { token: `Bearer ${accessToken}` },
+      }
+    );
+    dispatch(deleteOrderSuccess(res.data));
+  } catch (err) {
+    dispatch(deleteOrderFailed());
+  }
+};
+
 export const restoreUser = async (accessToken, dispatch, id) => {
   dispatch(restoreUserStart());
   try {
@@ -544,7 +719,7 @@ export const restoreServicePack = async (accessToken, dispatch, id) => {
   dispatch(restoreServicePackStart());
   try {
     const res = await axios.patch(
-      "http://localhost:8000/api/servicePacks/" + id + "/restore",
+      "http://localhost:8000/api/service-pack/" + id + "/restore",
       {
         headers: { token: `Bearer ${accessToken}` },
       }
@@ -570,6 +745,21 @@ export const restoreAppointment = async (accessToken, dispatch, id) => {
   }
 };
 
+export const restoreOrder = async (accessToken, dispatch, id) => {
+  dispatch(restoreOrderStart());
+  try {
+    const res = await axios.patch(
+      "http://localhost:8000/api/order/" + id + "/restore",
+      {
+        headers: { token: `Bearer ${accessToken}` },
+      }
+    );
+    dispatch(restoreOrderSuccess(res.data));
+  } catch (err) {
+    dispatch(restoreOrderFailed());
+  }
+};
+
 export const handleActionUserForm = async (
   accessToken,
   dispatch,
@@ -585,6 +775,7 @@ export const handleActionUserForm = async (
         headers: { token: `Bearer ${accessToken}` },
       }
     );
+    console.log(1);
 
     window.location.reload();
     dispatch(getUserDeletedSuccess(res.data));
@@ -646,8 +837,9 @@ export const handleActionServicePackForm = async (
 ) => {
   dispatch(getServicePackStart());
   try {
+    console.log(servicePackList, action);
     const res = await axios.post(
-      "http://localhost:8000/api/servicePacks/handle-action-form",
+      "http://localhost:8000/api/service-pack/handle-action-form",
       { servicePackListId: servicePackList, action: action },
       {
         headers: { token: `Bearer ${accessToken}` },
@@ -684,6 +876,29 @@ export const handleActionAppointmentForm = async (
   }
 };
 
+export const handleActionOrderForm = async (
+  accessToken,
+  dispatch,
+  orderList,
+  action
+) => {
+  dispatch(getOrderStart());
+  try {
+    const res = await axios.post(
+      "http://localhost:8000/api/order/handle-action-form",
+      { orderId: orderList, action: action },
+      {
+        headers: { token: `Bearer ${accessToken}` },
+      }
+    );
+
+    window.location.reload();
+    dispatch(getUserDeletedSuccess(res.data));
+  } catch (err) {
+    dispatch(getUserFailed());
+  }
+};
+
 export const logoutUser = async (dispatch, id, accessToken, navigate) => {
   dispatch(loginStart());
   try {
@@ -691,7 +906,7 @@ export const logoutUser = async (dispatch, id, accessToken, navigate) => {
       headers: { token: `Bearer ${accessToken}` },
     });
     dispatch(loginSuccess());
-    navigate.push("/");
+    navigate.push("/home");
   } catch (err) {
     dispatch(loginFailed());
   }

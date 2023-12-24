@@ -16,8 +16,14 @@ import {
   Drawer,
   Select,
   Text,
+  AlertDialog,
+  AlertDialogOverlay,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogBody,
+  AlertDialogFooter,
 } from "@chakra-ui/react";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -25,6 +31,8 @@ import {
   getAllPet,
   getAllServicePack,
   getAllUser,
+  deleteAppointment,
+  handleActionAppointmentForm,
 } from "@/redux/features/apiRequest";
 import { useRouter } from "next/navigation";
 import axios from "axios";
@@ -34,7 +42,7 @@ import Navigation from "@/app/_components/Navigation";
 
 const axiosJWT = axios.create();
 
-const StoredUser = () => {
+const StoredAppointment = () => {
   const user = useSelector((state) => state.auth.login?.currentUser);
   const userList = useSelector((state) => state.users?.users?.allUsers?.users);
   const petList = useSelector((state) => state.pets?.pets?.allPets?.pets);
@@ -42,7 +50,7 @@ const StoredUser = () => {
     (state) => state.servicePack?.servicePacks?.allServicePacks?.servicePack
   );
   const appointmentList = useSelector(
-    (state) => state.appointments?.appointment?.allAppointment?.appointments
+    (state) => state.appointments?.appointments?.allAppointments?.appointments
   );
 
   const dispatch = useDispatch();
@@ -86,33 +94,97 @@ const StoredUser = () => {
       navigate.push("/home");
     }
     if (user?.accessToken) {
+      getAllAppointment(user?.accessToken, dispatch, axiosJWT);
       getAllServicePack(user?.accessToken, dispatch, axiosJWT);
       getAllPet(user?.accessToken, dispatch, axiosJWT);
       getAllUser(user?.accessToken, dispatch, axiosJWT);
-      getAllAppointment(user?.accessToken, dispatch, axiosJWT);
     }
   }, []);
 
+  const [appointmentId, setAppointmentId] = useState(null);
+
   const {
-    isOpen: isOpenEdit,
-    onOpen: OnOpenEdit,
-    onClose: onCloseEdit,
+    isOpen: isOpenDelete,
+    onOpen: OnOpenDelete,
+    onClose: onCloseDelete,
   } = useDisclosure();
-  const btnRef = React.useRef();
+  const cancelRef = React.useRef();
+
+  const handleDelete = (id) => {
+    setAppointmentId(id);
+    OnOpenDelete();
+  };
+
+  const handleDeleteAppointment = (id) => {
+    deleteAppointment(user?.accessToken, dispatch, id, axiosJWT);
+  };
+
+  const [selectAll, setSelectAll] = useState(false);
+  const [selectedItems, setSelectedItems] = useState([]);
+
+  const handleSelectAll = () => {
+    setSelectAll(!selectAll);
+    const allAppointmentIds = appointmentList.map(
+      (appointment) => appointment._id
+    );
+    setSelectedItems(selectAll ? [] : allAppointmentIds);
+  };
+
+  const handleSelectItem = (servicePackId) => {
+    setSelectedItems((prevSelectedItems) => {
+      const newSelectedItems = prevSelectedItems.includes(servicePackId)
+        ? prevSelectedItems.filter((id) => id !== servicePackId)
+        : [...prevSelectedItems, servicePackId];
+
+      setSelectAll(
+        newSelectedItems.length === appointmentList.length &&
+          newSelectedItems.length > 0
+      );
+
+      return newSelectedItems;
+    });
+  };
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+  const [actionValue, setActionValue] = useState("");
+
+  useEffect(() => {
+    selectedItems.length > 0
+      ? setIsButtonDisabled(false)
+      : setIsButtonDisabled(true);
+  }, [selectedItems]);
+
+  const handleSubmitForm = (e) => {
+    handleActionAppointmentForm(
+      user?.accessToken,
+      dispatch,
+      selectedItems,
+      actionValue
+    );
+  };
 
   return (
     <Flex gap="20px">
       <Navigation />
 
-      <form style={{ width: "100%" }}>
+      <form style={{ width: "100%" }} onSubmit={handleSubmitForm}>
         <Flex gap={10} alignItems="center" padding="10px 0 0 18px">
-          <Checkbox size="lg">
+          <Checkbox size="lg" onChange={handleSelectAll} isChecked={selectAll}>
             <Text fontSize="2xl">Chọn tất cả</Text>
           </Checkbox>
-          <Select w="100px" size="lg" placeholder="Select option">
-            <option value="delete">Xóa tấc cả</option>
+          <Select
+            w="100px"
+            size="lg"
+            placeholder="Select option"
+            value={actionValue}
+            onChange={(e) => setActionValue(e.target.value)}
+          >
+            <option value="delete">Xóa</option>
           </Select>
-          <Button colorScheme="blue" type="submit">
+          <Button
+            colorScheme="blue"
+            isDisabled={isButtonDisabled}
+            type="submit"
+          >
             Thực hiện
           </Button>
         </Flex>
@@ -134,20 +206,21 @@ const StoredUser = () => {
               </Tr>
             </Thead>
             <Tbody>
-              {appointmentList?.map((appointment) => {
-                const userName = userList.find(
+              {appointmentList?.map((appointment, index) => {
+                const userName = userList?.find(
                   (user) => user._id === appointment.user
                 );
 
                 const petName = petList.find(
                   (pet) => pet._id === appointment.pet
                 );
-                const servicePack = servicePackList.find(
+
+                const servicePack = servicePackList?.find(
                   (service) => service._id === appointment.service
                 );
                 const appointmentPackageId = appointment.package;
 
-                const foundServicePack = servicePackList.find((servicePack) =>
+                const foundServicePack = servicePackList?.find((servicePack) =>
                   servicePack.packages.some(
                     (pack) => pack._id === appointmentPackageId
                   )
@@ -162,31 +235,19 @@ const StoredUser = () => {
                 return (
                   <Tr key={appointment._id}>
                     <Td>
-                      <Checkbox></Checkbox>
+                      <Checkbox
+                        isChecked={selectedItems.includes(appointment._id)}
+                        onChange={() => handleSelectItem(appointment._id)}
+                      ></Checkbox>
                     </Td>
-                    <Td>{appointment.appointmentId}</Td>
-                    <Td>{petName.name}</Td>
-                    <Td>{userName.username}</Td>
-                    <Td>{servicePack.serviceName}</Td>
-                    <Td>{foundPackage.name}</Td>
-                    <Td>{foundPackage.price}</Td>
+                    <Td>{index + 1}</Td>
+                    <Td>{petName?.name}</Td>
+                    <Td>{userName?.username}</Td>
+                    <Td>{servicePack?.serviceName}</Td>
+                    <Td>{foundPackage?.name}</Td>
+                    <Td>{foundPackage?.price}</Td>
                     <Td>{appointment.date}</Td>
                     <Td textAlign="center">
-                      <Link paddingRight={1}>
-                        <Button
-                          colorScheme="facebook"
-                          onClick={() => handleEdit(user._id)}
-                        >
-                          Sửa
-                        </Button>
-                        <Drawer
-                          isOpen={isOpenEdit}
-                          placement="right"
-                          size="md"
-                          onClose={onCloseEdit}
-                          finalFocusRef={btnRef}
-                        ></Drawer>
-                      </Link>
                       <Link>
                         <Button
                           colorScheme="red"
@@ -203,8 +264,39 @@ const StoredUser = () => {
           </Table>
         </TableContainer>
       </form>
+      <AlertDialog
+        isOpen={isOpenDelete}
+        leastDestructiveRef={cancelRef}
+        onClose={onCloseDelete}
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+              Xóa hóa đơn
+            </AlertDialogHeader>
+
+            <AlertDialogBody>Bạn chắc chắn xóa hóa đơn</AlertDialogBody>
+
+            <AlertDialogFooter>
+              <Button ref={cancelRef} onClick={onCloseDelete}>
+                Cancel
+              </Button>
+              <Button
+                colorScheme="red"
+                onClick={() => {
+                  handleDeleteAppointment(appointmentId);
+                  onCloseDelete();
+                }}
+                ml={3}
+              >
+                Delete
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
     </Flex>
   );
 };
 
-export default StoredUser;
+export default StoredAppointment;

@@ -7,7 +7,7 @@ const productSlice = createSlice({
       isFetching: false,
       allProducts: null,
       currentProduct: null,
-      allUsersDeleted: null,
+      allProductsDeleted: null,
       error: false,
     },
     create: {

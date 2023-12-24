@@ -104,21 +104,21 @@ const Cart = () => {
                   productInCart.map((product) => (
                     <div
                       className="product--cart__pay--wrapper"
-                      key={product.product.productId}
+                      key={product?.product?._id}
                     >
                       <div
                         className="product--cart__pay--image"
                         style={{
                           backgroundImage: `url(${
                             "http://localhost:8000/images/" +
-                            product.product.thumbnail
+                            product?.product?.thumbnail
                           })`,
                         }}
                       ></div>
                       <div className="product--cart__pay--info">
-                        <h3>{product.product.name}</h3>
+                        <h3>{product?.product?.name}</h3>
                         <h5>
-                          <span>$</span> {product.product.price}
+                          <span>$</span> {product?.product?.price}
                         </h5>
                         <div className="product--quantity">
                           <Button
@@ -126,8 +126,8 @@ const Cart = () => {
                             content="-"
                             onClick={() =>
                               handleDecreaseProduct(
-                                product.product.productId,
-                                product.quantity
+                                product?.product?._id,
+                                product?.quantity
                               )
                             }
                           />
@@ -137,7 +137,7 @@ const Cart = () => {
                             className="quantity increase"
                             content="+"
                             onClick={() =>
-                              handleIncreaseProduct(product.product.productId)
+                              handleIncreaseProduct(product?.product?._id)
                             }
                           />
                         </div>
@@ -145,7 +145,7 @@ const Cart = () => {
                       <div className="product--item__delete">
                         <button
                           onClick={() =>
-                            handleDeleteProduct(product.product.productId)
+                            handleDeleteProduct(product?.product?._id)
                           }
                         >
                           <BiSolidTrashAlt />
@@ -159,7 +159,11 @@ const Cart = () => {
         </div>
         <div className="product--cart__btn">
           <Link
-            href={productInCart && productInCart.length > 0 ? "/payment" : ""}
+            href={
+              user && productInCart && productInCart.length > 0
+                ? "/payment"
+                : ""
+            }
           >
             <Button
               className="btn btn--secondary"

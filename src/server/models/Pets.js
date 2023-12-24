@@ -3,11 +3,6 @@ const mongooseDelete = require("mongoose-delete");
 
 const PetsSchema = new mongoose.Schema(
   {
-    petId: {
-      type: Number,
-      require: true,
-      unique: true,
-    },
     name: {
       type: String,
       required: true,
@@ -37,19 +32,6 @@ const PetsSchema = new mongoose.Schema(
 PetsSchema.plugin(mongooseDelete, {
   deletedAt: true,
   overrideMethods: true,
-});
-
-// Tạo petId tự động
-PetsSchema.pre("save", async function (next) {
-  if (!this.petId) {
-    const lastUser = await this.constructor.findOne(
-      {},
-      {},
-      { sort: { petId: -1 } }
-    );
-    this.petId = (lastUser && lastUser.petId + 1) || 1;
-  }
-  next();
 });
 
 module.exports = mongoose.model("Pets", PetsSchema);

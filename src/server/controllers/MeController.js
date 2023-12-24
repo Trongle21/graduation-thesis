@@ -3,6 +3,7 @@ const Users = require("../models/Users.js");
 const Pets = require("../models/Pets.js");
 const ServicePack = require("../models/ServicePack");
 const Appointments = require("../models/Appointment.js");
+const Order = require("../models/Order.js");
 
 const { multipleMongooseToObject } = require("../until/mongoose");
 
@@ -39,18 +40,17 @@ const meController = {
   // [GET] "api/stored/users"
   storedUsers: async (req, res) => {
     try {
-      let usersQuery = Users.find({});
-
+      let UsersQuery = Users.find({});
       const countDelete = await Users.countDocumentsWithDeleted({
         deleted: true,
       });
-      const users = await usersQuery;
+      const users = await UsersQuery;
       await res.send({
         countDelete,
         users: multipleMongooseToObject(users),
       });
     } catch (err) {
-      res.status(500).send("Không render được người dùng!");
+      res.status(500).send("Không render được sản phẩm!");
     }
   },
 
@@ -81,11 +81,23 @@ const meController = {
         pets: multipleMongooseToObject(pets),
       });
     } catch (err) {
-      res.status(500).send("Không render được service pack!");
+      res.status(500).send("Không render được pet!");
     }
   },
 
-  // [GET] "api/stored/pets"
+  // [GET] "api/trash/pets"
+  trashPets: async (req, res) => {
+    try {
+      const pets = await Pets.findDeleted({});
+      await res.send({
+        pets: multipleMongooseToObject(pets),
+      });
+    } catch (err) {
+      res.status(500).send("Không render được những pet đã xóa!");
+    }
+  },
+
+  // [GET] "api/stored/service-pack"
   storedServicePack: async (req, res) => {
     try {
       let usersQuery = ServicePack.find({});
@@ -100,7 +112,19 @@ const meController = {
         servicePack: multipleMongooseToObject(servicePack),
       });
     } catch (err) {
-      res.status(500).send("Không render được pet!");
+      res.status(500).send("Không render được dịch vụ!");
+    }
+  },
+
+  // [GET] "api/trash/service-pack"
+  trashServicePack: async (req, res) => {
+    try {
+      const servicePack = await ServicePack.findDeleted({});
+      await res.send({
+        servicePack: multipleMongooseToObject(servicePack),
+      });
+    } catch (err) {
+      res.status(500).send("Không render được các dịch vụ đã xóa!");
     }
   },
 
@@ -119,7 +143,48 @@ const meController = {
         appointments: multipleMongooseToObject(appointments),
       });
     } catch (err) {
-      res.status(500).send("Không render được pet!");
+      res.status(500).send("Không render được lịch hẹn!");
+    }
+  },
+
+  // [GET] "api/trash/appointment"
+  trashAppointment: async (req, res) => {
+    try {
+      const appointment = await Appointments.findDeleted({});
+      await res.send({
+        appointment: multipleMongooseToObject(appointment),
+      });
+    } catch (err) {
+      res.status(500).send("Không render được những lịch hẹn đã xóa!");
+    }
+  },
+  // [GET] "api/stored/order"
+  storedOrder: async (req, res) => {
+    try {
+      let orderQuery = Order.find({});
+      const countDelete = await Order.countDocumentsWithDeleted({
+        deleted: true,
+      });
+      const order = await orderQuery;
+
+      await res.send({
+        countDelete,
+        order: multipleMongooseToObject(order),
+      });
+    } catch (err) {
+      res.status(500).send("Không render được sản phẩm!" + err.message);
+    }
+  },
+
+  // [GET] "api/trash/order"
+  trashOrder: async (req, res) => {
+    try {
+      const order = await Order.findDeleted({});
+      await res.send({
+        order: multipleMongooseToObject(order),
+      });
+    } catch (err) {
+      res.status(500).send("Không render được những đơn hàng đã xóa!");
     }
   },
 };

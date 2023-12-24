@@ -35,25 +35,6 @@ const AppProvider = ({ children }) => {
     fetchData();
   }, [dispatch]);
 
-  // useEffect(() => {
-  //   let ignore = false;
-  //   const fetchData = async () => {
-  //     try {
-  //       const res = await fetch(
-  //         "https://api-spa-pet-react.vercel.app/products"
-  //       );
-  //       const data = await res.json();
-
-  //       if (!ignore) {
-  //         dispatch(getDataSuccess(data));
-  //       }
-  //     } catch (error) {
-  //       if (!ignore) dispatch(getDataFailed(error));
-  //     }
-  //   };
-  //   fetchData();
-  // }, [dispatch]);
-
   const handleShowSignIn = () => {
     setIsShowSignIn(!isShowSignIn);
   };
@@ -102,7 +83,7 @@ const AppProvider = ({ children }) => {
 
   // cart
   const findProductById = (id) => {
-    return products?.find((product) => product.productId === +id);
+    return products?.find((product) => product._id === id);
   };
 
   const handleAddProductToCart = ({ productId, quantity = 1 }) => {

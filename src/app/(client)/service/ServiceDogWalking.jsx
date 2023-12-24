@@ -1,12 +1,41 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import data from "@/app/data.json";
 import Link from "next/link";
 import { AiOutlinePlus } from "react-icons/ai";
+import { useDispatch, useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
+import { getAllServicePack } from "@/redux/features/apiRequest";
 
 const ServiceDogWalking = () => {
   const [isShowPetWalking, setIsShowPetWalking] = useState();
 
-  
+  const user = useSelector((state) => state.auth.login.currentUser);
+  const servicePackList = useSelector(
+    (state) => state.servicePack?.servicePacks?.allServicePacks?.servicePack
+  );
+
+  const router = useRouter();
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (!user) {
+      router.push("/service");
+    }
+    if (user?.accessToken) {
+      getAllServicePack(user?.accessToken, dispatch);
+    }
+  }, []);
+
+  const handleSubmit = () => {
+    if (user) {
+      const servicePackId = servicePackList[0]._id;
+
+      router.push(`service/${servicePackId}`);
+    } else {
+      window.alert("Bạn cần đăng nhập để tiếp tục!");
+    }
+  };
 
   return (
     <div className="service--blog service-1 service--padding">
@@ -34,14 +63,16 @@ const ServiceDogWalking = () => {
                 <AiOutlinePlus />
               </div>
             </div>
-            <Link
-              href="/service/serviceBook"
-              className={`service--mb ${
-                isShowPetWalking ? "show--service" : "hidden--service"
-              }`}
-            >
-              <button className="btn btn--secondary">Book Now</button>
-            </Link>
+            <button className="btn btn--secondary" onClick={handleSubmit}>
+              <Link
+                href="#"
+                className={`service--mb ${
+                  isShowPetWalking ? "show--service" : "hidden--service"
+                }`}
+              >
+                Book Now
+              </Link>
+            </button>
           </div>
           <div
             className={`service--mb ${

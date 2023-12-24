@@ -28,10 +28,12 @@ const FormControl = ({
   type,
   placeholder,
   cols,
+  value,
   rows,
   checked,
   onChange,
   defaultChecked,
+  disabled,
 }) => {
   let Tag = as === "textarea" ? "textarea" : "input";
   const {
@@ -47,6 +49,7 @@ const FormControl = ({
       <Tag
         name={name}
         type={type}
+        value={value}
         id={id}
         placeholder={placeholder}
         {...register(name)}
@@ -55,6 +58,7 @@ const FormControl = ({
         onChange={onChange}
         checked={checked}
         defaultChecked={defaultChecked}
+        disabled={disabled}
       />
       <span className="form-message">
         <ErrorMessage errors={errors} name={name} />
