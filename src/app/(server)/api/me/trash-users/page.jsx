@@ -154,7 +154,8 @@ const TrashUser = () => {
       user?.accessToken,
       dispatch,
       selectedItems,
-      actionValue
+      actionValue,
+      axiosJWT
     );
   };
 

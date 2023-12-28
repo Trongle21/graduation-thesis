@@ -21,7 +21,6 @@ import {
   AlertDialogContent,
   AlertDialogOverlay,
   useDisclosure,
-  DrawerOverlay,
   DrawerContent,
   DrawerCloseButton,
   DrawerHeader,
@@ -65,7 +64,6 @@ const StoredUser = () => {
       const res = await axios.post("http://localhost:8000/api/auth/refresh", {
         withCredentials: true,
       });
-
       return res.data;
     } catch (err) {
       console.error("Error refreshing token:", err);
@@ -191,7 +189,8 @@ const StoredUser = () => {
       user?.accessToken,
       dispatch,
       selectedItems,
-      actionValue
+      actionValue,
+      axiosJWT
     );
   };
 

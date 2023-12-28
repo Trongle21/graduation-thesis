@@ -21,6 +21,17 @@ const orderController = {
     }
   },
 
+  // [PUT] "api/order/:id"
+  update: async (req, res) => {
+    try {
+      await Order.updateOne({ _id: req.params.id }, { $set: req.body });
+      res.send("update thành công!");
+    } catch (err) {
+      console.error(err);
+      res.status(500).send(err.message);
+    }
+  },
+
   // [PATCH] "api/Order/:id/restore"
   restore: async (req, res) => {
     try {
@@ -43,15 +54,15 @@ const orderController = {
     try {
       switch (req.body.action) {
         case "delete":
-          await Order.delete({ _id: { $in: req.body.OrderId } });
+          await Order.delete({ _id: { $in: req.body.orderId } });
           await res.redirect("back");
           break;
         case "restore":
-          await Order.restore({ _id: { $in: req.body.OrderId } });
+          await Order.restore({ _id: { $in: req.body.orderId } });
           await res.redirect("back");
           break;
         case "forceDelete":
-          await Order.deleteMany({ _id: { $in: req.body.OrderId } });
+          await Order.deleteMany({ _id: { $in: req.body.orderId } });
           await res.redirect("back");
           break;
         default:

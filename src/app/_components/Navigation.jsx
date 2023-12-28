@@ -169,8 +169,8 @@ const Navigation = () => {
 
   return (
     <Box
-      h="calc(100vh - 75px)"
       w="250px"
+      h="100vh"
       bg="#f6a25e"
       color="white"
       boxShadow="2xl"

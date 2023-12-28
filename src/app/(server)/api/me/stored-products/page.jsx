@@ -140,11 +140,9 @@ const StoredUser = () => {
     OnOpenEdit();
   };
 
-  const [show, setShow] = React.useState(false);
-
   const handleSubmit = (e) => {
     e.preventDefault();
-    const newUser = {
+    const newProduct = {
       _id: currentProduct._id,
       productId: currentProduct.id,
       name: name,
@@ -155,7 +153,7 @@ const StoredUser = () => {
       thumbnail: thumbnail.name,
       images: images.map((image) => image.name),
     };
-    updateProduct(newUser, user?.accessToken, dispatch, navigate);
+    updateProduct(newProduct, user?.accessToken, dispatch, navigate);
   };
 
   const [selectAll, setSelectAll] = useState(false);
@@ -192,7 +190,12 @@ const StoredUser = () => {
 
   const handleSubmitForm = (e) => {
     e.preventDefault();
-    handleActionProductForm(user?.accessToken, dispatch, selectedItems, actionValue);
+    handleActionProductForm(
+      user?.accessToken,
+      dispatch,
+      selectedItems,
+      actionValue
+    );
   };
 
   return (
@@ -275,7 +278,7 @@ const StoredUser = () => {
                           <DrawerContent>
                             <DrawerCloseButton />
                             <DrawerHeader fontSize="26px">
-                             Sửa sản phẩm
+                              Sửa sản phẩm
                             </DrawerHeader>
 
                             <DrawerBody>

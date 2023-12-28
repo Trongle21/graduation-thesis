@@ -23,8 +23,8 @@ const SignInForm = () => {
       email: email,
       password: password,
     };
+    window.location.reload()
     loginUser(newUser, dispatch, navigate);
-    
   };
 
   return (

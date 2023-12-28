@@ -4,7 +4,6 @@ import {
   Button,
   Checkbox,
   Flex,
-  Link,
   Table,
   Thead,
   Tbody,
@@ -13,7 +12,6 @@ import {
   Td,
   TableContainer,
   useDisclosure,
-  Drawer,
   Select,
   Text,
   AlertDialog,
@@ -22,20 +20,18 @@ import {
   AlertDialogHeader,
   AlertDialogBody,
   AlertDialogFooter,
-  RadioGroup,
-  Radio,
-  Switch,
   Box,
 } from "@chakra-ui/react";
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 import {
   getAllOrder,
   getAllUser,
-  deleteAppointment,
-  handleActionAppointmentForm,
   getAllProduct,
+  updateOrder,
+  deleteOrder,
+  handleActionOrderForm,
 } from "@/redux/features/apiRequest";
 import { useRouter } from "next/navigation";
 import axios from "axios";
@@ -119,22 +115,60 @@ const StoredOrder = () => {
   } = useDisclosure();
   const cancelOrderAccessRef = React.useRef();
 
+  const handleOrderAccess = (
+    _id,
+    status,
+    user,
+    email,
+    phoneNumber,
+    address,
+    productDetails,
+    totalPrice,
+    paymentMethod
+  ) => {
+    setStatusOrder({
+      _id,
+      status,
+      user,
+      email,
+      phoneNumber,
+      address,
+      productDetails,
+      totalPrice,
+      paymentMethod,
+    });
+    OnOpenOderAccess();
+  };
+
+  const handleSubmitStatusOrder = (order) => {
+    let status;
+    if (order.status === "Pending") {
+      status = "Solved";
+    } else {
+      status = "Pending";
+    }
+    const newOrder = {
+      _id: order._id,
+      status: status,
+      user: order.user,
+      email: order.email,
+      phoneNumber: order.phoneNumber,
+      address: order.address,
+      ProductDetails: order.productDetails,
+      totalPrice: order.totalPrice,
+      paymentMethod: order.paymentMethod,
+    };
+
+    updateOrder(newOrder, user?.accessToken, dispatch, navigate);
+  };
+
   const handleDelete = (id) => {
     setOrderId(id);
     OnOpenDelete();
   };
 
-  const handleOrderAccess = (id, status) => {
-    setStatusOrder({ id, status });
-    OnOpenOderAccess();
-  };
-
-  const handleDeleteAppointment = (id) => {
-    deleteAppointment(user?.accessToken, dispatch, id, axiosJWT);
-  };
-
-  const handleStatusOrder = (order) => {
-    console.log(order);
+  const handleDeleteOrder = (id) => {
+    deleteOrder(user?.accessToken, dispatch, id, axiosJWT);
   };
 
   const [selectAll, setSelectAll] = useState(false);
@@ -160,6 +194,7 @@ const StoredOrder = () => {
       return newSelectedItems;
     });
   };
+
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const [actionValue, setActionValue] = useState("");
 
@@ -170,7 +205,8 @@ const StoredOrder = () => {
   }, [selectedItems]);
 
   const handleSubmitForm = (e) => {
-    handleActionAppointmentForm(
+    e.preventDefault()
+    handleActionOrderForm(
       user?.accessToken,
       dispatch,
       selectedItems,
@@ -294,7 +330,17 @@ const StoredOrder = () => {
                         }
                         marginRight={2}
                         onClick={() =>
-                          handleOrderAccess(order._id, order.status)
+                          handleOrderAccess(
+                            order._id,
+                            order.status,
+                            order.user,
+                            order.email,
+                            order.phoneNumber,
+                            order.address,
+                            orderProductDetails,
+                            order.totalPrice,
+                            order.paymentMethod
+                          )
                         }
                       >
                         {order.status === "Pending" ? "Chấp nhận" : "Hủy đơn"}
@@ -334,7 +380,7 @@ const StoredOrder = () => {
               <Button
                 colorScheme="red"
                 onClick={() => {
-                  handleDeleteAppointment(orderId);
+                  handleDeleteOrder(orderId);
                   onCloseDelete();
                 }}
                 ml={3}
@@ -371,7 +417,7 @@ const StoredOrder = () => {
               <Button
                 colorScheme={statusOrder?.status === "Pending" ? "blue" : "red"}
                 onClick={() => {
-                  handleStatusOrder(statusOrder);
+                  handleSubmitStatusOrder(statusOrder);
                   onClosOderAccess();
                 }}
                 ml={3}

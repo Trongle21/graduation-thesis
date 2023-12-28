@@ -490,12 +490,13 @@ export const updateOrder = async (order, accessToken, dispatch, navigate) => {
   dispatch(updateOrderStart());
   try {
     const res = await axios.put(
-      "http://localhost:8000/api/Order/" + order._id,
+      "http://localhost:8000/api/order/" + order._id,
       order,
       {
         headers: { token: `Bearer ${accessToken}` },
       }
     );
+    window.location.reload();
     dispatch(updateOrderSuccess(res.data));
   } catch (err) {
     dispatch(updateOrderFailed());
@@ -764,20 +765,20 @@ export const handleActionUserForm = async (
   accessToken,
   dispatch,
   userList,
-  action
+  action,
+  axiosJWT
 ) => {
   dispatch(getUserStart());
   try {
-    const res = await axios.post(
+    window.location.reload();
+    const res = await axiosJWT.post(
       "http://localhost:8000/api/users/handle-action-form",
       { userId: userList, action: action },
       {
         headers: { token: `Bearer ${accessToken}` },
       }
     );
-    console.log(1);
 
-    window.location.reload();
     dispatch(getUserDeletedSuccess(res.data));
   } catch (err) {
     dispatch(getUserFailed());
@@ -792,6 +793,7 @@ export const handleActionProductForm = async (
 ) => {
   dispatch(getProductStart());
   try {
+    window.location.reload();
     const res = await axios.post(
       "http://localhost:8000/api/products/handle-action-form",
       { productId: productList, action: action },
@@ -799,7 +801,6 @@ export const handleActionProductForm = async (
         headers: { token: `Bearer ${accessToken}` },
       }
     );
-    window.location.reload();
     dispatch(getProductSuccess(res.data));
   } catch (err) {
     dispatch(getProductFailed());
@@ -814,6 +815,7 @@ export const handleActionPetForm = async (
 ) => {
   dispatch(getPetStart());
   try {
+    window.location.reload();
     const res = await axios.post(
       "http://localhost:8000/api/pets/handle-action-form",
       { petId: petList, action: action },
@@ -822,7 +824,6 @@ export const handleActionPetForm = async (
       }
     );
 
-    window.location.reload();
     dispatch(getPetSuccess(res.data));
   } catch (err) {
     dispatch(getPetFailed());
@@ -837,6 +838,7 @@ export const handleActionServicePackForm = async (
 ) => {
   dispatch(getServicePackStart());
   try {
+    window.location.reload();
     console.log(servicePackList, action);
     const res = await axios.post(
       "http://localhost:8000/api/service-pack/handle-action-form",
@@ -846,7 +848,6 @@ export const handleActionServicePackForm = async (
       }
     );
 
-    window.location.reload();
     dispatch(getServicePackSuccess(res.data));
   } catch (err) {
     dispatch(getProductDeletedFailed());
@@ -861,6 +862,7 @@ export const handleActionAppointmentForm = async (
 ) => {
   dispatch(getAppointmentStart());
   try {
+    window.location.reload();
     const res = await axios.post(
       "http://localhost:8000/api/appointments/handle-action-form",
       { appointmentId: appointmentList, action: action },
@@ -869,7 +871,6 @@ export const handleActionAppointmentForm = async (
       }
     );
 
-    window.location.reload();
     dispatch(getAppointmentSuccess(res.data));
   } catch (err) {
     dispatch(getAppointmentFailed());
@@ -884,6 +885,7 @@ export const handleActionOrderForm = async (
 ) => {
   dispatch(getOrderStart());
   try {
+    window.location.reload();
     const res = await axios.post(
       "http://localhost:8000/api/order/handle-action-form",
       { orderId: orderList, action: action },
@@ -891,8 +893,6 @@ export const handleActionOrderForm = async (
         headers: { token: `Bearer ${accessToken}` },
       }
     );
-
-    window.location.reload();
     dispatch(getUserDeletedSuccess(res.data));
   } catch (err) {
     dispatch(getUserFailed());
