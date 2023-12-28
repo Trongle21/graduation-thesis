@@ -124,6 +124,7 @@ export const loginUser = async (user, dispatch, navigate) => {
 
 export const registerUser = async (user, dispatch, navigate, axiosJWT) => {
   dispatch(registerStart());
+  window.location.reload();
   try {
     await axios.post("http://localhost:8000/api/users/store", user);
 
@@ -135,6 +136,7 @@ export const registerUser = async (user, dispatch, navigate, axiosJWT) => {
 
 export const createProduct = async (product, dispatch, navigate) => {
   dispatch(getProductStart());
+  window.location.reload();
   try {
     await axios.post("http://localhost:8000/api/products/store", product);
     navigate.push("http://localhost:3000/api/me/stored-products");
@@ -146,6 +148,7 @@ export const createProduct = async (product, dispatch, navigate) => {
 
 export const createPet = async (pet, dispatch, accessToken, userId) => {
   dispatch(getPetStart());
+  window.location.reload();
   try {
     const resPet = await axios.get(
       "http://localhost:8000/api/me/stored/pets/",
@@ -178,6 +181,7 @@ export const createPet = async (pet, dispatch, accessToken, userId) => {
 
 export const createServicePack = async (servicePack, dispatch, navigate) => {
   dispatch(getServicePackStart());
+  window.location.reload();
   try {
     await axios.post(
       "http://localhost:8000/api/service-pack/store",
@@ -191,6 +195,7 @@ export const createServicePack = async (servicePack, dispatch, navigate) => {
 
 export const createAppointment = async (appointment, dispatch, navigate) => {
   dispatch(getAppointmentStart());
+  window.location.reload();
   try {
     await axios.post(
       "http://localhost:8000/api/appointments/store",
@@ -205,6 +210,7 @@ export const createAppointment = async (appointment, dispatch, navigate) => {
 
 export const createOrder = async (order, dispatch, navigate) => {
   dispatch(getOrderStart());
+  window.location.reload();
   try {
     await axios.post("http://localhost:8000/api/order/store", order);
     navigate.push("http://localhost:3000/payment/paymentSuccess");
@@ -340,6 +346,7 @@ export const getAllServicePackDeleted = async (accessToken, dispatch) => {
 
 export const getAllAppointment = async (accessToken, dispatch, axiosJWT) => {
   dispatch(getAppointmentStart());
+
   try {
     const res = await axiosJWT.get(
       "http://localhost:8000/api/me/stored/appointments/",
@@ -356,6 +363,7 @@ export const getAllAppointment = async (accessToken, dispatch, axiosJWT) => {
 
 export const getAllAppointmentDeleted = async (accessToken, dispatch) => {
   dispatch(getAppointmentDeletedStart());
+
   try {
     const res = await axios.get(
       "http://localhost:8000/api/me/trash/appointments/",
@@ -373,6 +381,7 @@ export const getAllAppointmentDeleted = async (accessToken, dispatch) => {
 
 export const getAllOrder = async (accessToken, dispatch, axiosJWT) => {
   dispatch(getOrderStart());
+ 
 
   try {
     const res = await axios.get("http://localhost:8000/api/me/stored/order/", {
@@ -387,6 +396,7 @@ export const getAllOrder = async (accessToken, dispatch, axiosJWT) => {
 
 export const getAllOrderDeleted = async (accessToken, dispatch) => {
   dispatch(getOrderDeletedStart());
+
   try {
     const res = await axios.get("http://localhost:8000/api/me/trash/order/", {
       headers: { token: `Bearer ${accessToken}` },
@@ -401,6 +411,7 @@ export const getAllOrderDeleted = async (accessToken, dispatch) => {
 
 export const updateUser = async (user, accessToken, dispatch, navigate) => {
   dispatch(updateUserStart());
+  window.location.reload();
   try {
     const res = await axios.put(
       "http://localhost:8000/api/users/" + user._id,
@@ -422,6 +433,7 @@ export const updateProduct = async (
   navigate
 ) => {
   dispatch(updateProductStart());
+  window.location.reload();
   try {
     const res = await axios.put(
       "http://localhost:8000/api/products/" + product._id,
@@ -438,6 +450,7 @@ export const updateProduct = async (
 
 export const updatePet = async (pet, accessToken, dispatch) => {
   dispatch(updatePetStart());
+  window.location.reload();
   try {
     const res = await axios.put(
       "http://localhost:8000/api/pets/" + pet._id,
@@ -455,6 +468,7 @@ export const updatePet = async (pet, accessToken, dispatch) => {
 
 export const updateServicePack = async (servicePack, accessToken, dispatch) => {
   dispatch(updateServicePackStart());
+  window.location.reload();
   try {
     console.log(servicePack);
     const res = await axios.put(
@@ -472,6 +486,7 @@ export const updateServicePack = async (servicePack, accessToken, dispatch) => {
 
 export const updateAppointment = async (appointment, accessToken, dispatch) => {
   dispatch(updateAppointmentStart());
+  window.location.reload();
   try {
     const res = await axios.put(
       "http://localhost:8000/api/appointments/" + appointment._id,
@@ -488,6 +503,7 @@ export const updateAppointment = async (appointment, accessToken, dispatch) => {
 
 export const updateOrder = async (order, accessToken, dispatch, navigate) => {
   dispatch(updateOrderStart());
+  window.location.reload();
   try {
     const res = await axios.put(
       "http://localhost:8000/api/order/" + order._id,
@@ -505,6 +521,7 @@ export const updateOrder = async (order, accessToken, dispatch, navigate) => {
 
 export const deleteUser = async (accessToken, dispatch, id) => {
   dispatch(deleteUserStart());
+  window.location.reload();
   try {
     const res = await axios.delete("http://localhost:8000/api/users/" + id, {
       headers: { token: `Bearer ${accessToken}` },
@@ -517,6 +534,7 @@ export const deleteUser = async (accessToken, dispatch, id) => {
 
 export const deleteUserForce = async (accessToken, dispatch, id) => {
   dispatch(deleteUserStart());
+  window.location.reload();
   try {
     const res = await axios.delete(
       "http://localhost:8000/api/users/" + id + "/force",
@@ -532,6 +550,7 @@ export const deleteUserForce = async (accessToken, dispatch, id) => {
 
 export const deleteProduct = async (accessToken, dispatch, id) => {
   dispatch(deleteProductStart());
+  window.location.reload();
   try {
     const res = await axios.delete("http://localhost:8000/api/products/" + id, {
       headers: { token: `Bearer ${accessToken}` },
@@ -544,6 +563,7 @@ export const deleteProduct = async (accessToken, dispatch, id) => {
 
 export const deleteProductForce = async (accessToken, dispatch, id) => {
   dispatch(deleteProductStart());
+  window.location.reload();
   try {
     const res = await axios.delete(
       "http://localhost:8000/api/products/" + id + "/force",
@@ -559,6 +579,7 @@ export const deleteProductForce = async (accessToken, dispatch, id) => {
 
 export const deleteServicePack = async (accessToken, dispatch, id) => {
   dispatch(deleteServicePackStart());
+  window.location.reload();
   try {
     const res = await axios.delete(
       "http://localhost:8000/api/service-pack/" + id,
@@ -574,6 +595,7 @@ export const deleteServicePack = async (accessToken, dispatch, id) => {
 
 export const deleteServicePackForce = async (accessToken, dispatch, id) => {
   dispatch(deleteServicePackStart());
+  window.location.reload();
   try {
     const res = await axios.delete(
       "http://localhost:8000/api/service-pack/" + id + "/force",
@@ -589,6 +611,7 @@ export const deleteServicePackForce = async (accessToken, dispatch, id) => {
 
 export const deleteAppointment = async (accessToken, dispatch, id) => {
   dispatch(deleteAppointmentStart());
+  window.location.reload();
   try {
     const res = await axios.delete(
       "http://localhost:8000/api/appointments/" + id,
@@ -604,6 +627,7 @@ export const deleteAppointment = async (accessToken, dispatch, id) => {
 
 export const deleteAppointmentForce = async (accessToken, dispatch, id) => {
   dispatch(deleteAppointmentStart());
+  window.location.reload();
   try {
     const res = await axios.delete(
       "http://localhost:8000/api/appointments/" + id + "/force",
@@ -619,6 +643,7 @@ export const deleteAppointmentForce = async (accessToken, dispatch, id) => {
 
 export const deletePet = async (accessToken, dispatch, id) => {
   dispatch(deletePetStart());
+  window.location.reload();
   try {
     const res = await axios.delete("http://localhost:8000/api/pets/" + id, {
       headers: { token: `Bearer ${accessToken}` },
@@ -631,6 +656,7 @@ export const deletePet = async (accessToken, dispatch, id) => {
 
 export const deletePetForce = async (accessToken, dispatch, id) => {
   dispatch(deletePetStart());
+  window.location.reload();
   try {
     const res = await axios.delete(
       "http://localhost:8000/api/pets/" + id + "/force",
@@ -646,6 +672,7 @@ export const deletePetForce = async (accessToken, dispatch, id) => {
 
 export const deleteOrder = async (accessToken, dispatch, id) => {
   dispatch(deleteOrderStart());
+  window.location.reload();
   try {
     const res = await axios.delete("http://localhost:8000/api/order/" + id, {
       headers: { token: `Bearer ${accessToken}` },
@@ -658,6 +685,7 @@ export const deleteOrder = async (accessToken, dispatch, id) => {
 
 export const deleteOrderForce = async (accessToken, dispatch, id) => {
   dispatch(deleteOrderStart());
+  window.location.reload();
   try {
     const res = await axios.delete(
       "http://localhost:8000/api/order/" + id + "/force",
@@ -673,6 +701,7 @@ export const deleteOrderForce = async (accessToken, dispatch, id) => {
 
 export const restoreUser = async (accessToken, dispatch, id) => {
   dispatch(restoreUserStart());
+  window.location.reload();
   try {
     const res = await axios.patch(
       "http://localhost:8000/api/users/" + id + "/restore",
@@ -688,6 +717,7 @@ export const restoreUser = async (accessToken, dispatch, id) => {
 
 export const restoreProduct = async (accessToken, dispatch, id) => {
   dispatch(restoreProductStart());
+  window.location.reload();
   try {
     const res = await axios.patch(
       "http://localhost:8000/api/products/" + id + "/restore",
@@ -703,6 +733,7 @@ export const restoreProduct = async (accessToken, dispatch, id) => {
 
 export const restorePet = async (accessToken, dispatch, id) => {
   dispatch(restorePetStart());
+  window.location.reload();
   try {
     const res = await axios.patch(
       "http://localhost:8000/api/pets/" + id + "/restore",
@@ -718,6 +749,7 @@ export const restorePet = async (accessToken, dispatch, id) => {
 
 export const restoreServicePack = async (accessToken, dispatch, id) => {
   dispatch(restoreServicePackStart());
+  window.location.reload();
   try {
     const res = await axios.patch(
       "http://localhost:8000/api/service-pack/" + id + "/restore",
@@ -733,6 +765,7 @@ export const restoreServicePack = async (accessToken, dispatch, id) => {
 
 export const restoreAppointment = async (accessToken, dispatch, id) => {
   dispatch(restoreAppointmentStart());
+  window.location.reload();
   try {
     const res = await axios.patch(
       "http://localhost:8000/api/appointments/" + id + "/restore",
@@ -748,6 +781,7 @@ export const restoreAppointment = async (accessToken, dispatch, id) => {
 
 export const restoreOrder = async (accessToken, dispatch, id) => {
   dispatch(restoreOrderStart());
+  window.location.reload();
   try {
     const res = await axios.patch(
       "http://localhost:8000/api/order/" + id + "/restore",
@@ -769,8 +803,8 @@ export const handleActionUserForm = async (
   axiosJWT
 ) => {
   dispatch(getUserStart());
+  window.location.reload();
   try {
-    window.location.reload();
     const res = await axiosJWT.post(
       "http://localhost:8000/api/users/handle-action-form",
       { userId: userList, action: action },

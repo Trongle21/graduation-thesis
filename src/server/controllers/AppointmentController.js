@@ -21,6 +21,17 @@ const appointmentController = {
     }
   },
 
+  // [PUT] "api/appointments/:id"
+  update: async (req, res) => {
+    try {
+      await Appointments.updateOne({ _id: req.params.id }, { $set: req.body });
+      res.send("update thành công!");
+    } catch (err) {
+      console.error(err);
+      res.status(500).send(err.message);
+    }
+  },
+
   // [PATCH] "api/appointments/:id/restore"
   restore: async (req, res) => {
     try {
@@ -51,7 +62,9 @@ const appointmentController = {
           await res.redirect("back");
           break;
         case "forceDelete":
-          await Appointments.deleteMany({ _id: { $in: req.body.appointmentId } });
+          await Appointments.deleteMany({
+            _id: { $in: req.body.appointmentId },
+          });
           await res.redirect("back");
           break;
         default:

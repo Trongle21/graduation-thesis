@@ -82,12 +82,12 @@ const StoredOrder = () => {
 
   const handleDeleteOrder = (id) => {
     deleteOrderForce(user?.accessToken, dispatch, id);
-    window.location.reload();
+   
   };
 
   const handleRestoreOrder = (id) => {
     restoreOrder(user?.accessToken, dispatch, id);
-    window.location.reload();
+  
   };
 
   const [selectAll, setSelectAll] = useState(false);
@@ -266,7 +266,7 @@ const StoredOrder = () => {
       </form>
       <AlertDialog
         isOpen={isOpenDelete}
-        leastDestructiveRef={cancelRef}
+        leastDestructiveRef={cancelRef}x
         onClose={onCloseDelete}
       >
         <AlertDialogOverlay>

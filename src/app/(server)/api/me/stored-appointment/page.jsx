@@ -33,6 +33,7 @@ import {
   getAllUser,
   deleteAppointment,
   handleActionAppointmentForm,
+  updateAppointment,
 } from "@/redux/features/apiRequest";
 import { useRouter } from "next/navigation";
 import axios from "axios";
@@ -103,12 +104,22 @@ const StoredAppointment = () => {
 
   const [appointmentId, setAppointmentId] = useState(null);
 
+  const [statusAppointment, setStatusAppointment] = useState(null);
+
   const {
     isOpen: isOpenDelete,
     onOpen: OnOpenDelete,
     onClose: onCloseDelete,
   } = useDisclosure();
   const cancelRef = React.useRef();
+
+  const {
+    isOpen: isOpenAppointmentAccess,
+    onOpen: OnOpenAppointmentAccess,
+    onClose: onClosAppointmentAccess,
+  } = useDisclosure();
+
+  const cancelAppointmentAccessRef = React.useRef();
 
   const handleDelete = (id) => {
     setAppointmentId(id);
@@ -160,6 +171,46 @@ const StoredAppointment = () => {
       selectedItems,
       actionValue
     );
+  };
+
+  const handleAppointmentAccess = (
+    _id,
+    pet,
+    user,
+    service,
+    packages,
+    date,
+    status
+  ) => {
+    setStatusAppointment({
+      _id,
+      pet,
+      user,
+      service,
+      packages,
+      date,
+      status,
+    });
+    OnOpenAppointmentAccess();
+  };
+
+  const handleSubmitStatusAppointment = (appointment) => {
+    let status;
+    if (appointment.status === "Pending") {
+      status = "Solved";
+    } else {
+      status = "Pending";
+    }
+    const newAppointment = {
+      _id: appointment._id,
+      pet: appointment.pet,
+      user: appointment.user,
+      service: appointment.service,
+      package: appointment.packages,
+      date: appointment.date,
+      status: status,
+    };
+    updateAppointment(newAppointment, user?.accessToken, dispatch, navigate);
   };
 
   return (
@@ -227,7 +278,7 @@ const StoredAppointment = () => {
                 );
 
                 const foundPackage = foundServicePack
-                  ? foundServicePack.packages.find(
+                  ? foundServicePack.packages?.find(
                       (pack) => pack._id === appointmentPackageId
                     )
                   : null;
@@ -249,6 +300,29 @@ const StoredAppointment = () => {
                     <Td>{appointment.date}</Td>
                     <Td textAlign="center">
                       <Link>
+                        <Button
+                          colorScheme={
+                            appointment.status === "Pending"
+                              ? "whatsapp"
+                              : "gray"
+                          }
+                          marginRight={2}
+                          onClick={() =>
+                            handleAppointmentAccess(
+                              appointment._id,
+                              appointment.pet,
+                              appointment.user,
+                              appointment.service,
+                              appointment.package,
+                              appointment.date,
+                              appointment.status
+                            )
+                          }
+                        >
+                          {appointment.status === "Pending"
+                            ? "Chấp nhận"
+                            : "Hủy Đặt lịch"}
+                        </Button>
                         <Button
                           colorScheme="red"
                           onClick={() => handleDelete(appointment._id)}
@@ -290,6 +364,49 @@ const StoredAppointment = () => {
                 ml={3}
               >
                 Delete
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
+
+      <AlertDialog
+        isOpen={isOpenAppointmentAccess}
+        leastDestructiveRef={cancelAppointmentAccessRef}
+        onClose={onClosAppointmentAccess}
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+              {statusAppointment?.status === "Pending"
+                ? "Chấp nhận đơn đặt lịch này"
+                : "Hủy đơn đặt lịch này"}
+            </AlertDialogHeader>
+
+            <AlertDialogBody>
+              {statusAppointment?.status === "Pending"
+                ? "Bạn chắc chắn nhận đơn đặt lịch này"
+                : "Bạn chắc chắn hủy đơn đặt lịch này"}
+            </AlertDialogBody>
+
+            <AlertDialogFooter>
+              <Button
+                ref={cancelAppointmentAccessRef}
+                onClick={onClosAppointmentAccess}
+              >
+                Thoát
+              </Button>
+              <Button
+                colorScheme={
+                  statusAppointment?.status === "Pending" ? "blue" : "red"
+                }
+                onClick={() => {
+                  handleSubmitStatusAppointment(statusAppointment);
+                  onClosAppointmentAccess();
+                }}
+                ml={3}
+              >
+                {statusAppointment?.status === "Pending" ? "Chấp nhận" : "Hủy"}
               </Button>
             </AlertDialogFooter>
           </AlertDialogContent>

@@ -4,16 +4,14 @@ const appointmentController = require("../controllers/AppointmentController");
 const { verifyTokenAndAdmin } = require("../middleware/verifyTokenMiddleWare");
 
 router.post("/store", appointmentController.store);
-
+router.put("/:id", verifyTokenAndAdmin, appointmentController.update);
 router.delete("/:id", verifyTokenAndAdmin, appointmentController.delete);
 router.patch("/:id/restore", appointmentController.restore);
-
 router.delete(
   "/:id/force",
   verifyTokenAndAdmin,
   appointmentController.forceDelete
 );
-
 router.post(
   "/handle-action-form",
   verifyTokenAndAdmin,
