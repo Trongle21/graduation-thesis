@@ -125,7 +125,7 @@ const StoredUser = () => {
     deleteProduct(user?.accessToken, dispatch, id, axiosJWT);
   };
 
-  const [currentProduct, setCurrentProduct] = useState(null);
+  const [currentProductId, setCurrentProductId] = useState(null);
   const [name, setName] = useState("");
   const [type, setType] = useState("dog");
   const [price, setPrice] = useState("");
@@ -136,15 +136,20 @@ const StoredUser = () => {
 
   const handleEdit = (id) => {
     const findProduct = productList.find((product) => product._id === id);
-    setCurrentProduct(findProduct);
+    setCurrentProductId(findProduct._id);
+    setName(findProduct.name);
+    setType(findProduct.type);
+    setPrice(findProduct.price);
+    setDescription(findProduct.description);
+    setDetail(findProduct.detail);
+    setThumbnail(findProduct.thumbnail);
+    setImages(findProduct.images);
     OnOpenEdit();
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
     const newProduct = {
-      _id: currentProduct._id,
-      productId: currentProduct.id,
+      _id: currentProductId,
       name: name,
       type: type,
       price: price,
@@ -255,6 +260,7 @@ const StoredUser = () => {
                     <Image
                       w="60px"
                       src={`http://localhost:8000/images/` + product.thumbnail}
+                      alt={product.description}
                     />
                   </Td>
                   <Td>{product.description}</Td>
@@ -274,7 +280,7 @@ const StoredUser = () => {
                         onClose={onCloseEdit}
                         finalFocusRef={btnRef}
                       >
-                        <form onSubmit={handleSubmit}>
+                        <form>
                           <DrawerContent>
                             <DrawerCloseButton />
                             <DrawerHeader fontSize="26px">
@@ -382,8 +388,9 @@ const StoredUser = () => {
                               </Button>
                               <Button
                                 colorScheme="blue"
-                                type="submit"
-                                onClick={onCloseEdit}
+                                onClick={() => {
+                                  onCloseEdit(), handleSubmit();
+                                }}
                               >
                                 Save
                               </Button>

@@ -1,13 +1,14 @@
-"use client"
+"use client";
 
 import React, { useState } from "react";
 import data from "@/app/data.json";
 import Link from "next/link";
+import useAppContext from "@/app/_hooks/useAppContext";
 
 const ServicePrice = () => {
   const [hoverPackage, setHoverPackage] = useState(1);
   const [choosePackage, setIsChoosePackage] = useState(null);
-  //   const { isShowPackage, onShowPackage } = useAppContext();
+  const { isShowPackage, onShowPackage } = useAppContext();
   const homePackage = data["homePackage"];
 
   // let isShowPackage = null;
@@ -33,7 +34,7 @@ const ServicePrice = () => {
               <div
                 className="plan--price__image"
                 style={{ backgroundImage: `url(${specialPackage.image})` }}
-                // onClick={onShowPackage}
+                onClick={onShowPackage}
               >
                 <div className="plane--price__image-info">
                   <p>{specialPackage.name}</p>
@@ -45,8 +46,8 @@ const ServicePrice = () => {
                 <div className="plane--overlay"></div>
               </div>
               <div
-                // className={`plane--price__info ${isShowPackage ? "show" : ""}`}
-                className="plane--price__info"
+                className={`plane--price__info ${isShowPackage ? "show" : ""}`}
+                // className="plane--price__info"
               >
                 <ul>
                   {specialPackage.packages.map((special, index) => (

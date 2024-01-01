@@ -21,8 +21,6 @@ const HeaderSignIn = () => {
     logoutUser(dispatch, id, accessToken, navigate);
   };
 
-  
-
   return (
     <div className="header--sign-in">
       {user ? (
@@ -41,6 +39,9 @@ const HeaderSignIn = () => {
               </MenuItem>
             ) : null}
 
+            <MenuItem >
+              <Link href="/order">Đơn mua</Link>
+            </MenuItem>
             <MenuItem onClick={handelLogout}>
               <Link href="/home">Đăng xuất</Link>
             </MenuItem>

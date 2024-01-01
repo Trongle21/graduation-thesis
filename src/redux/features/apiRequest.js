@@ -118,37 +118,39 @@ export const loginUser = async (user, dispatch, navigate) => {
       ? navigate.push("http://localhost:3000/api/me/stored-users")
       : navigate.push("/home");
   } catch (err) {
+    window.alert("Tài khoản hoặc mật khẩu không chính xác");
     dispatch(loginFailed());
   }
 };
 
 export const registerUser = async (user, dispatch, navigate, axiosJWT) => {
   dispatch(registerStart());
-  window.location.reload();
   try {
     await axios.post("http://localhost:8000/api/users/store", user);
 
     dispatch(registerSuccess());
+    window.alert("Đăng kí thành công");
   } catch (err) {
+    window.alert("Đăng kí thất bại");
     dispatch(registerFailed());
   }
 };
 
 export const createProduct = async (product, dispatch, navigate) => {
   dispatch(getProductStart());
-  window.location.reload();
+
   try {
     await axios.post("http://localhost:8000/api/products/store", product);
     navigate.push("http://localhost:3000/api/me/stored-products");
     dispatch(getProductSuccess());
+    window.location.reload();
   } catch (err) {
     dispatch(getProductFailed());
   }
 };
 
-export const createPet = async (pet, dispatch, accessToken, userId) => {
+export const createPet = async (pet, dispatch, accessToken, petName) => {
   dispatch(getPetStart());
-  window.location.reload();
   try {
     const resPet = await axios.get(
       "http://localhost:8000/api/me/stored/pets/",
@@ -157,7 +159,7 @@ export const createPet = async (pet, dispatch, accessToken, userId) => {
       }
     );
 
-    const duplicatePet = resPet.data.pets.find((p) => p.user === userId);
+    const duplicatePet = resPet.data.pets.find((p) => p.name === petName);
 
     let petId;
 
@@ -169,8 +171,6 @@ export const createPet = async (pet, dispatch, accessToken, userId) => {
       const res = await axios.post("http://localhost:8000/api/pets/store", pet);
       petId = await res.data._id;
     }
-
-    console.log(petId);
 
     dispatch(getPetSuccess());
     return petId;
@@ -195,7 +195,7 @@ export const createServicePack = async (servicePack, dispatch, navigate) => {
 
 export const createAppointment = async (appointment, dispatch, navigate) => {
   dispatch(getAppointmentStart());
-  window.location.reload();
+
   try {
     await axios.post(
       "http://localhost:8000/api/appointments/store",
@@ -203,6 +203,7 @@ export const createAppointment = async (appointment, dispatch, navigate) => {
     );
     navigate.push("http://localhost:3000/service/serviceBookSuccess");
     dispatch(getAppointmentSuccess());
+    navigate.push("/service/serviceBookSuccess");
   } catch (err) {
     dispatch(getAppointmentFailed());
   }
@@ -210,10 +211,10 @@ export const createAppointment = async (appointment, dispatch, navigate) => {
 
 export const createOrder = async (order, dispatch, navigate) => {
   dispatch(getOrderStart());
-  window.location.reload();
   try {
     await axios.post("http://localhost:8000/api/order/store", order);
     navigate.push("http://localhost:3000/payment/paymentSuccess");
+    window.location.reload();
     dispatch(getOrderSuccess());
   } catch (err) {
     dispatch(getOrderFailed());
@@ -283,7 +284,7 @@ export const getAllProductDeleted = async (accessToken, dispatch) => {
 export const getAllPet = async (accessToken, dispatch, axiosJWT) => {
   dispatch(getPetStart());
   try {
-    const resPet = await axiosJWT.get(
+    const resPet = await axios.get(
       "http://localhost:8000/api/me/stored/pets/",
       {
         headers: { token: `Bearer ${accessToken}` },
@@ -346,9 +347,8 @@ export const getAllServicePackDeleted = async (accessToken, dispatch) => {
 
 export const getAllAppointment = async (accessToken, dispatch, axiosJWT) => {
   dispatch(getAppointmentStart());
-
   try {
-    const res = await axiosJWT.get(
+    const res = await axios.get(
       "http://localhost:8000/api/me/stored/appointments/",
       {
         headers: { token: `Bearer ${accessToken}` },
@@ -381,7 +381,6 @@ export const getAllAppointmentDeleted = async (accessToken, dispatch) => {
 
 export const getAllOrder = async (accessToken, dispatch, axiosJWT) => {
   dispatch(getOrderStart());
- 
 
   try {
     const res = await axios.get("http://localhost:8000/api/me/stored/order/", {

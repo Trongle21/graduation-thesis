@@ -126,14 +126,16 @@ const StoredUser = () => {
     deleteUser(user?.accessToken, dispatch, id, axiosJWT);
   };
 
-  const [currentUser, setCurrentUser] = useState(null);
+  const [currentUserId, setCurrentUserId] = useState(null);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleEdit = (id) => {
     const findUser = userList.find((user) => user._id === id);
-    setCurrentUser(findUser);
+    setCurrentUserId(findUser._id);
+    setUsername(findUser.username);
+    setEmail(findUser.email);
     OnOpenEdit();
   };
 
@@ -141,9 +143,8 @@ const StoredUser = () => {
   const handleClick = () => setShow(!show);
 
   const handleSubmit = (e) => {
-    e.preventDefault();
     const newUser = {
-      _id: currentUser._id,
+      _id: currentUserId,
       username: username,
       email: email,
       password: password,
@@ -266,7 +267,7 @@ const StoredUser = () => {
                         onClose={onCloseEdit}
                         finalFocusRef={btnRef}
                       >
-                        <form onSubmit={handleSubmit}>
+                        <form>
                           <DrawerContent>
                             <DrawerCloseButton />
                             <DrawerHeader fontSize="26px">
@@ -285,6 +286,7 @@ const StoredUser = () => {
                                     onChange={(e) =>
                                       setUsername(e.target.value)
                                     }
+                                    autoComplete="name"
                                   />
                                 </FormControl>
                               </Box>
@@ -295,6 +297,7 @@ const StoredUser = () => {
                                     type="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
+                                    autoComplete="email"
                                   />
                                 </FormControl>
                               </Box>
@@ -310,6 +313,7 @@ const StoredUser = () => {
                                       onChange={(e) =>
                                         setPassword(e.target.value)
                                       }
+                                      autoComplete="current-password"
                                     />
                                     <InputRightElement width="4.5rem">
                                       <Button
@@ -335,8 +339,10 @@ const StoredUser = () => {
                               </Button>
                               <Button
                                 colorScheme="blue"
-                                type="submit"
-                                onClick={onCloseEdit}
+                                // type="submit"
+                                onClick={() => {
+                                  onCloseEdit(), handleSubmit();
+                                }}
                               >
                                 Save
                               </Button>

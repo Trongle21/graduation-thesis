@@ -262,7 +262,7 @@ const StoredAppointment = () => {
                   (user) => user._id === appointment.user
                 );
 
-                const petName = petList.find(
+                const petName = petList?.find(
                   (pet) => pet._id === appointment.pet
                 );
 
@@ -321,7 +321,7 @@ const StoredAppointment = () => {
                         >
                           {appointment.status === "Pending"
                             ? "Chấp nhận"
-                            : "Hủy Đặt lịch"}
+                            : "Hủy đặt lịch"}
                         </Button>
                         <Button
                           colorScheme="red"

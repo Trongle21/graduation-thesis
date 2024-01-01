@@ -39,8 +39,10 @@ const HeaderAccountIcon = () => {
                 </Link>
               </MenuItem>
             ) : null}
-
-            <MenuItem fontSize="18px" display="flex" justifyContent="center">
+            <MenuItem fontSize="18px" textAlign="center">
+              <Link href="/order">Đơn mua</Link>
+            </MenuItem>
+            <MenuItem fontSize="18px">
               <Link href="/home" onClick={handelLogout}>
                 Đăng xuất
               </Link>

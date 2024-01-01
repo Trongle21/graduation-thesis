@@ -3,10 +3,27 @@
 import React, { useEffect, useState } from "react";
 import useAppContext from "@/app/_hooks/useAppContext";
 import Link from "next/link";
-import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { loginUser } from "@/redux/features/apiRequest";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
+import { useForm, FormProvider } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import FormControl from "@/app/_components/FormControl";
+
+const contactForm = z.object({
+  info: z.object({
+    email: z
+      .string({ required_error: "Bạn chưa nhập email" })
+      .min(8, { message: "Email phải có ít nhất 8 ký tự" })
+      .email({ message: "Bạn chưa nhập email" })
+      .trim(),
+    password: z
+      .string({ required_error: "Bạn chưa nhập password" })
+      .min(8, { message: "Mật khẩu phải có ít nhất 8 ký tự" })
+      .trim(),
+  }),
+});
 
 const SignInForm = () => {
   const { isShowSignIn, onShowSignIn } = useAppContext();
@@ -17,13 +34,22 @@ const SignInForm = () => {
   const dispatch = useDispatch();
   const navigate = useRouter();
 
+  const methods = useForm({
+    resolver: zodResolver(contactForm),
+    defaultValues: {
+      info: {
+        email: "",
+        password: "",
+      },
+    },
+  });
+
   const handleSubmit = (e) => {
-    e.preventDefault();
     const newUser = {
       email: email,
       password: password,
     };
-    window.location.reload()
+
     loginUser(newUser, dispatch, navigate);
   };
 
@@ -34,48 +60,52 @@ const SignInForm = () => {
         onClick={onShowSignIn}
       ></div>
       <div className="main--account__signIn">
-        <form
-          className={`main--account_sigIn--wrapper l-4 m-6 c-8 ${
-            isShowSignIn ? "show" : ""
-          }`}
-          onSubmit={handleSubmit}
-        >
-          <div className="main--account__form-group">
+        <FormProvider {...methods}>
+          <form
+            className={`main--account_sigIn--wrapper l-4 m-6 c-8 ${
+              isShowSignIn ? "show" : ""
+            }`}
+            onSubmit={methods.handleSubmit((data) => {
+              handleSubmit(data);
+            })}
+          >
             <div className="main--account__form-group">
-              <label className="form-label">Email</label>
-              <input
-                value={email}
-                placeholder="Nhập email của bạn"
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              <span className="form-message"></span>
+              <div className="main--account__form-group">
+                <FormControl
+                  label="Email"
+                  name="info.email"
+                  placeholder="Nhập email của bạn"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
             </div>
-          </div>
-          <div className="main--account__form-group">
             <div className="main--account__form-group">
-              <label className="form-label">Password</label>
-              <input
-                value={password}
-                type="password"
-                placeholder="Nhập mật khẩu của bạn"
-                onChange={(e) => setPassword(e.target.value)}
-              />
-              <span className="form-message"></span>
+              <div className="main--account__form-group">
+                <FormControl
+                  label="Password"
+                  type="password"
+                  name="info.password"
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
             </div>
-          </div>
 
-          <div className="main--account__submit">
-            <button className="btn btn--signIn" type="submit">
-              <Link href="">Sign In</Link>
-            </button>
-          </div>
-          <div className="main--account_signUp">
-            <h5>Don`t have a account?</h5>
-            <Link href="/signIn" onClick={onShowSignIn}>
-              Sign up
-            </Link>
-          </div>
-        </form>
+            <div className="main--account__submit">
+              <button className="btn btn--signIn" type="submit">
+                <Link href="">Sign In</Link>
+              </button>
+            </div>
+            <div className="main--account_signUp">
+              <h5>Don`t have a account?</h5>
+              <Link href="/signIn" onClick={onShowSignIn}>
+                Sign up
+              </Link>
+            </div>
+          </form>
+        </FormProvider>
       </div>
     </div>
   );

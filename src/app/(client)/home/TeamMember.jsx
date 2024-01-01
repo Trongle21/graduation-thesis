@@ -1,5 +1,7 @@
 import React from "react";
 import data from "@/app/data.json";
+import { FaFacebook, FaInstagram, FaTwitter, FaYoutube } from "react-icons/fa";
+import Link from "next/link";
 
 const TeamMember = () => {
   const homeMember = data["homeMember"];
@@ -27,11 +29,18 @@ const TeamMember = () => {
                       <p>{info.job}</p>
                     </div>
                     <div className="staff--info__social">
-                      {info.social.map((social, index) => (
-                        <a href="#" key={index}>
-                          <i className={social}></i>
-                        </a>
-                      ))}
+                      <a href="#">
+                        <FaFacebook />
+                      </a>
+                      <a href="#">
+                        <FaYoutube />
+                      </a>
+                      <a href="#">
+                        <FaInstagram />
+                      </a>
+                      <a href="#">
+                        <FaTwitter />
+                      </a>
                     </div>
                   </div>
                 ))}

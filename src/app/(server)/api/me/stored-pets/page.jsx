@@ -127,7 +127,7 @@ const StoredUser = () => {
     deletePet(user?.accessToken, dispatch, id, axiosJWT);
   };
 
-  const [currentPet, setCurrentPet] = useState(null);
+  const [currentPetId, setCurrentPetId] = useState(null);
   const [nameOwner, setNameOwner] = useState("");
   const [ownerId, setOwnerId] = useState("");
   const [petName, setPetName] = useState("");
@@ -137,19 +137,20 @@ const StoredUser = () => {
 
   const handleEdit = (id, ownerId, name) => {
     const findPet = petList.find((pet) => pet._id === id);
-    setCurrentPet(findPet);
-    setOwnerId(ownerId);
+    setCurrentPetId(findPet._id);
+    setOwnerId(findPet.user);
+    setPetName(findPet.name);
+    setAge(findPet.age);
+    setChoosePetType(findPet.type);
+    setChooseGender(findPet.gender);
     setNameOwner(name);
     OnOpenEdit();
   };
 
-  const [show, setShow] = React.useState(false);
-  const handleClick = () => setShow(!show);
-
   const handleSubmit = (e) => {
     e.preventDefault();
     const newPet = {
-      _id: currentPet._id,
+      _id: currentPetId,
       name: petName,
       age: age,
       user: ownerId,

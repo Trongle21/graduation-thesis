@@ -57,8 +57,6 @@ const SectionPay = () => {
   const dispatch = useDispatch();
   const navigate = useRouter();
 
-
-
   const handleSubmitForm = async (data) => {
     console.log(data);
     if (user) {
@@ -95,9 +93,6 @@ const SectionPay = () => {
               <div className="section--pay__bill l-4 m-4 c-12">
                 <div
                   className="section--pay__bill--wrapper"
-                  onSubmit={methods.handleSubmit((data) => {
-                    handleTakeData(data);
-                  })}
                 >
                   <h3>Information</h3>
                   <FormControl
@@ -111,7 +106,6 @@ const SectionPay = () => {
                     name="info.name"
                     value={user?.username}
                     disabled="disabled"
-                    placeholder="Enter your Name"
                   />
                   <FormControl
                     label="Phone number"
@@ -190,8 +184,13 @@ const SectionPay = () => {
               </div>
             </div>
             <div className="payment--btn">
-              <button type="submit" className="btn btn--primary">
+              {/* <button type="submit" className="btn btn--primary">
                 {form ? <Link href="#">By Now</Link> : "Pay Now"}
+              </button> */}
+              <button type="submit" className="btn btn--primary link">
+                <Link href="#">
+                  <h5>Continue</h5>
+                </Link>
               </button>
             </div>
           </form>

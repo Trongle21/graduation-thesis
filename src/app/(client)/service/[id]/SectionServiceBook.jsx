@@ -5,8 +5,25 @@ import { useParams } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { createPet, createAppointment } from "@/redux/features/apiRequest";
+import { useForm, FormProvider } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import FormControl from "@/app/_components/FormControl";
+
+
+const contactForm = z.object({
+  info: z.object({
+    schedule_date: z.string().min(1, { message: "Vui lòng chọn ngày" }),
+    pet_name: z.string().min(1, { message: "Vui lòng nhập tên pet" }),
+    pet_birthday: z
+      .string()
+      .min(1, { message: "Vui lòng chọn ngày sinh của pet" }),
+  }),
+});
 
 const SectionServiceBook = () => {
+ 
+
   const [petName, setPetName] = useState("");
   const [age, setAge] = useState("");
   const [choosePetType, setChoosePetType] = useState("cat");
@@ -32,8 +49,18 @@ const SectionServiceBook = () => {
   const dispatch = useDispatch();
   const navigate = useRouter();
 
-  const handleSubmitForm = async (e) => {
-    e.preventDefault();
+  const methods = useForm({
+    resolver: zodResolver(contactForm),
+    defaultValues: {
+      info: {
+        schedule_date: "",
+        pet_name: "",
+        pet_birthday: "",
+      },
+    },
+  });
+
+  const handleSubmitForm = async (formData) => {
     if (user) {
       const newPet = {
         name: petName,
@@ -47,7 +74,7 @@ const SectionServiceBook = () => {
         newPet,
         dispatch,
         user?.accessToken,
-        user?._id
+        petName
       );
       const newAppointment = {
         pet: petId,
@@ -67,111 +94,114 @@ const SectionServiceBook = () => {
       <div className="container">
         <h2>REQUEST A MEET & GREET</h2>
         <h6>Cảm ơn bạn đã chọn dịch vụ {servicePack[0]?.serviceName}</h6>
-
-        <form className="service--form" onSubmit={handleSubmitForm}>
-          <div className={"contact--form__info second service--book"}>
-            <div className="contact--form row">
-              <div className="contact--form__list l-6 m-6 c-12">
-                <div className="contact--form__list--wrapper">
-                  <label className="form-label">Tên</label>
-                  <input
-                    value={petName}
-                    placeholder="Nhập tên của pet ..."
-                    onChange={(e) => setPetName(e.target.value)}
-                  />
-                  <span className="form-message"></span>
+        <FormProvider {...methods}>
+          <form
+            className="service--form"
+            onSubmit={methods.handleSubmit((data) => {
+              handleSubmitForm(data);
+            })}
+          >
+            <div className={"contact--form__info second service--book"}>
+              <div className="contact--form row">
+                <div className="contact--form__list l-6 m-6 c-12">
+                  <div className="contact--form__list--wrapper">
+                    <FormControl
+                      label="Tên Pet"
+                      name="info.pet_name"
+                      placeholder="Nhập tên của pet ..."
+                      value={petName}
+                      onChange={(e) => setPetName(e.target.value)}
+                    />
+                  </div>
                 </div>
-              </div>
-              <div className="contact--form__list l-6 m-6 c-12">
-                <div className="contact--form__list--wrapper">
-                  <label className="form-label">Tháng tuổi</label>
-                  <input
-                    value={age}
-                    placeholder="Nhập tháng tuổi của pet ..."
-                    onChange={(e) => setAge(e.target.value)}
-                  />
-                  <span className="form-message"></span>
+                <div className="contact--form__list l-6 m-6 c-12">
+                  <div className="contact--form__list--wrapper">
+                    <FormControl
+                      label="Tháng tuổi"
+                      name="info.pet_birthday"
+                      placeholder="Nhập tháng tuổi của pet ..."
+                      value={age}
+                      onChange={(e) => setAge(e.target.value)}
+                    />
+                  </div>
                 </div>
-              </div>
-              <div className="contact--form__list l-6 m-6 c-12">
-                <div className="contact--form__list--wrapper">
-                  <label htmlFor="type_of_pet" className="form-label">
-                    Chó hay mèo
-                  </label>
-                  <select
-                    id="type_of_pet"
-                    value={choosePetType}
-                    onChange={(e) => setChoosePetType(e.target.value)}
-                  >
-                    <option value="cat">Cat</option>
-                    <option value="dog">Dog</option>
-                  </select>
-                  <span className="form-message"></span>
+                <div className="contact--form__list l-6 m-6 c-12">
+                  <div className="contact--form__list--wrapper">
+                    <label htmlFor="type_of_pet" className="form-label">
+                      Chó hay mèo
+                    </label>
+                    <select
+                      id="type_of_pet"
+                      value={choosePetType}
+                      onChange={(e) => setChoosePetType(e.target.value)}
+                    >
+                      <option value="cat">Cat</option>
+                      <option value="dog">Dog</option>
+                    </select>
+                    <span className="form-message"></span>
+                  </div>
                 </div>
-              </div>
-              <div className="contact--form__list l-6 m-6 c-12">
-                <div className="contact--form__list--wrapper">
-                  <label htmlFor="gender" className="form-label">
-                    Giới tính
-                  </label>
-                  <select
-                    id="gender"
-                    value={chooseGender}
-                    onChange={(e) => setChooseGender(e.target.value)}
-                  >
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                  </select>
-                  <span className="form-message"></span>
+                <div className="contact--form__list l-6 m-6 c-12">
+                  <div className="contact--form__list--wrapper">
+                    <label htmlFor="gender" className="form-label">
+                      Giới tính
+                    </label>
+                    <select
+                      id="gender"
+                      value={chooseGender}
+                      onChange={(e) => setChooseGender(e.target.value)}
+                    >
+                      <option value="male">Male</option>
+                      <option value="female">Female</option>
+                    </select>
+                    <span className="form-message"></span>
+                  </div>
                 </div>
-              </div>
-              <div className="contact--form__list l-6 m-6 c-12">
-                <div className="contact--form__list--wrapper">
-                  <label htmlFor="gender" className="form-label">
-                    Chọn gói
-                  </label>
-                  <select
-                    id="gender"
-                    value={choosePack}
-                    onChange={(e) => setChoosePack(e.target.value)}
-                  >
-                    <option value="" disabled hidden>
-                      Vui lòng chọn
-                    </option>
-                    {servicePack[0]?.packages?.map((pack) => (
-                      <option key={pack._id} value={pack._id}>
-                        {pack.name}
+                <div className="contact--form__list l-6 m-6 c-12">
+                  <div className="contact--form__list--wrapper">
+                    <label htmlFor="gender" className="form-label">
+                      Chọn gói
+                    </label>
+                    <select
+                      id="gender"
+                      value={choosePack}
+                      onChange={(e) => setChoosePack(e.target.value)}
+                    >
+                      <option value="" disabled hidden>
+                        Vui lòng chọn
                       </option>
-                    ))}
-                  </select>
-                  <span className="form-message"></span>
+                      {servicePack[0]?.packages?.map((pack) => (
+                        <option key={pack._id} value={pack._id}>
+                          {pack.name}
+                        </option>
+                      ))}
+                    </select>
+                    <span className="form-message"></span>
+                  </div>
+                </div>
+                <div className="contact--form__list l-6 m-6 c-12">
+                  <div className="contact--form__list--wrapper">
+                    <FormControl
+                      label="Đặt lịch"
+                      type="date"
+                      name="info.schedule_date"
+                      value={date}
+                      onChange={(e) => setDate(e.target.value)}
+                    />
+                  </div>
+                </div>
+                <div className="contact--form__list l-6 m-6 c-12">
+                  <div className="contact--form__list--wrapper"></div>
                 </div>
               </div>
-              <div className="contact--form__list l-6 m-6 c-12">
-                <div className="contact--form__list--wrapper">
-                  <label htmlFor="date" className="form-label">
-                    Đặt hẹn
-                  </label>
-                  <input
-                    type="date"
-                    id="date"
-                    value={date}
-                    onChange={(e) => setDate(e.target.value)}
-                  ></input>
-                  <span className="form-message"></span>
-                </div>
-              </div>
-              <div className="contact--form__list l-6 m-6 c-12">
-                <div className="contact--form__list--wrapper"></div>
+              <div className="service--book_btn">
+                <button type="submit" className="btn btn--primary link">
+                  Đặt lịch
+                </button>
               </div>
             </div>
-            <div className="service--book_btn">
-              <button type="submit" className="btn btn--primary link">
-                <span href="#">Đặt lịch</span>
-              </button>
-            </div>
-          </div>
-        </form>
+          </form>
+        </FormProvider>
       </div>
     </section>
   );
