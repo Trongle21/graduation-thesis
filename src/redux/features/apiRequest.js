@@ -107,6 +107,23 @@ import {
   updateOrderStart,
   updateOrderSuccess,
 } from "./orderSlice";
+import {
+  deleteContactFailed,
+  deleteContactStart,
+  deleteContactSuccess,
+  getContactDeletedFailed,
+  getContactDeletedStart,
+  getContactDeletedSuccess,
+  getContactFailed,
+  getContactStart,
+  getContactSuccess,
+  restoreContactFailed,
+  restoreContactStart,
+  restoreContactSuccess,
+  updateContactFailed,
+  updateContactStart,
+  updateContactSuccess,
+} from "./contactSlice";
 
 export const loginUser = async (user, dispatch, navigate) => {
   dispatch(loginStart());
@@ -214,10 +231,19 @@ export const createOrder = async (order, dispatch, navigate) => {
   try {
     await axios.post("http://localhost:8000/api/order/store", order);
     navigate.push("http://localhost:3000/payment/paymentSuccess");
-    window.location.reload();
     dispatch(getOrderSuccess());
   } catch (err) {
     dispatch(getOrderFailed());
+  }
+};
+
+export const createContact = async (contact, dispatch, navigate) => {
+  dispatch(getContactStart());
+  try {
+    await axios.post("http://localhost:8000/api/contact/store", contact);
+    dispatch(getContactSuccess());
+  } catch (err) {
+    dispatch(getContactFailed());
   }
 };
 
@@ -408,10 +434,43 @@ export const getAllOrderDeleted = async (accessToken, dispatch) => {
   }
 };
 
+export const getAllContact = async (accessToken, dispatch, axiosJWT) => {
+  dispatch(getContactStart());
+
+  try {
+    const res = await axios.get(
+      "http://localhost:8000/api/me/stored/contact/",
+      {
+        headers: { token: `Bearer ${accessToken}` },
+      }
+    );
+    dispatch(getContactSuccess(res.data));
+  } catch (err) {
+    console.error("Error from API:", err);
+    dispatch(getContactFailed());
+  }
+};
+
+export const getAllContactDeleted = async (accessToken, dispatch) => {
+  dispatch(getContactDeletedStart());
+
+  try {
+    const res = await axios.get("http://localhost:8000/api/me/trash/contact/", {
+      headers: { token: `Bearer ${accessToken}` },
+    });
+
+    dispatch(getContactDeletedSuccess(res.data));
+  } catch (err) {
+    console.error("Error from API:", err);
+    dispatch(getContactDeletedFailed());
+  }
+};
+
 export const updateUser = async (user, accessToken, dispatch, navigate) => {
   dispatch(updateUserStart());
-  window.location.reload();
+
   try {
+    window.location.reload();
     const res = await axios.put(
       "http://localhost:8000/api/users/" + user._id,
       user,
@@ -419,8 +478,35 @@ export const updateUser = async (user, accessToken, dispatch, navigate) => {
         headers: { token: `Bearer ${accessToken}` },
       }
     );
+
     dispatch(updateUserSuccess(res.data));
   } catch (err) {
+    console.log(err.message);
+    dispatch(updateUserFailed());
+  }
+};
+
+export const changePasswordUser = async (
+  user,
+  accessToken,
+  dispatch,
+  navigate
+) => {
+  dispatch(updateUserStart());
+
+  try {
+    window.location.reload();
+    const res = await axios.put(
+      "http://localhost:8000/api/users/" + user._id + "/change-password",
+      user,
+      {
+        headers: { token: `Bearer ${accessToken}` },
+      }
+    );
+
+    dispatch(updateUserSuccess(res.data));
+  } catch (err) {
+    console.log(err.message);
     dispatch(updateUserFailed());
   }
 };
@@ -502,7 +588,6 @@ export const updateAppointment = async (appointment, accessToken, dispatch) => {
 
 export const updateOrder = async (order, accessToken, dispatch, navigate) => {
   dispatch(updateOrderStart());
-  window.location.reload();
   try {
     const res = await axios.put(
       "http://localhost:8000/api/order/" + order._id,
@@ -515,6 +600,28 @@ export const updateOrder = async (order, accessToken, dispatch, navigate) => {
     dispatch(updateOrderSuccess(res.data));
   } catch (err) {
     dispatch(updateOrderFailed());
+  }
+};
+
+export const updateContact = async (
+  contact,
+  accessToken,
+  dispatch,
+  navigate
+) => {
+  dispatch(updateContactStart());
+  try {
+    const res = await axios.put(
+      "http://localhost:8000/api/contact/" + contact._id,
+      contact,
+      {
+        headers: { token: `Bearer ${accessToken}` },
+      }
+    );
+    window.location.reload();
+    dispatch(updateContactSuccess(res.data));
+  } catch (err) {
+    dispatch(updateContactFailed());
   }
 };
 
@@ -698,6 +805,35 @@ export const deleteOrderForce = async (accessToken, dispatch, id) => {
   }
 };
 
+export const deleteContact = async (accessToken, dispatch, id) => {
+  dispatch(deleteContactStart());
+  window.location.reload();
+  try {
+    const res = await axios.delete("http://localhost:8000/api/contact/" + id, {
+      headers: { token: `Bearer ${accessToken}` },
+    });
+    dispatch(deleteContactSuccess(res.data));
+  } catch (err) {
+    dispatch(deleteContactFailed());
+  }
+};
+
+export const deleteContactForce = async (accessToken, dispatch, id) => {
+  dispatch(deleteContactStart());
+  window.location.reload();
+  try {
+    const res = await axios.delete(
+      "http://localhost:8000/api/contact/" + id + "/force",
+      {
+        headers: { token: `Bearer ${accessToken}` },
+      }
+    );
+    dispatch(deleteContactSuccess(res.data));
+  } catch (err) {
+    dispatch(deleteContactFailed());
+  }
+};
+
 export const restoreUser = async (accessToken, dispatch, id) => {
   dispatch(restoreUserStart());
   window.location.reload();
@@ -791,6 +927,22 @@ export const restoreOrder = async (accessToken, dispatch, id) => {
     dispatch(restoreOrderSuccess(res.data));
   } catch (err) {
     dispatch(restoreOrderFailed());
+  }
+};
+
+export const restoreContact = async (accessToken, dispatch, id) => {
+  dispatch(restoreContactStart());
+  window.location.reload();
+  try {
+    const res = await axios.patch(
+      "http://localhost:8000/api/contact/" + id + "/restore",
+      {
+        headers: { token: `Bearer ${accessToken}` },
+      }
+    );
+    dispatch(restoreContactSuccess(res.data));
+  } catch (err) {
+    dispatch(restoreContactFailed());
   }
 };
 
@@ -926,9 +1078,31 @@ export const handleActionOrderForm = async (
         headers: { token: `Bearer ${accessToken}` },
       }
     );
-    dispatch(getUserDeletedSuccess(res.data));
+    dispatch(getOrderSuccess(res.data));
   } catch (err) {
-    dispatch(getUserFailed());
+    dispatch(getOrderFailed());
+  }
+};
+
+export const handleActionContactForm = async (
+  accessToken,
+  dispatch,
+  orderList,
+  action
+) => {
+  dispatch(getContactStart());
+  try {
+    window.location.reload();
+    const res = await axios.post(
+      "http://localhost:8000/api/contact/handle-action-form",
+      { contactId: orderList, action: action },
+      {
+        headers: { token: `Bearer ${accessToken}` },
+      }
+    );
+    dispatch(getContactSuccess(res.data));
+  } catch (err) {
+    dispatch(getContactFailed());
   }
 };
 

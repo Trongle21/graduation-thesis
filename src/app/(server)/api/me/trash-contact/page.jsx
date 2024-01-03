@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Box,
   Button,
   Checkbox,
   Flex,
@@ -12,30 +13,35 @@ import {
   Th,
   Td,
   TableContainer,
-  useDisclosure,
-  Drawer,
-  Select,
-  Text,
-  AlertDialog,
-  AlertDialogOverlay,
-  AlertDialogContent,
-  AlertDialogHeader,
   AlertDialogBody,
   AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogContent,
+  AlertDialogOverlay,
+  useDisclosure,
+  DrawerContent,
+  DrawerHeader,
+  DrawerBody,
+  Input,
+  DrawerFooter,
+  Drawer,
+  FormLabel,
+  FormControl,
+  Select,
+  Text,
+  DrawerCloseButton,
+  AlertDialog,
+  Textarea,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 import {
-  getAllAppointment,
-  getAllPet,
-  getAllServicePack,
+  getAllContactDeleted,
   getAllUser,
-  deleteAppointment,
-  getAllAppointmentDeleted,
-  restoreAppointment,
-  deleteAppointmentForce,
-  handleActionAppointmentForm,
+  restoreContact,
+  deleteContactForce,
+  handleActionContactForm,
 } from "@/redux/features/apiRequest";
 import { useRouter } from "next/navigation";
 import axios from "axios";
@@ -48,13 +54,8 @@ const axiosJWT = axios.create();
 const StoredUser = () => {
   const user = useSelector((state) => state.auth.login?.currentUser);
   const userList = useSelector((state) => state.users?.users?.allUsers?.users);
-  const petList = useSelector((state) => state.pets?.pets?.allPets?.pets);
-  const servicePackList = useSelector(
-    (state) => state.servicePack?.servicePacks?.allServicePacks?.servicePack
-  );
-  const appointmentDeletedList = useSelector(
-    (state) =>
-      state.appointments.appointments?.allAppointmentsDeleted?.appointment
+  const contactDeleteList = useSelector(
+    (state) => state.contact?.contacts?.allContactDeleted?.contact
   );
 
   const dispatch = useDispatch();
@@ -98,15 +99,12 @@ const StoredUser = () => {
       navigate.push("/home");
     }
     if (user?.accessToken) {
-      getAllAppointment(user?.accessToken, dispatch, axiosJWT);
-      getAllAppointmentDeleted(user?.accessToken, dispatch, axiosJWT);
-      getAllServicePack(user?.accessToken, dispatch, axiosJWT);
-      getAllPet(user?.accessToken, dispatch, axiosJWT);
       getAllUser(user?.accessToken, dispatch, axiosJWT);
+      getAllContactDeleted(user?.accessToken, dispatch, axiosJWT);
     }
   }, []);
 
-  const [appointmentId, setAppointmentId] = useState(null);
+  const [contactId, setContactId] = useState(null);
 
   const {
     isOpen: isOpenDelete,
@@ -116,16 +114,16 @@ const StoredUser = () => {
   const cancelRef = React.useRef();
 
   const handleDelete = (id) => {
-    setAppointmentId(id);
+    setContactId(id);
     OnOpenDelete();
   };
 
-  const handleDeleteAppointment = (id) => {
-    deleteAppointmentForce(user?.accessToken, dispatch, id, axiosJWT);
+  const handleDeleteContact = (id) => {
+    deleteContactForce(user?.accessToken, dispatch, id, axiosJWT);
   };
 
-  const handleRestoreAppointment = (id) => {
-    restoreAppointment(user?.accessToken, dispatch, id);
+  const handleRestoreContact = (id) => {
+    restoreContact(user?.accessToken, dispatch, id);
   };
 
   const [selectAll, setSelectAll] = useState(false);
@@ -133,20 +131,18 @@ const StoredUser = () => {
 
   const handleSelectAll = () => {
     setSelectAll(!selectAll);
-    const allAppointmentIds = appointmentDeletedList.map(
-      (appointment) => appointment._id
-    );
-    setSelectedItems(selectAll ? [] : allAppointmentIds);
+    const allContactIds = contactDeleteList.map((contact) => contact._id);
+    setSelectedItems(selectAll ? [] : allContactIds);
   };
 
-  const handleSelectItem = (appointmentId) => {
+  const handleSelectItem = (contactId) => {
     setSelectedItems((prevSelectedItems) => {
-      const newSelectedItems = prevSelectedItems.includes(appointmentId)
-        ? prevSelectedItems.filter((id) => id !== appointmentId)
-        : [...prevSelectedItems, appointmentId];
+      const newSelectedItems = prevSelectedItems.includes(contactId)
+        ? prevSelectedItems.filter((id) => id !== contactId)
+        : [...prevSelectedItems, contactId];
 
       setSelectAll(
-        newSelectedItems.length === appointmentDeletedList.length &&
+        newSelectedItems.length === contactDeleteList.length &&
           newSelectedItems.length > 0
       );
 
@@ -163,7 +159,8 @@ const StoredUser = () => {
   }, [selectedItems]);
 
   const handleSubmitForm = (e) => {
-    handleActionAppointmentForm(
+    e.preventDefault();
+    handleActionContactForm(
       user?.accessToken,
       dispatch,
       selectedItems,
@@ -180,7 +177,6 @@ const StoredUser = () => {
           <Checkbox size="lg" onChange={handleSelectAll} isChecked={selectAll}>
             <Text fontSize="2xl">Chọn tất cả</Text>
           </Checkbox>
-
           <Select
             w="100px"
             size="lg"
@@ -189,7 +185,7 @@ const StoredUser = () => {
             onChange={(e) => setActionValue(e.target.value)}
           >
             <option value="restore">Khôi phục</option>
-            <option value="forceDelete">Xóa tấc cả</option>
+            <option value="forceDelete">Xóa vĩnh viễn</option>
           </Select>
           <Button
             colorScheme="blue"
@@ -203,68 +199,48 @@ const StoredUser = () => {
           <Table variant="simple" size="lg">
             <Thead>
               <Tr>
-                <Th fontSize="xl"></Th>
-                <Th fontSize="xl">#</Th>
-                <Th fontSize="xl">Tên pet</Th>
-                <Th fontSize="xl">Chủ sở hữu</Th>
-                <Th fontSize="xl">Dịch vụ</Th>
-                <Th fontSize="xl">Gói</Th>
-                <Th fontSize="xl">Giá</Th>
-                <Th fontSize="xl">Ngày đặt</Th>
+                <Th textAlign="center" fontSize="xl"></Th>
+                <Th textAlign="center" fontSize="xl">
+                  #
+                </Th>
+                <Th textAlign="center" fontSize="xl">
+                  Tên người dùng
+                </Th>
+                <Th textAlign="center" fontSize="xl">
+                  Chủ đề
+                </Th>
+                <Th textAlign="center" fontSize="xl">
+                  Ý kiến
+                </Th>
                 <Th textAlign="center" fontSize="xl">
                   Edit
                 </Th>
               </Tr>
             </Thead>
             <Tbody>
-              {appointmentDeletedList?.map((appointment, index) => {
-                const userName = userList?.find(
-                  (user) => user._id === appointment.user
-                );
-
-                const petName = petList.find(
-                  (pet) => pet._id === appointment.pet
-                );
-
-                const servicePack = servicePackList?.find(
-                  (service) => service._id === appointment.service
-                );
-                const appointmentPackageId = appointment.package;
-
-                const foundServicePack = servicePackList?.find((servicePack) =>
-                  servicePack.packages.some(
-                    (pack) => pack._id === appointmentPackageId
-                  )
-                );
-
-                const foundPackage = foundServicePack
-                  ? foundServicePack.packages.find(
-                      (pack) => pack._id === appointmentPackageId
-                    )
-                  : null;
-                if (appointment.deleted) {
+              {contactDeleteList?.map((contact, index) => {
+                if (contact.deleted) {
+                  const username = userList.find(
+                    (user) => user._id === contact.user
+                  );
                   return (
-                    <Tr key={appointment._id}>
+                    <Tr key={contact._id}>
                       <Td>
                         <Checkbox
-                          isChecked={selectedItems.includes(appointment._id)}
-                          onChange={() => handleSelectItem(appointment._id)}
+                          isChecked={selectedItems.includes(contact._id)}
+                          onChange={() => handleSelectItem(contact._id)}
                         ></Checkbox>
                       </Td>
-                      <Td>{index + 1}</Td>
-                      <Td>{petName?.name}</Td>
-                      <Td>{userName?.username}</Td>
-                      <Td>{servicePack?.serviceName}</Td>
-                      <Td>{foundPackage?.name}</Td>
-                      <Td>{foundPackage?.price}</Td>
-                      <Td>{appointment.date}</Td>
+                      <Td textAlign="center">{index + 1}</Td>
+                      <Td textAlign="center">{username?.username}</Td>
+                      <Td textAlign="center">{contact.subject}</Td>
+                      <Td textAlign="center">{contact.message}</Td>
                       <Td textAlign="center">
                         <Link paddingRight={1}>
                           <Button
                             colorScheme="facebook"
-                            onClick={() =>
-                              handleRestoreAppointment(appointment._id)
-                            }
+                            marginRight="2px"
+                            onClick={() => handleRestoreContact(contact._id)}
                           >
                             Khôi phục
                           </Button>
@@ -272,7 +248,7 @@ const StoredUser = () => {
                         <Link>
                           <Button
                             colorScheme="red"
-                            onClick={() => handleDelete(appointment._id)}
+                            onClick={() => handleDelete(contact._id)}
                           >
                             Xóa vĩnh viễn
                           </Button>
@@ -294,10 +270,10 @@ const StoredUser = () => {
         <AlertDialogOverlay>
           <AlertDialogContent>
             <AlertDialogHeader fontSize="lg" fontWeight="bold">
-              Xóa hóa đơn
+              Xóa ý kiến
             </AlertDialogHeader>
 
-            <AlertDialogBody>Bạn chắc chắn xóa hóa đơn</AlertDialogBody>
+            <AlertDialogBody>Bạn chắc chắn xóa vĩnh viễn này</AlertDialogBody>
 
             <AlertDialogFooter>
               <Button ref={cancelRef} onClick={onCloseDelete}>
@@ -306,7 +282,7 @@ const StoredUser = () => {
               <Button
                 colorScheme="red"
                 onClick={() => {
-                  handleDeleteAppointment(appointmentId);
+                  handleDeleteContact(contactId);
                   onCloseDelete();
                 }}
                 ml={3}

@@ -4,6 +4,7 @@ const Pets = require("../models/Pets.js");
 const ServicePack = require("../models/ServicePack");
 const Appointments = require("../models/Appointment.js");
 const Order = require("../models/Order.js");
+const Contact = require("../models/Contact.js");
 
 const { multipleMongooseToObject } = require("../until/mongoose");
 
@@ -158,6 +159,7 @@ const meController = {
       res.status(500).send("Không render được những lịch hẹn đã xóa!");
     }
   },
+
   // [GET] "api/stored/order"
   storedOrder: async (req, res) => {
     try {
@@ -172,7 +174,7 @@ const meController = {
         order: multipleMongooseToObject(order),
       });
     } catch (err) {
-      res.status(500).send("Không render được sản phẩm!" + err.message);
+      res.status(500).send(err.message);
     }
   },
 
@@ -185,6 +187,36 @@ const meController = {
       });
     } catch (err) {
       res.status(500).send("Không render được những đơn hàng đã xóa!");
+    }
+  },
+
+  // [GET] "api/stored/contact"
+  storedContact: async (req, res) => {
+    try {
+      let contactQuery = Contact.find({});
+      const countDelete = await Contact.countDocumentsWithDeleted({
+        deleted: true,
+      });
+      const contact = await contactQuery;
+
+      await res.send({
+        countDelete,
+        contact: multipleMongooseToObject(contact),
+      });
+    } catch (err) {
+      res.status(500).send(err.message);
+    }
+  },
+
+  // [GET] "api/trash/contact"
+  trashContact: async (req, res) => {
+    try {
+      const contact = await Contact.findDeleted({});
+      await res.send({
+        contact: multipleMongooseToObject(contact),
+      });
+    } catch (err) {
+      res.status(500).send(err.message);
     }
   },
 };

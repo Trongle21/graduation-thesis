@@ -32,6 +32,7 @@ const FormControl = ({
   rows,
   checked,
   onChange,
+  readOnly,
   defaultChecked,
   disabled,
 }) => {
@@ -59,6 +60,7 @@ const FormControl = ({
         checked={checked}
         defaultChecked={defaultChecked}
         disabled={disabled}
+        readOnly={readOnly}
       />
       <span className="form-message">
         <ErrorMessage errors={errors} name={name} />

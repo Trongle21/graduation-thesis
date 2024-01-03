@@ -169,11 +169,11 @@ const StoredUser = () => {
     setSelectedItems(selectAll ? [] : allPetIds);
   };
 
-  const handleSelectItem = (productId) => {
+  const handleSelectItem = (petId) => {
     setSelectedItems((prevSelectedItems) => {
-      const newSelectedItems = prevSelectedItems.includes(productId)
-        ? prevSelectedItems.filter((id) => id !== productId)
-        : [...prevSelectedItems, productId];
+      const newSelectedItems = prevSelectedItems.includes(petId)
+        ? prevSelectedItems.filter((id) => id !== petId)
+        : [...prevSelectedItems, petId];
 
       setSelectAll(
         newSelectedItems.length === petList.length &&

@@ -67,7 +67,6 @@ const Cart = () => {
     );
   };
 
-  // productInCart.map((product) => console.log(product))
 
   const classCart = isShowCart ? "show--cart" : "product--cart";
 

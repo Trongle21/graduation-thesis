@@ -42,6 +42,12 @@ const HeaderSignIn = () => {
             <MenuItem >
               <Link href="/order">Đơn mua</Link>
             </MenuItem>
+            <MenuItem >
+              <Link href="/info">Sửa thông tin</Link>
+            </MenuItem>
+            <MenuItem >
+              <Link href="/change-password">Đổi mật khẩu</Link>
+            </MenuItem>
             <MenuItem onClick={handelLogout}>
               <Link href="/home">Đăng xuất</Link>
             </MenuItem>

@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
-import SignInForm from "@/app/_components/SignInForm";
-import useAppContext from "@/app/_hooks/useAppContext";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { registerUser } from "@/redux/features/apiRequest";
-import { useDispatch } from "react-redux";
+import {
+  getAllUser,
+  updateUser,
+} from "@/redux/features/apiRequest";
+import { useDispatch, useSelector } from "react-redux";
 import { useForm, FormProvider } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -16,25 +17,28 @@ const contactForm = z.object({
   info: z.object({
     name: z
       .string({ required_error: "Bạn chưa nhập tên" })
-      .min(6, { message: "tên phải có ít nhất 6 ký tự" })
+      .min(6, { message: "Tên phải có ít nhất 6 ký tự" })
       .trim(),
-    email: z
-      .string({ required_error: "Bạn chưa nhập email" })
-      .min(8, { message: "Email phải có ít nhất 8 ký tự" })
-      .email({ message: "Bạn chưa nhập email" })
+    address: z
+      .string({ required_error: "Bạn chưa nhập địa chỉ" })
+      .min(4, { message: "Địa chỉ ít nhất phải có 4 ký tự" })
       .trim(),
-    password: z
-      .string({ required_error: "Bạn chưa nhập password" })
-      .min(8, { message: "Mật khẩu phải có ít nhất 8 ký tự" })
+    phoneNumber: z
+      .string({ required_error: "Bạn chưa nhập số điện thoại" })
+      .min(9, { message: "Số điện thoại ít nhất phải có 9 ký tự" })
       .trim(),
   }),
 });
 
 const SignIn = () => {
-  const { onShowSignIn } = useAppContext();
+  const user = useSelector((state) => state.auth.login?.currentUser);
+  const userList = useSelector((state) => state.users.users?.allUsers?.users);
+
+  const [currentUserId, setCurrentUserId] = useState(user._id);
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [address, setAddress] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
 
   const dispatch = useDispatch();
   const navigate = useRouter();
@@ -43,20 +47,42 @@ const SignIn = () => {
     resolver: zodResolver(contactForm),
     defaultValues: {
       info: {
-        email: "",
         password: "",
-        confirm_password: "",
+        address: "",
+        phoneNumber: "",
       },
     },
   });
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    if (!user) {
+      navigate.push("/home");
+    }
+    if (user?.accessToken) {
+      getAllUser(user?.accessToken, dispatch);
+    }
+  }, []);
+
+  const findUser = userList.find((user) => user._id === currentUserId);
+
+  useEffect(() => {
+    if (user) {
+      setUserName(findUser?.username);
+      setEmail(findUser?.email);
+      setAddress(findUser?.address);
+      setPhoneNumber(findUser?.phoneNumber);
+    }
+  }, []);
+
+  const handleSubmit = (e, data) => {
     const newUser = {
+      ...findUser,
       username: userName,
       email: email,
-      password: password,
+      address: address,
+      phoneNumber: phoneNumber,
     };
-    registerUser(newUser, dispatch, navigate);
+    updateUser(newUser, user?.accessToken, dispatch, navigate);
   };
 
   return (
@@ -71,8 +97,8 @@ const SignIn = () => {
                     <img src="https://i.ibb.co/5251mQc/logo.png" alt="" />
                   </Link>
                 </div>
-                <h2>Bắt đầu </h2>
-                <h3>Tạo mới tài khoản bạn ở đây</h3>
+                <h2>Xin Chào: {userName}</h2>
+                <h3>Sửa thông tin tài khoản</h3>
                 <FormProvider {...methods}>
                   <form
                     className="form-wrapper"
@@ -80,6 +106,18 @@ const SignIn = () => {
                       handleSubmit(data);
                     })}
                   >
+                    <div className="sign--up__form">
+                      <div className="main--account__form-group">
+                        <FormControl
+                          label="Email"
+                          name="info.email"
+                          placeholder="Nhập email của bạn"
+                          value={email}
+                          readOnly={true} 
+                          onChange={(e) => setEmail(e.target.value)}
+                        />
+                      </div>
+                    </div>
                     <div className="sign--up__form">
                       <div className="main--account__form-group">
                         <FormControl
@@ -91,41 +129,38 @@ const SignIn = () => {
                         />
                       </div>
                     </div>
+
                     <div className="sign--up__form">
                       <div className="main--account__form-group">
                         <FormControl
-                          label="Email"
-                          name="info.email"
-                          placeholder="Nhập email của bạn"
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
+                          label="Địa chỉ"
+                          name="info.address"
+                          placeholder="Nhập địa chỉ của bạn"
+                          value={address}
+                          onChange={(e) => setAddress(e.target.value)}
                         />
                       </div>
                     </div>
+
                     <div className="sign--up__form">
                       <div className="main--account__form-group">
                         <FormControl
-                          label="Mật khẩu"
-                          type="password"
-                          name="info.password"
-                          placeholder="Nhập mật khẩu của bạn"
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
+                          label="Số điện thoại"
+                          name="info.phoneNumber"
+                          placeholder="Nhập số điện thoại của bạn"
+                          value={phoneNumber}
+                          onChange={(e) => setPhoneNumber(e.target.value)}
                         />
                       </div>
                     </div>
 
                     <div className="sign--up__form--button">
                       <button type="submit" className="btn btn--signUp">
-                        SignUp
+                       Cập nhật
                       </button>
                     </div>
                   </form>
                 </FormProvider>
-                <div className="sign--up__form--login">
-                  <h5>Đã có tài khoản</h5>
-                  <p onClick={onShowSignIn}>Đăng nhập</p>
-                </div>
               </div>
             </div>
 
@@ -142,7 +177,6 @@ const SignIn = () => {
           </div>
         </div>
       </section>
-      <SignInForm />
     </>
   );
 };

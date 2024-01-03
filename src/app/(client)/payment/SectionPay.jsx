@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PathLink from "@/app/_components/PathLink";
 import { useForm, FormProvider } from "react-hook-form";
 import { z } from "zod";
@@ -9,7 +9,7 @@ import FormControl from "@/app/_components/FormControl";
 import useAppContext from "@/app/_hooks/useAppContext";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
-import { createOrder } from "@/redux/features/apiRequest";
+import { createOrder, getAllUser } from "@/redux/features/apiRequest";
 import { useRouter } from "next/navigation";
 
 const contactForm = z.object({
@@ -31,10 +31,25 @@ const contactForm = z.object({
 const SectionPay = () => {
   const [choosePayment, setChoosePayment] = useState("Bank transfer");
 
-  const { onTakeInfoUser, form, totalProductPrice, productInCart } =
-    useAppContext();
+  const { form, totalProductPrice, productInCart } = useAppContext();
 
   const user = useSelector((state) => state.auth?.login?.currentUser);
+  const userList = useSelector((state) => state.users.users?.allUsers?.users);
+
+  useEffect(() => {
+    if (!user) {
+      navigate.push("/home");
+    }
+    if (user?.accessToken) {
+      getAllUser(user?.accessToken, dispatch);
+    }
+  }, []);
+
+  const [currentUserId, setCurrentUserId] = useState(user._id);
+  const [address, setAddress] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+
+  const findUser = userList.find((user) => user._id === currentUserId);
 
   const methods = useForm({
     resolver: zodResolver(contactForm),
@@ -46,9 +61,12 @@ const SectionPay = () => {
     },
   });
 
-  const handleTakeData = (data) => {
-    onTakeInfoUser(data);
-  };
+  useEffect(() => {
+    if (user) {
+      setAddress(findUser?.address);
+      setPhoneNumber(findUser?.phoneNumber);
+    }
+  }, []);
 
   const handleCheckboxChange = (check) => {
     setChoosePayment(check);
@@ -58,13 +76,12 @@ const SectionPay = () => {
   const navigate = useRouter();
 
   const handleSubmitForm = async (data) => {
-    console.log(data);
     if (user) {
       const newOrder = {
-        user: user?._id,
-        email: user?.email,
-        address: data.info.address,
-        phoneNumber: data.info.phone_number,
+        user: findUser?._id,
+        email: findUser?.email,
+        address: address,
+        phoneNumber: phoneNumber,
         products: productInCart,
         totalPrice: totalProductPrice,
         paymentMethod: data.info.paymentMethod,
@@ -85,16 +102,13 @@ const SectionPay = () => {
           <form
             onSubmit={methods.handleSubmit((data) => {
               data.info.paymentMethod = choosePayment;
-              handleTakeData(data);
               handleSubmitForm(data);
             })}
           >
             <div className="section--pay__wrapper row">
               <div className="section--pay__bill l-4 m-4 c-12">
-                <div
-                  className="section--pay__bill--wrapper"
-                >
-                  <h3>Information</h3>
+                <div className="section--pay__bill--wrapper">
+                  <h3>Thông tin</h3>
                   <FormControl
                     label="Email"
                     name="email"
@@ -108,14 +122,18 @@ const SectionPay = () => {
                     disabled="disabled"
                   />
                   <FormControl
-                    label="Phone number"
-                    name="info.phone_number"
-                    placeholder="Enter your phone number"
+                    label="Địa chỉ"
+                    name="info.address"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                    placeholder="Enter your phone address"
                   />
                   <FormControl
-                    label="Address"
-                    name="info.address"
-                    placeholder="Enter your phone address"
+                    label="Số điện thoại"
+                    name="info.phone_number"
+                    value={phoneNumber}
+                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    placeholder="Enter your phone number"
                   />
                 </div>
               </div>
@@ -184,13 +202,8 @@ const SectionPay = () => {
               </div>
             </div>
             <div className="payment--btn">
-              {/* <button type="submit" className="btn btn--primary">
-                {form ? <Link href="#">By Now</Link> : "Pay Now"}
-              </button> */}
               <button type="submit" className="btn btn--primary link">
-                <Link href="#">
-                  <h5>Continue</h5>
-                </Link>
+                <h5>Continue</h5>
               </button>
             </div>
           </form>

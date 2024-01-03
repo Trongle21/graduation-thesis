@@ -16,5 +16,7 @@ router.get("/stored/appointments", meController.storedAppointments);
 router.get("/trash/appointments", meController.trashAppointment);
 router.get("/stored/order", meController.storedOrder);
 router.get("/trash/order", meController.trashOrder);
+router.get("/stored/contact", meController.storedContact);
+router.get("/trash/contact", meController.trashContact);
 
 module.exports = router;

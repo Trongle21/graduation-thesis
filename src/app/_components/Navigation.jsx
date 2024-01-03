@@ -652,6 +652,30 @@ const Navigation = () => {
             </Box>
           </AccordionPanel>
         </AccordionItem>
+
+        <AccordionItem>
+          <h2>
+            <AccordionButton fontSize="20px">
+              <Flex flex="1" textAlign="left" alignItems="center" gap="10px">
+                <FaProductHunt />
+                Contact
+              </Flex>
+              <AccordionIcon />
+            </AccordionButton>
+          </h2>
+          <AccordionPanel pb={4}>
+            <Box>
+              <Flex flexDirection="column" gap="4px">
+                <Link href="http://localhost:3000/api/me/stored-contact">
+                  Danh sách ý kiến phản hồi
+                </Link>
+                <Link href="http://localhost:3000/api/me/trash-contact">
+                  Danh sách ý kiến phản hồi đã xóa
+                </Link>
+              </Flex>
+            </Box>
+          </AccordionPanel>
+        </AccordionItem>
       </Accordion>
     </Box>
   );

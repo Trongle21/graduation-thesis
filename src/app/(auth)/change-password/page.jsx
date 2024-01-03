@@ -1,11 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
-import SignInForm from "@/app/_components/SignInForm";
-import useAppContext from "@/app/_hooks/useAppContext";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { registerUser } from "@/redux/features/apiRequest";
-import { useDispatch } from "react-redux";
+import {
+  changePasswordUser,
+  getAllUser,
+  updateUser,
+} from "@/redux/features/apiRequest";
+import { useDispatch, useSelector } from "react-redux";
 import { useForm, FormProvider } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -14,15 +16,6 @@ import { useRouter } from "next/navigation";
 
 const contactForm = z.object({
   info: z.object({
-    name: z
-      .string({ required_error: "Bạn chưa nhập tên" })
-      .min(6, { message: "tên phải có ít nhất 6 ký tự" })
-      .trim(),
-    email: z
-      .string({ required_error: "Bạn chưa nhập email" })
-      .min(8, { message: "Email phải có ít nhất 8 ký tự" })
-      .email({ message: "Bạn chưa nhập email" })
-      .trim(),
     password: z
       .string({ required_error: "Bạn chưa nhập password" })
       .min(8, { message: "Mật khẩu phải có ít nhất 8 ký tự" })
@@ -31,9 +24,11 @@ const contactForm = z.object({
 });
 
 const SignIn = () => {
-  const { onShowSignIn } = useAppContext();
+  const user = useSelector((state) => state.auth.login?.currentUser);
+  const userList = useSelector((state) => state.users.users?.allUsers?.users);
+
+  const [currentUserId, setCurrentUserId] = useState(user._id);
   const [userName, setUserName] = useState("");
-  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const dispatch = useDispatch();
@@ -43,20 +38,35 @@ const SignIn = () => {
     resolver: zodResolver(contactForm),
     defaultValues: {
       info: {
-        email: "",
         password: "",
-        confirm_password: "",
       },
     },
   });
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    if (!user) {
+      navigate.push("/home");
+    }
+    if (user?.accessToken) {
+      getAllUser(user?.accessToken, dispatch);
+    }
+  }, []);
+
+  const findUser = userList.find((user) => user._id === currentUserId);
+
+  useEffect(() => {
+    if (user) {
+      setUserName(findUser?.username);
+    }
+  }, []);
+
+  const handleSubmit = (e, data) => {
     const newUser = {
-      username: userName,
-      email: email,
+      ...findUser,
       password: password,
     };
-    registerUser(newUser, dispatch, navigate);
+    changePasswordUser(newUser, user?.accessToken, dispatch, navigate);
+    window.alert("Đổi mật khẩu thành công")
   };
 
   return (
@@ -71,8 +81,8 @@ const SignIn = () => {
                     <img src="https://i.ibb.co/5251mQc/logo.png" alt="" />
                   </Link>
                 </div>
-                <h2>Bắt đầu </h2>
-                <h3>Tạo mới tài khoản bạn ở đây</h3>
+                <h2>Xin Chào: {userName}</h2>
+                <h3>Đổi mật khẩu</h3>
                 <FormProvider {...methods}>
                   <form
                     className="form-wrapper"
@@ -87,25 +97,16 @@ const SignIn = () => {
                           name="info.name"
                           placeholder="Nhập tên của bạn"
                           value={userName}
+                          readOnly={true}
                           onChange={(e) => setUserName(e.target.value)}
                         />
                       </div>
                     </div>
+
                     <div className="sign--up__form">
                       <div className="main--account__form-group">
                         <FormControl
-                          label="Email"
-                          name="info.email"
-                          placeholder="Nhập email của bạn"
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                        />
-                      </div>
-                    </div>
-                    <div className="sign--up__form">
-                      <div className="main--account__form-group">
-                        <FormControl
-                          label="Mật khẩu"
+                          label="Nhập mật khẩu"
                           type="password"
                           name="info.password"
                           placeholder="Nhập mật khẩu của bạn"
@@ -117,15 +118,11 @@ const SignIn = () => {
 
                     <div className="sign--up__form--button">
                       <button type="submit" className="btn btn--signUp">
-                        SignUp
+                        Cập nhật
                       </button>
                     </div>
                   </form>
                 </FormProvider>
-                <div className="sign--up__form--login">
-                  <h5>Đã có tài khoản</h5>
-                  <p onClick={onShowSignIn}>Đăng nhập</p>
-                </div>
               </div>
             </div>
 
@@ -142,7 +139,6 @@ const SignIn = () => {
           </div>
         </div>
       </section>
-      <SignInForm />
     </>
   );
 };

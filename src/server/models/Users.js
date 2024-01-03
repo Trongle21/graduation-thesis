@@ -22,6 +22,14 @@ const UsersSchema = new mongoose.Schema(
       required: true,
       minLength: 8,
     },
+    address: {
+      type: String,
+      default: "",
+    },
+    phoneNumber: {
+      type: String,
+      default: "",
+    },
     admin: {
       type: Boolean,
       default: false,
@@ -34,6 +42,5 @@ UsersSchema.plugin(mongooseDelete, {
   deletedAt: true,
   overrideMethods: true,
 });
-
 
 module.exports = mongoose.model("Users", UsersSchema);

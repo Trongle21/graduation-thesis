@@ -1,13 +1,13 @@
 const express = require("express");
 const router = express.Router();
-const order = require("../controllers/OrderController");
+const orderController = require("../controllers/OrderController");
 const { verifyTokenAndAdmin } = require("../middleware/verifyTokenMiddleWare");
 
-router.post("/store", order.store);
-router.delete("/:id", verifyTokenAndAdmin, order.delete);
-router.put("/:id", verifyTokenAndAdmin, order.update);
-router.patch("/:id/restore", order.restore);
-router.delete("/:id/force", verifyTokenAndAdmin, order.forceDelete);
-router.post("/handle-action-form", verifyTokenAndAdmin, order.handleActionForm);
+router.post("/store", orderController.store);
+router.delete("/:id", verifyTokenAndAdmin, orderController.delete);
+router.put("/:id", verifyTokenAndAdmin, orderController.update);
+router.patch("/:id/restore", orderController.restore);
+router.delete("/:id/force", verifyTokenAndAdmin, orderController.forceDelete);
+router.post("/handle-action-form", verifyTokenAndAdmin, orderController.handleActionForm);
 
 module.exports = router;

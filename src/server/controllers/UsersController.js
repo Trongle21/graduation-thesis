@@ -24,6 +24,7 @@ const usersController = {
   // [GET] "api/users/:id/edit"
   edit: async (req, res) => {
     try {
+      console.log(1);
       const user = await Users.findById({ _id: req.params.id });
       await res.send({ user: mongooseToObject(user) });
     } catch (err) {
@@ -33,6 +34,18 @@ const usersController = {
 
   //   [PUT] "api/users/:id"
   update: async (req, res) => {
+    try {
+      const { username, email, address, phoneNumber } = req.body;
+      const updateUser = { username, email, address, phoneNumber };
+      const data = await Users.updateOne({ _id: req.params.id }, updateUser);
+      console.log("Update thành công");
+    } catch (err) {
+      console.error(err);
+      res.status(500).send("Lỗi khi update!");
+    }
+  },
+
+  changePassword: async (req, res) => {
     try {
       const { username, email, password } = req.body;
       const updateUser = { username, email, password };

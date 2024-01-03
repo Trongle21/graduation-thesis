@@ -141,11 +141,11 @@ const StoredAppointment = () => {
     setSelectedItems(selectAll ? [] : allAppointmentIds);
   };
 
-  const handleSelectItem = (servicePackId) => {
+  const handleSelectItem = (appointmentId) => {
     setSelectedItems((prevSelectedItems) => {
-      const newSelectedItems = prevSelectedItems.includes(servicePackId)
-        ? prevSelectedItems.filter((id) => id !== servicePackId)
-        : [...prevSelectedItems, servicePackId];
+      const newSelectedItems = prevSelectedItems.includes(appointmentId)
+        ? prevSelectedItems.filter((id) => id !== appointmentId)
+        : [...prevSelectedItems, appointmentId];
 
       setSelectAll(
         newSelectedItems.length === appointmentList.length &&
