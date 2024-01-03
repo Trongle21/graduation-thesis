@@ -468,7 +468,7 @@ export const getAllContactDeleted = async (accessToken, dispatch) => {
 
 export const updateUser = async (user, accessToken, dispatch, navigate) => {
   dispatch(updateUserStart());
-
+  console.log(user);
   try {
     window.location.reload();
     const res = await axios.put(

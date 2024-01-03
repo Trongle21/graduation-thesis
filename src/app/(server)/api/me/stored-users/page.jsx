@@ -125,30 +125,41 @@ const StoredUser = () => {
   const handleDeleteUser = (id) => {
     deleteUser(user?.accessToken, dispatch, id, axiosJWT);
   };
+  const [currentUser, setCurrentUser] = useState([]);
 
-  const [currentUserId, setCurrentUserId] = useState(null);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [address, setAddress] = useState("");
+  const [phoneNumber, setPhonNumber] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
 
-  const handleEdit = (id) => {
-    const findUser = userList.find((user) => user._id === id);
-    setCurrentUserId(findUser._id);
-    setUsername(findUser.username);
-    setEmail(findUser.email);
+  const handleEdit = (user) => {
+    setCurrentUser(user);
+    setUsername(user.username);
+    setPhonNumber(user.phoneNumber);
+    setAddress(user.address);
+    setIsAdmin(user.admin);
     OnOpenEdit();
   };
 
-  const [show, setShow] = React.useState(false);
-  const handleClick = () => setShow(!show);
-
   const handleSubmit = (e) => {
-    const newUser = {
-      _id: currentUserId,
-      username: username,
-      email: email,
-      password: password,
-    };
+    let newUser;
+    if (isAdmin === "admin" || isAdmin) {
+      newUser = {
+        ...currentUser,
+        username: username,
+        address: address,
+        phoneNumber: phoneNumber,
+        admin: true,
+      };
+    } else
+      newUser = {
+        ...currentUser,
+        username: username,
+        address: address,
+        phoneNumber: phoneNumber,
+        admin: false,
+      };
     updateUser(newUser, user?.accessToken, dispatch, navigate);
   };
 
@@ -250,13 +261,33 @@ const StoredUser = () => {
                     ></Checkbox>
                   </Td>
                   <Td textAlign="center">{index + 1}</Td>
-                  <Td textAlign="center">{user.username}</Td>
-                  <Td textAlign="center">{user.email}</Td>
+                  {user.admin ? (
+                    <>
+                      <Td textAlign="center" color="#f6a25e">
+                        {user.username}
+                      </Td>
+                    </>
+                  ) : (
+                    <>
+                      <Td textAlign="center">{user.username}</Td>
+                    </>
+                  )}
+                  {user.admin ? (
+                    <>
+                      <Td textAlign="center" color="#f6a25e">
+                        {user.email}
+                      </Td>
+                    </>
+                  ) : (
+                    <>
+                      <Td textAlign="center">{user.email}</Td>
+                    </>
+                  )}
                   <Td textAlign="center">
                     <Link paddingRight={1}>
                       <Button
                         colorScheme="facebook"
-                        onClick={() => handleEdit(user._id)}
+                        onClick={() => handleEdit(user)}
                       >
                         Sửa
                       </Button>
@@ -277,6 +308,18 @@ const StoredUser = () => {
                             <DrawerBody>
                               <Box>
                                 <FormControl>
+                                  <FormLabel fontSize="20px">Email</FormLabel>
+                                  <Input
+                                    type="email"
+                                    value={currentUser.email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    autoComplete="email"
+                                    readOnly
+                                  />
+                                </FormControl>
+                              </Box>
+                              <Box>
+                                <FormControl>
                                   <FormLabel fontSize="20px">
                                     Tên người dùng{" "}
                                   </FormLabel>
@@ -292,39 +335,62 @@ const StoredUser = () => {
                               </Box>
                               <Box>
                                 <FormControl>
-                                  <FormLabel fontSize="20px">Email</FormLabel>
+                                  <FormLabel fontSize="20px">
+                                    Địa chỉ{" "}
+                                  </FormLabel>
                                   <Input
-                                    type="email"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    autoComplete="email"
+                                    type="name"
+                                    value={address}
+                                    onChange={(e) => setAddress(e.target.value)}
+                                    autoComplete="address"
                                   />
                                 </FormControl>
                               </Box>
                               <Box>
                                 <FormControl>
                                   <FormLabel fontSize="20px">
-                                    Password{" "}
+                                    Số điện thoại{" "}
                                   </FormLabel>
-                                  <InputGroup size="md">
-                                    <Input
-                                      type={show ? "text" : "password"}
-                                      value={password}
-                                      onChange={(e) =>
-                                        setPassword(e.target.value)
-                                      }
-                                      autoComplete="current-password"
-                                    />
-                                    <InputRightElement width="4.5rem">
-                                      <Button
-                                        h="1.75rem"
-                                        size="sm"
-                                        onClick={handleClick}
+                                  <Input
+                                    type="name"
+                                    value={phoneNumber}
+                                    onChange={(e) =>
+                                      setPhonNumber(e.target.value)
+                                    }
+                                    autoComplete="phoneNumber"
+                                  />
+                                </FormControl>
+                              </Box>
+                              <Box>
+                                <FormControl>
+                                  <FormLabel fontSize="20px">
+                                    Phân quyền{" "}
+                                  </FormLabel>
+                                  {isAdmin ? (
+                                    <>
+                                      <Select
+                                        defaultValue="admin"
+                                        onChange={(e) =>
+                                          setIsAdmin(e.target.value)
+                                        }
                                       >
-                                        {show ? "Hide" : "Show"}
-                                      </Button>
-                                    </InputRightElement>
-                                  </InputGroup>
+                                        <option value="admin">Admin</option>
+                                        <option value="user">User</option>
+                                      </Select>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <Select
+                                        value="user"
+                                        onChange={(e) =>
+                                          setIsAdmin(e.target.value)
+                                        }
+                                      >
+                                        <option value="user">User</option>
+                                        <option value="admin">Admin</option>
+                                      </Select>
+                                    </>
+                                  )}
                                 </FormControl>
                               </Box>
                             </DrawerBody>
