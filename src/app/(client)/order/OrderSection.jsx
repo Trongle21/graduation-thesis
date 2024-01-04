@@ -1,7 +1,9 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
+  deleteAppointment,
+  deleteOrder,
   getAllAppointment,
   getAllOrder,
   getAllPet,
@@ -13,15 +15,32 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import PathLink from "@/app/_components/PathLink";
 import {
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogOverlay,
   Box,
+  Button,
   Flex,
   Heading,
   Image,
+  Link,
   Tab,
   TabList,
   TabPanel,
   TabPanels,
+  Table,
+  TableContainer,
   Tabs,
+  Tbody,
+  Td,
+  Text,
+  Th,
+  Thead,
+  Tr,
+  useDisclosure,
 } from "@chakra-ui/react";
 
 const axiosJWT = axios.create();
@@ -94,6 +113,41 @@ const OrderSection = () => {
     }
   }, []);
 
+  const [orderId, setOrderId] = useState(null);
+  const [appointmentId, setAppointmentId] = useState(null);
+
+  const {
+    isOpen: isOpenDeleteOrder,
+    onOpen: OnOpenDeleteOrder,
+    onClose: onCloseDeleteOrder,
+  } = useDisclosure();
+  const cancelRefOrder = React.useRef();
+
+  const {
+    isOpen: isOpenDeleteAppointment,
+    onOpen: OnOpenDeleteAppointment,
+    onClose: onCloseDeleteAppointment,
+  } = useDisclosure();
+  const cancelRefAppointment = React.useRef();
+
+  const handleDeleteOrder = (id) => {
+    setOrderId(id);
+    OnOpenDeleteOrder();
+  };
+
+  const handleDeleteOrderForce = (id) => {
+    deleteOrder(user?.accessToken, dispatch, id, user?._id);
+  };
+
+  const handleDeleteAppointment = (id) => {
+    setAppointmentId(id);
+    OnOpenDeleteAppointment();
+  };
+
+  const handleDeleteAppointmentForce = (id) => {
+    deleteAppointment(user?.accessToken, dispatch, id, user?._id);
+  };
+
   return (
     <section>
       <div className="container">
@@ -108,189 +162,192 @@ const OrderSection = () => {
             <TabPanel>
               <Tabs variant="enclosed">
                 <TabList>
-                  <Tab fontSize="20px">Tất cả</Tab>
                   <Tab fontSize="20px">Đơn đã được chấp nhập</Tab>
                   <Tab fontSize="20px">Đơn đang chờ xác nhận</Tab>
                 </TabList>
 
                 <TabPanels>
                   <TabPanel>
-                    {orderList
-                      ?.filter((order) => order.user === user?._id)
-                      .map((order, index) => {
-                        const productIds = order.products.map(
-                          (prd) => prd.product
-                        );
+                    <TableContainer>
+                      <Table variant="simple" size="lg">
+                        <Thead>
+                          <Tr>
+                            <Th fontSize="xl" textAlign="center">
+                              #
+                            </Th>
+                            <Th fontSize="xl" textAlign="center">
+                              Sản phẩm
+                            </Th>
+                            <Th fontSize="xl" textAlign="center">
+                              Tổng tiền
+                            </Th>
+                          </Tr>
+                        </Thead>
+                        <Tbody>
+                          {orderList
+                            ?.filter((order) => order.user === user?._id)
+                            .map((order, index) => {
+                              const productIds = order.products.map(
+                                (prd) => prd.product
+                              );
 
-                        const orderProductDetails = productList?.filter(
-                          (product) =>
-                            productIds.includes(product._id.toString())
-                        );
-                        return (
-                          <Box key={order._id}>
-                            {orderProductDetails.map((product) => (
-                              <Flex key={product._id} gap={4} marginBottom={10}>
-                                <Box>
-                                  <Image
-                                    boxSize="100px"
-                                    src={
-                                      `http://localhost:8000/images/` +
-                                      product.thumbnail
-                                    }
-                                    alt="Dan Abramov"
-                                  />
-                                </Box>
-                                <div>
-                                  <Heading as="h5" size="lg">
-                                    {product.description}
-                                  </Heading>
-                                  <span>${product.price}</span>
-                                  <br />
-                                  <span>
-                                    x
-                                    {
-                                      order.products.find(
-                                        (prd) => prd.product === product._id
-                                      )?.quantity
-                                    }
-                                  </span>
-                                </div>
-                              </Flex>
-                            ))}
-                            <Flex
-                              justifyContent="space-between"
-                              marginBottom={10}
-                            >
-                              <Heading as="h5" size="2xl" color="#fa9645">
-                                Tổng tiền : ${order.totalPrice}
-                              </Heading>
-                            </Flex>
-                            <div className="line"></div>
-                          </Box>
-                        );
-                      })}
+                              const orderProductDetails = productList?.filter(
+                                (product) =>
+                                  productIds.includes(product._id.toString())
+                              );
+
+                              if (order.status === "Solved") {
+                                return (
+                                  <Tr key={order._id}>
+                                    <Td textAlign="center" fontSize="40px">
+                                      {index + 1}
+                                    </Td>
+                                    <Td textAlign="center">
+                                      {orderProductDetails.map(
+                                        (product, index) => (
+                                          <Flex
+                                            key={index}
+                                            gap={4}
+                                            marginBottom={10}
+                                            alignItems="center"
+                                            justifyContent="center"
+                                          >
+                                            <Box>
+                                              <Image
+                                                boxSize="100px"
+                                                src={
+                                                  `http://localhost:8000/images/` +
+                                                  product.thumbnail
+                                                }
+                                                alt="Dan Abramov"
+                                              />
+                                            </Box>
+                                            <div>
+                                              <span>${product.price}</span>
+                                              <br />
+                                              <span>
+                                                x
+                                                {
+                                                  order.products.find(
+                                                    (prd) =>
+                                                      prd.product ===
+                                                      product._id
+                                                  )?.quantity
+                                                }
+                                              </span>
+                                            </div>
+                                          </Flex>
+                                        )
+                                      )}
+                                    </Td>
+                                    <Td textAlign="center" fontSize="40px">
+                                      ${order.totalPrice}
+                                    </Td>
+                                  </Tr>
+                                );
+                              }
+                            })}
+                        </Tbody>
+                      </Table>
+                    </TableContainer>
                   </TabPanel>
-                  <TabPanel>
-                    <TabPanel>
-                      {orderList
-                        ?.filter((order) => order.user === user?._id)
-                        .map((order, index) => {
-                          const productIds = order.products.map(
-                            (prd) => prd.product
-                          );
 
-                          const orderProductDetails = productList?.filter(
-                            (product) =>
-                              productIds.includes(product._id.toString())
-                          );
-                          if (order.status === "Solved") {
-                            return (
-                              <Box key={index}>
-                                {orderProductDetails.map((product, index) => (
-                                  <Flex key={index} gap={4} marginBottom={10}>
-                                    <Box>
-                                      <Image
-                                        boxSize="100px"
-                                        src={
-                                          `http://localhost:8000/images/` +
-                                          product.thumbnail
-                                        }
-                                        alt="Dan Abramov"
-                                      />
-                                    </Box>
-                                    <div>
-                                      <Heading as="h5" size="lg">
-                                        {product.description}
-                                      </Heading>
-                                      <span>${product.price}</span>
-                                      <br />
-                                      <span>
-                                        x
-                                        {
-                                          order.products.find(
-                                            (prd) => prd.product === product._id
-                                          )?.quantity
-                                        }
-                                      </span>
-                                    </div>
-                                  </Flex>
-                                ))}
-                                <Flex
-                                  justifyContent="space-between"
-                                  marginBottom={10}
-                                >
-                                  <Heading as="h5" size="2xl" color="#fa9645">
-                                    Tổng tiền : ${order.totalPrice}
-                                  </Heading>
-                                </Flex>
-                                <div className="line"></div>
-                              </Box>
-                            );
-                          }
-                        })}
-                    </TabPanel>
-                  </TabPanel>
                   <TabPanel>
-                    {orderList
-                      ?.filter((order) => order.user === user?._id)
-                      .map((order, index) => {
-                        const productIds = order.products.map(
-                          (prd) => prd.product
-                        );
+                    <TableContainer>
+                      <Table variant="simple" size="lg">
+                        <Thead>
+                          <Tr>
+                            <Th fontSize="xl" textAlign="center">
+                              #
+                            </Th>
+                            <Th fontSize="xl" textAlign="center">
+                              Sản phẩm
+                            </Th>
+                            <Th fontSize="xl" textAlign="center">
+                              Tổng tiền
+                            </Th>
+                            <Th fontSize="xl" textAlign="center">
+                              Hủy đơn hàng
+                            </Th>
+                          </Tr>
+                        </Thead>
+                        <Tbody>
+                          {orderList
+                            ?.filter((order) => order.user === user?._id)
+                            .map((order, index) => {
+                              const productIds = order.products.map(
+                                (prd) => prd.product
+                              );
 
-                        const orderProductDetails = productList?.filter(
-                          (product) =>
-                            productIds.includes(product._id.toString())
-                        );
-                        if (order.status === "Pending") {
-                          return (
-                            <Box key={order._id + index}>
-                              {orderProductDetails.map((product) => (
-                                <Flex
-                                  key={order._id + index}
-                                  gap={4}
-                                  marginBottom={10}
-                                >
-                                  <Box>
-                                    <Image
-                                      boxSize="100px"
-                                      src={
-                                        `http://localhost:8000/images/` +
-                                        product.thumbnail
-                                      }
-                                      alt="Dan Abramov"
-                                    />
-                                  </Box>
-                                  <div>
-                                    <Heading as="h5" size="lg">
-                                      {product.description}
-                                    </Heading>
-                                    <span>${product.price}</span>
-                                    <br />
-                                    <span>
-                                      x
-                                      {
-                                        order.products.find(
-                                          (prd) => prd.product === product._id
-                                        )?.quantity
-                                      }
-                                    </span>
-                                  </div>
-                                </Flex>
-                              ))}
-                              <Flex
-                                justifyContent="space-between"
-                                marginBottom={10}
-                              >
-                                <Heading as="h5" size="2xl" color="#fa9645">
-                                  Tổng tiền : ${order.totalPrice}
-                                </Heading>
-                              </Flex>
-                              <div className="line"></div>
-                            </Box>
-                          );
-                        }
-                      })}
+                              const orderProductDetails = productList?.filter(
+                                (product) =>
+                                  productIds.includes(product._id.toString())
+                              );
+
+                              if (order.status === "Pending") {
+                                return (
+                                  <Tr key={order._id + 200}>
+                                    <Td textAlign="center" fontSize="40px">
+                                      {index + 1}
+                                    </Td>
+                                    <Td textAlign="center">
+                                      {orderProductDetails.map(
+                                        (product, index) => (
+                                          <Flex
+                                            gap={4}
+                                            key={index + 200}
+                                            marginBottom={10}
+                                            alignItems="center"
+                                            justifyContent="center"
+                                          >
+                                            <Box>
+                                              <Image
+                                                boxSize="100px"
+                                                src={
+                                                  `http://localhost:8000/images/` +
+                                                  product.thumbnail
+                                                }
+                                                alt="Dan Abramov"
+                                              />
+                                            </Box>
+                                            <div>
+                                              <span>${product.price}</span>
+                                              <br />
+                                              <span>
+                                                x
+                                                {
+                                                  order.products.find(
+                                                    (prd) =>
+                                                      prd.product ===
+                                                      product._id
+                                                  )?.quantity
+                                                }
+                                              </span>
+                                            </div>
+                                          </Flex>
+                                        )
+                                      )}
+                                    </Td>
+                                    <Td textAlign="center" fontSize="40px">
+                                      ${order.totalPrice}
+                                    </Td>
+                                    <Td textAlign="center">
+                                      <button
+                                        className="btn btn--primary"
+                                        onClick={() =>
+                                          handleDeleteOrder(order._id)
+                                        }
+                                      >
+                                        Hủy
+                                      </button>
+                                    </Td>
+                                  </Tr>
+                                );
+                              }
+                            })}
+                        </Tbody>
+                      </Table>
+                    </TableContainer>
                   </TabPanel>
                 </TabPanels>
               </Tabs>
@@ -298,164 +355,143 @@ const OrderSection = () => {
             <TabPanel>
               <Tabs variant="enclosed">
                 <TabList>
-                  <Tab fontSize="20px">Tất cả</Tab>
                   <Tab fontSize="20px">Đơn đặt lịch đã được chấp nhận</Tab>
                   <Tab fontSize="20px">Đơn đặt lịch chờ xác nhận</Tab>
                 </TabList>
                 <TabPanels>
                   <TabPanel>
-                    {appointmentList
-                      ?.filter(
-                        (appointmentList) => appointmentList.user === user?._id
-                      )
-                      .map((appointment, index) => {
-                        const petName = petList?.find(
-                          (pet) => pet._id === appointment.pet
-                        );
-
-                        const servicePack = servicePackList?.find(
-                          (service) => service._id === appointment.service
-                        );
-                        const appointmentPackageId = appointment.package;
-
-                        const foundServicePack = servicePackList?.find(
-                          (servicePack) =>
-                            servicePack.packages.some(
-                              (pack) => pack._id === appointmentPackageId
+                    <TableContainer>
+                      <Table variant="simple" size="lg">
+                        <Thead>
+                          <Tr>
+                            <Th fontSize="xl">#</Th>
+                            <Th fontSize="xl">Tên pet</Th>
+                            <Th fontSize="xl">Dịch vụ</Th>
+                            <Th fontSize="xl">Gói</Th>
+                            <Th fontSize="xl">Giá</Th>
+                            <Th fontSize="xl">Ngày đặt</Th>
+                          </Tr>
+                        </Thead>
+                        <Tbody>
+                          {appointmentList
+                            ?.filter(
+                              (appointmentList) =>
+                                appointmentList.user === user?._id
                             )
-                        );
+                            .map((appointment, index) => {
+                              const petName = petList?.find(
+                                (pet) => pet._id === appointment.pet
+                              );
 
-                        const foundPackage = foundServicePack
-                          ? foundServicePack.packages?.find(
-                              (pack) => pack._id === appointmentPackageId
-                            )
-                          : null;
+                              const servicePack = servicePackList?.find(
+                                (service) => service._id === appointment.service
+                              );
+                              const appointmentPackageId = appointment.package;
 
-                        return (
-                          <Flex
-                            key={appointment._id}
-                            gap={16}
-                            justifyContent="space-between"
-                          >
-                            <Box fontSize={20}>
-                              <p>Tên pet: {petName?.name}</p>
-                            </Box>
-                            <Box fontSize={20}>
-                              <p>Dịch vụ: {servicePack?.serviceName}</p>
-                            </Box>
-                            <Box fontSize={20}>
-                              <p>Gói: {foundPackage?.name}</p>
-                            </Box>
-                            <Box fontSize={20}>
-                              <p>Giá: {foundPackage?.price}</p>
-                            </Box>
-                          </Flex>
-                        );
-                      })}
+                              const foundServicePack = servicePackList?.find(
+                                (servicePack) =>
+                                  servicePack.packages.some(
+                                    (pack) => pack._id === appointmentPackageId
+                                  )
+                              );
+
+                              const foundPackage = foundServicePack
+                                ? foundServicePack.packages?.find(
+                                    (pack) => pack._id === appointmentPackageId
+                                  )
+                                : null;
+
+                              if (appointment.status === "Solved") {
+                                return (
+                                  <Tr key={appointment._id}>
+                                    <Td>{index + 1}</Td>
+                                    <Td>{petName?.name}</Td>
+                                    <Td>{servicePack?.serviceName}</Td>
+                                    <Td>{foundPackage?.name}</Td>
+                                    <Td>{foundPackage?.price}</Td>
+                                    <Td>{appointment.date}</Td>
+                                  </Tr>
+                                );
+                              }
+                            })}
+                        </Tbody>
+                      </Table>
+                    </TableContainer>
                   </TabPanel>
+
                   <TabPanel>
-                    {appointmentList
-                      ?.filter(
-                        (appointmentList) => appointmentList.user === user?._id
-                      )
-                      .map((appointment, index) => {
-                        const petName = petList?.find(
-                          (pet) => pet._id === appointment.pet
-                        );
-
-                        const servicePack = servicePackList?.find(
-                          (service) => service._id === appointment.service
-                        );
-                        const appointmentPackageId = appointment.package;
-
-                        const foundServicePack = servicePackList?.find(
-                          (servicePack) =>
-                            servicePack.packages.some(
-                              (pack) => pack._id === appointmentPackageId
+                    <TableContainer>
+                      <Table variant="simple" size="lg">
+                        <Thead>
+                          <Tr>
+                            <Th fontSize="xl">#</Th>
+                            <Th fontSize="xl">Tên pet</Th>
+                            <Th fontSize="xl">Dịch vụ</Th>
+                            <Th fontSize="xl">Gói</Th>
+                            <Th fontSize="xl">Giá</Th>
+                            <Th fontSize="xl">Ngày đặt</Th>
+                            <Th fontSize="xl" textAlign="center">
+                              Hủy đặt lịch
+                            </Th>
+                          </Tr>
+                        </Thead>
+                        <Tbody>
+                          {appointmentList
+                            ?.filter(
+                              (appointmentList) =>
+                                appointmentList.user === user?._id
                             )
-                        );
+                            .map((appointment, index) => {
+                              const petName = petList?.find(
+                                (pet) => pet._id === appointment.pet
+                              );
 
-                        const foundPackage = foundServicePack
-                          ? foundServicePack.packages?.find(
-                              (pack) => pack._id === appointmentPackageId
-                            )
-                          : null;
+                              const servicePack = servicePackList?.find(
+                                (service) => service._id === appointment.service
+                              );
+                              const appointmentPackageId = appointment.package;
 
-                        if (appointment.status === "Solved") {
-                          return (
-                            <Flex
-                              key={index}
-                              gap={16}
-                              justifyContent="space-between"
-                            >
-                              <Box fontSize={20}>
-                                <p>Tên pet: {petName?.name}</p>
-                              </Box>
-                              <Box fontSize={20}>
-                                <p>Dịch vụ: {servicePack?.serviceName}</p>
-                              </Box>
-                              <Box fontSize={20}>
-                                <p>Gói: {foundPackage?.name}</p>
-                              </Box>
-                              <Box fontSize={20}>
-                                <p>Giá: {foundPackage?.price}</p>
-                              </Box>
-                            </Flex>
-                          );
-                        }
-                      })}
-                  </TabPanel>
-                  <TabPanel>
-                    {appointmentList
-                      ?.filter(
-                        (appointmentList) => appointmentList.user === user?._id
-                      )
-                      .map((appointment, index) => {
-                        const petName = petList?.find(
-                          (pet) => pet._id === appointment.pet
-                        );
+                              const foundServicePack = servicePackList?.find(
+                                (servicePack) =>
+                                  servicePack.packages.some(
+                                    (pack) => pack._id === appointmentPackageId
+                                  )
+                              );
 
-                        const servicePack = servicePackList?.find(
-                          (service) => service._id === appointment.service
-                        );
-                        const appointmentPackageId = appointment.package;
+                              const foundPackage = foundServicePack
+                                ? foundServicePack.packages?.find(
+                                    (pack) => pack._id === appointmentPackageId
+                                  )
+                                : null;
 
-                        const foundServicePack = servicePackList?.find(
-                          (servicePack) =>
-                            servicePack.packages.some(
-                              (pack) => pack._id === appointmentPackageId
-                            )
-                        );
-
-                        const foundPackage = foundServicePack
-                          ? foundServicePack.packages?.find(
-                              (pack) => pack._id === appointmentPackageId
-                            )
-                          : null;
-
-                        if (appointment.status === "Pending") {
-                          return (
-                            <Flex
-                              key={appointment._id + index}
-                              gap={16}
-                              justifyContent="space-between"
-                            >
-                              <Box fontSize={20}>
-                                <p>Tên pet: {petName?.name}</p>
-                              </Box>
-                              <Box fontSize={20}>
-                                <p>Dịch vụ: {servicePack?.serviceName}</p>
-                              </Box>
-                              <Box fontSize={20}>
-                                <p>Gói: {foundPackage?.name}</p>
-                              </Box>
-                              <Box fontSize={20}>
-                                <p>Giá: {foundPackage?.price}</p>
-                              </Box>
-                            </Flex>
-                          );
-                        }
-                      })}
+                              if (appointment.status === "Pending") {
+                                return (
+                                  <Tr key={appointment._id}>
+                                    <Td>{index + 1}</Td>
+                                    <Td>{petName?.name}</Td>
+                                    <Td>{servicePack?.serviceName}</Td>
+                                    <Td>{foundPackage?.name}</Td>
+                                    <Td>{foundPackage?.price}</Td>
+                                    <Td>{appointment.date}</Td>
+                                    <Td textAlign="center">
+                                      <button
+                                        className="btn btn--primary"
+                                        onClick={() =>
+                                          handleDeleteAppointment(
+                                            appointment._id
+                                          )
+                                        }
+                                      >
+                                        Hủy
+                                      </button>
+                                    </Td>
+                                  </Tr>
+                                );
+                              }
+                            })}
+                        </Tbody>
+                      </Table>
+                    </TableContainer>
                   </TabPanel>
                 </TabPanels>
               </Tabs>
@@ -463,6 +499,72 @@ const OrderSection = () => {
           </TabPanels>
         </Tabs>
       </div>
+      <AlertDialog
+        isOpen={isOpenDeleteOrder}
+        leastDestructiveRef={cancelRefOrder}
+        onClose={onCloseDeleteOrder}
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent marginTop="100px">
+            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+              Xóa hóa đơn này
+            </AlertDialogHeader>
+
+            <AlertDialogBody>Bạn chắc chắn hóa đơn này</AlertDialogBody>
+
+            <AlertDialogFooter>
+              <Button ref={cancelRefOrder} onClick={onCloseDeleteOrder}>
+                Hủy
+              </Button>
+              <Button
+                colorScheme="red"
+                onClick={() => {
+                  handleDeleteOrderForce(orderId);
+                  onCloseDeleteOrder();
+                }}
+                ml={3}
+              >
+                Xóa
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
+
+      <AlertDialog
+        isOpen={isOpenDeleteAppointment}
+        leastDestructiveRef={cancelRefAppointment}
+        onClose={onCloseDeleteAppointment}
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent marginTop="100px">
+            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+              Xóa đơn đặt lịch này
+            </AlertDialogHeader>
+
+            <AlertDialogBody>Bạn chắc chắn đơn đặt lịch này</AlertDialogBody>
+
+            <AlertDialogFooter>
+              <Button
+                ref={cancelRefAppointment}
+                onClick={onCloseDeleteAppointment}
+              >
+                Hủy
+              </Button>
+              <Button
+                colorScheme="red"
+                onClick={() => {
+                  handleDeleteAppointmentForce(appointmentId);
+                  onCloseDeleteAppointment();
+                }}
+                ml={3}
+              >
+                Xóa
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
     </section>
   );
 };

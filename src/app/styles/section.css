@@ -2250,3 +2250,16 @@ input[type="checkbox"]:checked {
 .contact--message__info:hover {
   color: #f6a25e;
 }
+
+.responses--user {
+  color: #fa9645;
+  font-size: 2rem;
+}
+
+.contact--form__info {
+  margin-top: 2rem;
+}
+
+.delete--order__user {
+  margin-top: 2rem;
+}

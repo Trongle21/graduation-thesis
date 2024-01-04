@@ -715,15 +715,13 @@ export const deleteServicePackForce = async (accessToken, dispatch, id) => {
   }
 };
 
-export const deleteAppointment = async (accessToken, dispatch, id) => {
+export const deleteAppointment = async (accessToken, dispatch, id, userId) => {
   dispatch(deleteAppointmentStart());
   window.location.reload();
   try {
     const res = await axios.delete(
       "http://localhost:8000/api/appointments/" + id,
-      {
-        headers: { token: `Bearer ${accessToken}` },
-      }
+      { data: { userId: userId }, headers: { token: `Bearer ${accessToken}` } }
     );
     dispatch(deleteAppointmentSuccess(res.data));
   } catch (err) {
@@ -737,9 +735,7 @@ export const deleteAppointmentForce = async (accessToken, dispatch, id) => {
   try {
     const res = await axios.delete(
       "http://localhost:8000/api/appointments/" + id + "/force",
-      {
-        headers: { token: `Bearer ${accessToken}` },
-      }
+      { headers: { token: `Bearer ${accessToken}` } }
     );
     dispatch(deleteAppointmentSuccess(res.data));
   } catch (err) {
@@ -776,11 +772,12 @@ export const deletePetForce = async (accessToken, dispatch, id) => {
   }
 };
 
-export const deleteOrder = async (accessToken, dispatch, id) => {
+export const deleteOrder = async (accessToken, dispatch, id, userId) => {
   dispatch(deleteOrderStart());
   window.location.reload();
   try {
     const res = await axios.delete("http://localhost:8000/api/order/" + id, {
+      data: { userId: userId },
       headers: { token: `Bearer ${accessToken}` },
     });
     dispatch(deleteOrderSuccess(res.data));
@@ -789,16 +786,18 @@ export const deleteOrder = async (accessToken, dispatch, id) => {
   }
 };
 
-export const deleteOrderForce = async (accessToken, dispatch, id) => {
+export const deleteOrderForce = async (accessToken, dispatch, id, userId) => {
   dispatch(deleteOrderStart());
   window.location.reload();
   try {
     const res = await axios.delete(
       "http://localhost:8000/api/order/" + id + "/force",
+
       {
         headers: { token: `Bearer ${accessToken}` },
       }
     );
+
     dispatch(deleteOrderSuccess(res.data));
   } catch (err) {
     dispatch(deleteOrderFailed());

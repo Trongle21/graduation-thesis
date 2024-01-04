@@ -1,15 +1,18 @@
 const express = require("express");
 const router = express.Router();
 const appointmentController = require("../controllers/AppointmentController");
-const { verifyTokenAndAdmin } = require("../middleware/verifyTokenMiddleWare");
+const {
+  verifyTokenAndAdmin,
+  verifyTokenAndUserAuthorization,
+} = require("../middleware/verifyTokenMiddleWare");
 
 router.post("/store", appointmentController.store);
 router.put("/:id", verifyTokenAndAdmin, appointmentController.update);
-router.delete("/:id", verifyTokenAndAdmin, appointmentController.delete);
+router.delete("/:id", verifyTokenAndUserAuthorization, appointmentController.delete);
 router.patch("/:id/restore", appointmentController.restore);
 router.delete(
   "/:id/force",
-  verifyTokenAndAdmin,
+  verifyTokenAndUserAuthorization,
   appointmentController.forceDelete
 );
 router.post(

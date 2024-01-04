@@ -66,6 +66,15 @@ const ContactSection = () => {
         <PathLink content="Contact" />
         <div className="line"></div>
         <h2>How can we help?</h2>
+        {!user?.admin && user ? (
+          <>
+            <Link href="/contact/responses" className="responses--user">
+              Xem các phản hồi
+            </Link>
+          </>
+        ) : (
+          <></>
+        )}
         <FormProvider {...methods}>
           <form
             className="contact--form__info"
