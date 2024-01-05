@@ -34,7 +34,7 @@ const HeaderAccountIcon = () => {
           <MenuList marginTop="10px">
             {user.admin ? (
               <MenuItem fontSize="18px">
-                <Link href="http://localhost:3000/api/dash-board">
+                <Link href="/api/dash-board">
                   Trang quản trị
                 </Link>
               </MenuItem>

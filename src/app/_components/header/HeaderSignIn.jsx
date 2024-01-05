@@ -33,7 +33,7 @@ const HeaderSignIn = () => {
           <MenuList marginTop="10px">
             {user.admin ? (
               <MenuItem>
-                <Link href="http://localhost:3000/api/dash-board">
+                <Link href="/api/dash-board">
                   Trang quản trị
                 </Link>
               </MenuItem>
