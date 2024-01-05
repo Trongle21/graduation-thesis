@@ -1,13 +1,8 @@
-import React from "react";
-import useAppContext from "@/app/_hooks/useAppContext";
+import React, { useState } from "react";
 import { GrFormNext, GrFormPrevious } from "react-icons/gr";
 import ReactPaginate from "react-paginate";
 
-const Paginate = () => {
-
-  
-
-  const { onPageClick, pageCount } = useAppContext();
+const Paginate = ({ onPageClick, pageCount }) => {
   return (
     <div className="pagination--product">
       <div className="pagination--product">

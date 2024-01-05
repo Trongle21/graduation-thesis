@@ -68,7 +68,7 @@ const Cart = () => {
   };
 
 
-  const classCart = isShowCart ? "show--cart" : "product--cart";
+  const classCart = isShowCart ? "show--cart" : "";
 
   return (
     <>

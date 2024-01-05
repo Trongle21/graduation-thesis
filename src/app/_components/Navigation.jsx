@@ -26,7 +26,12 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 
-import { FaProductHunt, FaUserAlt } from "react-icons/fa";
+import {
+  FaCartArrowDown,
+  FaProductHunt,
+  FaServicestack,
+  FaUserAlt,
+} from "react-icons/fa";
 
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
@@ -34,12 +39,12 @@ import { useRouter } from "next/navigation";
 import {
   createProduct,
   registerUser,
-  getAllAppointment,
-  getAllServicePack,
-  getAllPet,
-  getAllUser,
   createServicePack,
 } from "@/redux/features/apiRequest";
+import { MdContactPhone, MdOutlinePets } from "react-icons/md";
+import { BsFillCalendarDateFill } from "react-icons/bs";
+import { RiGameFill } from "react-icons/ri";
+
 
 const Navigation = () => {
   const {
@@ -169,9 +174,9 @@ const Navigation = () => {
 
   return (
     <Box
-      w="250px"
-      h="100vh"
-      bg="#f6a25e"
+      w="260px"
+      h="fit-content"
+      bg="#ca956b"
       color="white"
       boxShadow="2xl"
       p="6"
@@ -179,34 +184,34 @@ const Navigation = () => {
       marginBottom="10px"
     >
       <Accordion allowToggle>
-        <AccordionItem>
-          <h2>
-            <Link href="http://localhost:3000/api/dash-board">
-              <AccordionButton fontSize="20px">Dash board</AccordionButton>
+        <AccordionItem border="none">
+          <AccordionButton fontSize="20px">
+            <Link href="/api/dash-board">
+              <Flex flex="1" textAlign="left" alignItems="center" gap="10px">
+                <RiGameFill />
+                Dash Board
+              </Flex>
             </Link>
-          </h2>
+          </AccordionButton>
         </AccordionItem>
 
-        <AccordionItem>
-          <h2>
-            <AccordionButton fontSize="20px">
-              <Flex flex="1" textAlign="left" alignItems="center" gap="10px">
-                <FaUserAlt />
-                User
-              </Flex>
-              <AccordionIcon />
-            </AccordionButton>
-          </h2>
+        <AccordionItem border="none">
+          <AccordionButton fontSize="20px">
+            <Flex flex="1" textAlign="left" alignItems="center" gap="10px">
+              <FaUserAlt />
+              User
+            </Flex>
+            <AccordionIcon />
+          </AccordionButton>
+
           <AccordionPanel pb={4}>
             <Box>
               <Flex flexDirection="column" gap="4px">
                 <Link href="#" fontSize="20px" onClick={onUserDrawerOpen}>
                   Thêm user
                 </Link>
-                <Link href="http://localhost:3000/api/me/stored-users">
-                  Danh sách người dùng
-                </Link>
-                <Link href="http://localhost:3000/api/me/trash-users">
+                <Link href="/api/me/stored-users">Danh sách người dùng</Link>
+                <Link href="/api/me/trash-users">
                   Danh sách người dùng đã xóa
                 </Link>
               </Flex>
@@ -300,26 +305,23 @@ const Navigation = () => {
           </AccordionPanel>
         </AccordionItem>
 
-        <AccordionItem>
-          <h2>
-            <AccordionButton fontSize="20px">
-              <Flex flex="1" textAlign="left" alignItems="center" gap="10px">
-                <FaProductHunt />
-                Product
-              </Flex>
-              <AccordionIcon />
-            </AccordionButton>
-          </h2>
+        <AccordionItem border="none">
+          <AccordionButton fontSize="20px">
+            <Flex flex="1" textAlign="left" alignItems="center" gap="10px">
+              <FaProductHunt />
+              Product
+            </Flex>
+            <AccordionIcon />
+          </AccordionButton>
+
           <AccordionPanel pb={4}>
             <Box>
               <Flex flexDirection="column" gap="4px">
                 <Link href="#" fontSize="20px" onClick={onProductDrawerOpen}>
                   Thêm sản phẩm
                 </Link>
-                <Link href="http://localhost:3000/api/me/stored-products">
-                  Danh sách sản phẩm
-                </Link>
-                <Link href="http://localhost:3000/api/me/trash-products">
+                <Link href="/api/me/stored-products">Danh sách sản phẩm</Link>
+                <Link href="/api/me/trash-products">
                   Danh sách sản phẩm đã xóa
                 </Link>
               </Flex>
@@ -459,40 +461,34 @@ const Navigation = () => {
           </AccordionPanel>
         </AccordionItem>
 
-        <AccordionItem>
-          <h2>
-            <AccordionButton fontSize="20px">
-              <Flex flex="1" textAlign="left" alignItems="center" gap="10px">
-                <FaUserAlt />
-                Pet
-              </Flex>
-              <AccordionIcon />
-            </AccordionButton>
-          </h2>
+        <AccordionItem border="none">
+          <AccordionButton fontSize="20px">
+            <Flex flex="1" textAlign="left" alignItems="center" gap="10px">
+              <MdOutlinePets />
+              Pet
+            </Flex>
+            <AccordionIcon />
+          </AccordionButton>
+
           <AccordionPanel pb={4}>
             <Box>
               <Flex flexDirection="column" gap="4px">
-                <Link href="http://localhost:3000/api/me/stored-pets">
-                  Danh sách pet
-                </Link>
-                <Link href="http://localhost:3000/api/me/trash-pets">
-                  Danh sách pet đã xóa
-                </Link>
+                <Link href="/api/me/stored-pets">Danh sách pet</Link>
+                <Link href="/api/me/trash-pets">Danh sách pet đã xóa</Link>
               </Flex>
             </Box>
           </AccordionPanel>
         </AccordionItem>
 
-        <AccordionItem>
-          <h2>
-            <AccordionButton fontSize="20px">
-              <Flex flex="1" textAlign="left" alignItems="center" gap="10px">
-                <FaUserAlt />
-                Dịch vụ
-              </Flex>
-              <AccordionIcon />
-            </AccordionButton>
-          </h2>
+        <AccordionItem border="none">
+          <AccordionButton fontSize="20px">
+            <Flex flex="1" textAlign="left" alignItems="center" gap="10px">
+              <FaServicestack />
+              Dịch vụ
+            </Flex>
+            <AccordionIcon />
+          </AccordionButton>
+
           <AccordionPanel pb={4}>
             <Box>
               <Flex flexDirection="column" gap="4px">
@@ -503,10 +499,10 @@ const Navigation = () => {
                 >
                   Thêm dịch vụ
                 </Link>
-                <Link href="http://localhost:3000/api/me/stored-service-pack">
+                <Link href="/api/me/stored-service-pack">
                   Danh sách dịch vụ
                 </Link>
-                <Link href="http://localhost:3000/api/me/trash-service-pack">
+                <Link href="/api/me/trash-service-pack">
                   Danh sách dịch vụ đã xóa
                 </Link>
               </Flex>
@@ -605,23 +601,22 @@ const Navigation = () => {
           </AccordionPanel>
         </AccordionItem>
 
-        <AccordionItem>
-          <h2>
-            <AccordionButton fontSize="20px">
-              <Flex flex="1" textAlign="left" alignItems="center" gap="10px">
-                <FaUserAlt />
-                Lịch đặt hẹn
-              </Flex>
-              <AccordionIcon />
-            </AccordionButton>
-          </h2>
+        <AccordionItem border="none">
+          <AccordionButton fontSize="20px">
+            <Flex flex="1" textAlign="left" alignItems="center" gap="10px">
+              <BsFillCalendarDateFill />
+              Lịch đặt hẹn
+            </Flex>
+            <AccordionIcon />
+          </AccordionButton>
+
           <AccordionPanel pb={4}>
             <Box>
               <Flex flexDirection="column" gap="4px">
-                <Link href="http://localhost:3000/api/me/stored-appointment">
+                <Link href="/api/me/stored-appointment">
                   Danh sách lịch đặt hẹn
                 </Link>
-                <Link href="http://localhost:3000/api/me/trash-appointments">
+                <Link href="/api/me/trash-appointments">
                   Danh sách lịch hẹn đã xóa
                 </Link>
               </Flex>
@@ -629,23 +624,20 @@ const Navigation = () => {
           </AccordionPanel>
         </AccordionItem>
 
-        <AccordionItem>
-          <h2>
-            <AccordionButton fontSize="20px">
-              <Flex flex="1" textAlign="left" alignItems="center" gap="10px">
-                <FaProductHunt />
-                Order
-              </Flex>
-              <AccordionIcon />
-            </AccordionButton>
-          </h2>
+        <AccordionItem border="none">
+          <AccordionButton fontSize="20px">
+            <Flex flex="1" textAlign="left" alignItems="center" gap="10px">
+              <FaCartArrowDown />
+              Order
+            </Flex>
+            <AccordionIcon />
+          </AccordionButton>
+
           <AccordionPanel pb={4}>
             <Box>
               <Flex flexDirection="column" gap="4px">
-                <Link href="http://localhost:3000/api/me/stored-order">
-                  Danh sách đơn hàng
-                </Link>
-                <Link href="http://localhost:3000/api/me/trash-order">
+                <Link href="/api/me/stored-order">Danh sách đơn hàng</Link>
+                <Link href="/api/me/trash-order">
                   Danh sách đơn hàng đã xóa
                 </Link>
               </Flex>
@@ -653,25 +645,20 @@ const Navigation = () => {
           </AccordionPanel>
         </AccordionItem>
 
-        <AccordionItem>
-          <h2>
-            <AccordionButton fontSize="20px">
-              <Flex flex="1" textAlign="left" alignItems="center" gap="10px">
-                <FaProductHunt />
-                Contact
-              </Flex>
-              <AccordionIcon />
-            </AccordionButton>
-          </h2>
+        <AccordionItem border="none">
+          <AccordionButton fontSize="20px">
+            <Flex flex="1" textAlign="left" alignItems="center" gap="10px">
+              <MdContactPhone />
+              Contact
+            </Flex>
+            <AccordionIcon />
+          </AccordionButton>
+
           <AccordionPanel pb={4}>
             <Box>
               <Flex flexDirection="column" gap="4px">
-                <Link href="http://localhost:3000/api/me/stored-contact">
-                  Danh sách ý kiến phản hồi
-                </Link>
-                <Link href="http://localhost:3000/api/me/trash-contact">
-                  Danh sách ý kiến phản hồi đã xóa
-                </Link>
+                <Link href="/api/me/stored-contact">Ý kiến phản hồi</Link>
+                <Link href="/api/me/trash-contact">Ý kiến phản hồi đã xóa</Link>
               </Flex>
             </Box>
           </AccordionPanel>

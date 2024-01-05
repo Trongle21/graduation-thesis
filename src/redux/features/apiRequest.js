@@ -132,7 +132,7 @@ export const loginUser = async (user, dispatch, navigate) => {
     dispatch(loginSuccess(res.data));
     const isAdmin = res.data.admin;
     isAdmin
-      ? navigate.push("http://localhost:3000/api/me/stored-users")
+      ? navigate.push("/api/dash-board")
       : navigate.push("/home");
   } catch (err) {
     window.alert("Tài khoản hoặc mật khẩu không chính xác");
@@ -158,7 +158,7 @@ export const createProduct = async (product, dispatch, navigate) => {
 
   try {
     await axios.post("http://localhost:8000/api/products/store", product);
-    navigate.push("http://localhost:3000/api/me/stored-products");
+    navigate.push("/api/me/stored-products");
     dispatch(getProductSuccess());
     window.location.reload();
   } catch (err) {
@@ -166,7 +166,7 @@ export const createProduct = async (product, dispatch, navigate) => {
   }
 };
 
-export const createPet = async (pet, dispatch, accessToken, petName) => {
+export const createPet = async (pet, dispatch, accessToken, petName, user) => {
   dispatch(getPetStart());
   try {
     const resPet = await axios.get(
@@ -177,10 +177,10 @@ export const createPet = async (pet, dispatch, accessToken, petName) => {
     );
 
     const duplicatePet = resPet.data.pets.find((p) => p.name === petName);
-
+    const duplicateUser = resPet.data.pets.find((p) => p.user === user);
     let petId;
 
-    if (duplicatePet) {
+    if (duplicatePet && duplicateUser) {
       console.log(`Pet này đã có trong thông tin người dùng rồi`);
       petId = await duplicatePet._id;
       dispatch(getPetSuccess());
@@ -218,7 +218,6 @@ export const createAppointment = async (appointment, dispatch, navigate) => {
       "http://localhost:8000/api/appointments/store",
       appointment
     );
-    navigate.push("http://localhost:3000/service/serviceBookSuccess");
     dispatch(getAppointmentSuccess());
     navigate.push("/service/serviceBookSuccess");
   } catch (err) {
@@ -230,7 +229,7 @@ export const createOrder = async (order, dispatch, navigate) => {
   dispatch(getOrderStart());
   try {
     await axios.post("http://localhost:8000/api/order/store", order);
-    navigate.push("http://localhost:3000/payment/paymentSuccess");
+    navigate.push("payment/paymentSuccess");
     dispatch(getOrderSuccess());
   } catch (err) {
     dispatch(getOrderFailed());
@@ -497,7 +496,7 @@ export const changePasswordUser = async (
   try {
     window.location.reload();
     const res = await axios.put(
-      "http://localhost:8000/api/users/" + user._id + "/change-password",
+      "/api/users/" + user._id + "/change-password",
       user,
       {
         headers: { token: `Bearer ${accessToken}` },
@@ -557,7 +556,7 @@ export const updateServicePack = async (servicePack, accessToken, dispatch) => {
   try {
     console.log(servicePack);
     const res = await axios.put(
-      "http://localhost:8000/api/service-pack/" + servicePack._id,
+      "/api/service-pack/" + servicePack._id,
       servicePack,
       {
         headers: { token: `Bearer ${accessToken}` },
@@ -574,7 +573,7 @@ export const updateAppointment = async (appointment, accessToken, dispatch) => {
   window.location.reload();
   try {
     const res = await axios.put(
-      "http://localhost:8000/api/appointments/" + appointment._id,
+      "/api/appointments/" + appointment._id,
       appointment,
       {
         headers: { token: `Bearer ${accessToken}` },
@@ -721,7 +720,10 @@ export const deleteAppointment = async (accessToken, dispatch, id, userId) => {
   try {
     const res = await axios.delete(
       "http://localhost:8000/api/appointments/" + id,
-      { data: { userId: userId }, headers: { token: `Bearer ${accessToken}` } }
+      {
+        data: { userId: userId },
+        headers: { token: `Bearer ${accessToken}` },
+      }
     );
     dispatch(deleteAppointmentSuccess(res.data));
   } catch (err) {
@@ -735,7 +737,9 @@ export const deleteAppointmentForce = async (accessToken, dispatch, id) => {
   try {
     const res = await axios.delete(
       "http://localhost:8000/api/appointments/" + id + "/force",
-      { headers: { token: `Bearer ${accessToken}` } }
+      {
+        headers: { token: `Bearer ${accessToken}` },
+      }
     );
     dispatch(deleteAppointmentSuccess(res.data));
   } catch (err) {
@@ -791,7 +795,7 @@ export const deleteOrderForce = async (accessToken, dispatch, id, userId) => {
   window.location.reload();
   try {
     const res = await axios.delete(
-      "http://localhost:8000/api/order/" + id + "/force",
+      "/api/order/" + id + "/force",
 
       {
         headers: { token: `Bearer ${accessToken}` },
@@ -956,7 +960,7 @@ export const handleActionUserForm = async (
   window.location.reload();
   try {
     const res = await axiosJWT.post(
-      "http://localhost:8000/api/users/handle-action-form",
+      "/api/users/handle-action-form",
       { userId: userList, action: action },
       {
         headers: { token: `Bearer ${accessToken}` },
@@ -979,7 +983,7 @@ export const handleActionProductForm = async (
   try {
     window.location.reload();
     const res = await axios.post(
-      "http://localhost:8000/api/products/handle-action-form",
+      "/api/products/handle-action-form",
       { productId: productList, action: action },
       {
         headers: { token: `Bearer ${accessToken}` },
@@ -1001,7 +1005,7 @@ export const handleActionPetForm = async (
   try {
     window.location.reload();
     const res = await axios.post(
-      "http://localhost:8000/api/pets/handle-action-form",
+      "/api/pets/handle-action-form",
       { petId: petList, action: action },
       {
         headers: { token: `Bearer ${accessToken}` },
@@ -1025,7 +1029,7 @@ export const handleActionServicePackForm = async (
     window.location.reload();
     console.log(servicePackList, action);
     const res = await axios.post(
-      "http://localhost:8000/api/service-pack/handle-action-form",
+      "/api/service-pack/handle-action-form",
       { servicePackListId: servicePackList, action: action },
       {
         headers: { token: `Bearer ${accessToken}` },
@@ -1048,7 +1052,7 @@ export const handleActionAppointmentForm = async (
   try {
     window.location.reload();
     const res = await axios.post(
-      "http://localhost:8000/api/appointments/handle-action-form",
+      "/api/appointments/handle-action-form",
       { appointmentId: appointmentList, action: action },
       {
         headers: { token: `Bearer ${accessToken}` },
@@ -1071,7 +1075,7 @@ export const handleActionOrderForm = async (
   try {
     window.location.reload();
     const res = await axios.post(
-      "http://localhost:8000/api/order/handle-action-form",
+      "/api/order/handle-action-form",
       { orderId: orderList, action: action },
       {
         headers: { token: `Bearer ${accessToken}` },
@@ -1093,7 +1097,7 @@ export const handleActionContactForm = async (
   try {
     window.location.reload();
     const res = await axios.post(
-      "http://localhost:8000/api/contact/handle-action-form",
+      "/api/contact/handle-action-form",
       { contactId: orderList, action: action },
       {
         headers: { token: `Bearer ${accessToken}` },

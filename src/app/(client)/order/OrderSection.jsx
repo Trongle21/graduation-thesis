@@ -24,9 +24,7 @@ import {
   Box,
   Button,
   Flex,
-  Heading,
   Image,
-  Link,
   Tab,
   TabList,
   TabPanel,
@@ -36,7 +34,6 @@ import {
   Tabs,
   Tbody,
   Td,
-  Text,
   Th,
   Thead,
   Tr,
@@ -214,7 +211,7 @@ const OrderSection = () => {
                                           >
                                             <Box>
                                               <Image
-                                                boxSize="100px"
+                                                boxSize="60px"
                                                 src={
                                                   `http://localhost:8000/images/` +
                                                   product.thumbnail
@@ -302,7 +299,7 @@ const OrderSection = () => {
                                           >
                                             <Box>
                                               <Image
-                                                boxSize="100px"
+                                                boxSize="60px"
                                                 src={
                                                   `http://localhost:8000/images/` +
                                                   product.thumbnail

@@ -5,6 +5,7 @@ import data from "@/app/data.json";
 import Button from "@/app/_components/Button";
 import Link from "next/link";
 import { AiOutlineArrowLeft, AiOutlineArrowRight } from "react-icons/ai";
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 
 const homeHero = data["homeHero"];
 
@@ -47,10 +48,10 @@ const HeroSection = () => {
       </div>
       <div className="buttons">
         <button id="prev" onClick={handlePrevImg}>
-          <AiOutlineArrowLeft />
+          <FaArrowLeft />
         </button>
         <button id="next" onClick={handleNextImg}>
-          <AiOutlineArrowRight />
+          <FaArrowRight />
         </button>
       </div>
     </section>

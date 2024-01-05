@@ -48,12 +48,28 @@ import axios from "axios";
 const { jwtDecode } = require("jwt-decode");
 import { loginSuccess } from "@/redux/features/authSlice";
 import Navigation from "@/app/_components/Navigation";
+import Paginate from "@/app/_components/Paginate";
 
 const axiosJWT = axios.create();
 
 const StoredUser = () => {
   const user = useSelector((state) => state.auth.login?.currentUser);
   const userList = useSelector((state) => state.users.users?.allUsers?.users);
+
+  const [itemOffset, setItemOffset] = useState(0);
+
+  const itemsPerPage = 4;
+
+  const endOffset = itemOffset + itemsPerPage;
+
+  const currentUserList = userList?.slice(itemOffset, endOffset);
+
+  const pageCount = Math.ceil(userList?.length / itemsPerPage);
+
+  const handlePageClick = (e) => {
+    const newOffset = (e.selected * itemsPerPage) % userList?.length;
+    setItemOffset(newOffset);
+  };
 
   const dispatch = useDispatch();
 
@@ -252,7 +268,7 @@ const StoredUser = () => {
               </Tr>
             </Thead>
             <Tbody>
-              {userList?.map((user, index) => (
+              {currentUserList?.map((user, index) => (
                 <Tr key={user._id}>
                   <Td textAlign="center">
                     <Checkbox
@@ -463,6 +479,9 @@ const StoredUser = () => {
           </AlertDialogContent>
         </AlertDialogOverlay>
       </AlertDialog>
+      <Box position="fixed" bottom="200px" left="40%">
+        <Paginate onPageClick={handlePageClick} pageCount={pageCount} />
+      </Box>
     </Flex>
   );
 };

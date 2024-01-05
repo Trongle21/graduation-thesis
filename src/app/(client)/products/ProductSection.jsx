@@ -13,9 +13,7 @@ const ProductSection = () => {
         <div className="line"></div>
         <div className="product--section__wrapper">
           <ProductInfo />
-
           <ProductList />
-
           <Cart />
         </div>
       </div>

@@ -27,6 +27,10 @@ const AppointmentSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    totalPrice: {
+      type: Number,
+      required: true,
+    },
     status: {
       type: String,
       default: "Pending",

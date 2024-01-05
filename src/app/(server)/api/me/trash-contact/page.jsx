@@ -48,6 +48,7 @@ import axios from "axios";
 const { jwtDecode } = require("jwt-decode");
 import { loginSuccess } from "@/redux/features/authSlice";
 import Navigation from "@/app/_components/Navigation";
+import Paginate from "@/app/_components/Paginate";
 
 const axiosJWT = axios.create();
 
@@ -57,6 +58,24 @@ const StoredUser = () => {
   const contactDeleteList = useSelector(
     (state) => state.contact?.contacts?.allContactDeleted?.contact
   );
+
+  const [itemOffset, setItemOffset] = useState(0);
+
+  const itemsPerPage = 4;
+
+  const endOffset = itemOffset + itemsPerPage;
+
+  const currentContactDeletedList = contactDeleteList?.slice(
+    itemOffset,
+    endOffset
+  );
+
+  const pageCount = Math.ceil(contactDeleteList?.length / itemsPerPage);
+
+  const handlePageClick = (e) => {
+    const newOffset = (e.selected * itemsPerPage) % contactDeleteList?.length;
+    setItemOffset(newOffset);
+  };
 
   const dispatch = useDispatch();
   const navigate = useRouter();
@@ -218,7 +237,7 @@ const StoredUser = () => {
               </Tr>
             </Thead>
             <Tbody>
-              {contactDeleteList?.map((contact, index) => {
+              {currentContactDeletedList?.map((contact, index) => {
                 if (contact.deleted) {
                   const username = userList.find(
                     (user) => user._id === contact.user
@@ -293,6 +312,9 @@ const StoredUser = () => {
           </AlertDialogContent>
         </AlertDialogOverlay>
       </AlertDialog>
+      <Box position="fixed" bottom="200px" left="40%">
+        <Paginate onPageClick={handlePageClick} pageCount={pageCount} />
+      </Box>
     </Flex>
   );
 };

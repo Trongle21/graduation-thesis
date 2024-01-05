@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { logoutUser } from "@/redux/features/apiRequest";
+import HeaderLogo from "@/app/_components/header/HeaderLogo";
 
 const HeaderServer = () => {
   const user = useSelector((state) => state.auth.login.currentUser);
@@ -30,9 +31,11 @@ const HeaderServer = () => {
 
   return (
     <header>
-      <Container bg="#f6a25e" maxW="100%" marginBottom="2px" boxShadow="lg">
+      <Container bg="#ca956b" maxW="100%" marginBottom="2px" boxShadow="lg">
         <Flex justifyContent="space-between">
-          <Link className="logo--admin" href="/">Hello Admin: {user?.username} </Link>
+          <Link className="logo--admin" href="/home">
+            <HeaderLogo />
+          </Link>
 
           <Flex
             justifyContent="space-between"
@@ -46,14 +49,14 @@ const HeaderServer = () => {
                     borderRadius="full"
                     boxSize="60px"
                     src="https://bit.ly/dan-abramov"
-                    alt="Dan Abramov"
+                    alt="Admin"
                   />
                 </MenuButton>
                 <MenuList margin="">
                   <MenuItem>
                     <Link href="/">Quay về trang chủ</Link>
                   </MenuItem>
-                  {/* <MenuItem>Thông tin</MenuItem> */}
+                  <div className="straightLine"></div>
                   <MenuItem onClick={handelLogout}>Đăng xuất</MenuItem>
                 </MenuList>
               </Menu>

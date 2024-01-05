@@ -7,6 +7,10 @@ import {
   filterProductsBySelect,
 } from "@/redux/features/apiSlice";
 
+import { FaSearch } from "react-icons/fa";
+import { MdCancel } from "react-icons/md";
+import { Box } from "@chakra-ui/react";
+
 const ProductInfo = () => {
   const { isShowSearch, onShowSearch } = useAppContext();
   const [search, setSearch] = useState("");
@@ -37,11 +41,29 @@ const ProductInfo = () => {
       </div>
       <div className="product--section__search">
         <i
-          className={`fa-solid ${
-            isShowSearch ? "fa-solid fa-xmark show" : "fa-magnifying-glass "
-          }`}
-          onClick={onShowSearch}
+          className={`fa-solid ${isShowSearch ? <FaSearch /> : <FaSearch />}`}
         ></i>
+        {isShowSearch ? (
+          <Box
+            color="#fa9645"
+            onClick={onShowSearch}
+            fontSize="20px"
+            paddingRight={2}
+            cursor="pointer"
+          >
+            <FaSearch />
+          </Box>
+        ) : (
+          <Box
+            color="#fa9645"
+            onClick={onShowSearch}
+            fontSize="20px"
+            paddingRight={2}
+            cursor="pointer"
+          >
+            <MdCancel />
+          </Box>
+        )}
         <select
           className="product--info__select"
           onChange={(e) => handleSelectedTypesPet(e.target.value)}

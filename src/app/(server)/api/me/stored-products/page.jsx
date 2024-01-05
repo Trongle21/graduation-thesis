@@ -48,6 +48,7 @@ import axios from "axios";
 const { jwtDecode } = require("jwt-decode");
 import { loginSuccess } from "@/redux/features/authSlice";
 import Navigation from "@/app/_components/Navigation";
+import Paginate from "@/app/_components/Paginate";
 
 const axiosJWT = axios.create();
 
@@ -56,6 +57,21 @@ const StoredUser = () => {
   const productList = useSelector(
     (state) => state.products.products?.allProducts?.products
   );
+
+  const [itemOffset, setItemOffset] = useState(0);
+
+  const itemsPerPage = 4;
+
+  const endOffset = itemOffset + itemsPerPage;
+
+  const currentProductList = productList?.slice(itemOffset, endOffset);
+
+  const pageCount = Math.ceil(productList?.length / itemsPerPage);
+
+  const handlePageClick = (e) => {
+    const newOffset = (e.selected * itemsPerPage) % productList?.length;
+    setItemOffset(newOffset);
+  };
 
   const dispatch = useDispatch();
 
@@ -233,32 +249,42 @@ const StoredUser = () => {
           <Table variant="simple" size="lg">
             <Thead>
               <Tr>
-                <Th fontSize="xl"></Th>
-                <Th fontSize="xl">#</Th>
-                <Th fontSize="xl">Type</Th>
-                <Th fontSize="xl">Price</Th>
-                <Th fontSize="xl">Image</Th>
-                <Th fontSize="xl">Description</Th>
+                <Th textAlign="center" fontSize="xl"></Th>
+                <Th textAlign="center" fontSize="xl">
+                  #
+                </Th>
+                <Th textAlign="center" fontSize="xl">
+                  Type
+                </Th>
+                <Th textAlign="center" fontSize="xl">
+                  Price
+                </Th>
+                <Th textAlign="center" fontSize="xl">
+                  Image
+                </Th>
+                <Th textAlign="center" fontSize="xl">
+                  Description
+                </Th>
                 <Th textAlign="center" fontSize="xl">
                   Edit
                 </Th>
               </Tr>
             </Thead>
             <Tbody>
-              {productList?.map((product, index) => (
+              {currentProductList?.map((product, index) => (
                 <Tr key={product._id}>
-                  <Td>
+                  <Td textAlign="center">
                     <Checkbox
                       isChecked={selectedItems.includes(product._id)}
                       onChange={() => handleSelectItem(product._id)}
                     ></Checkbox>
                   </Td>
-                  <Td>{index + 1}</Td>
-                  <Td>{product.type}</Td>
-                  <Td>{product.price}</Td>
-                  <Td>
+                  <Td textAlign="center">{index + 1}</Td>
+                  <Td textAlign="center">{product.type}</Td>
+                  <Td textAlign="center">{product.price}</Td>
+                  <Td textAlign="center">
                     <Image
-                      w="60px"
+                      maxW="60px"
                       src={`http://localhost:8000/images/` + product.thumbnail}
                       alt={product.description}
                     />
@@ -445,6 +471,9 @@ const StoredUser = () => {
           </AlertDialogContent>
         </AlertDialogOverlay>
       </AlertDialog>
+      <Box position="fixed" bottom="40px" left="36%">
+        <Paginate onPageClick={handlePageClick} pageCount={pageCount} />
+      </Box>
     </Flex>
   );
 };

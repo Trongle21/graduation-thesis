@@ -48,6 +48,7 @@ import axios from "axios";
 const { jwtDecode } = require("jwt-decode");
 import { loginSuccess } from "@/redux/features/authSlice";
 import Navigation from "@/app/_components/Navigation";
+import Paginate from "@/app/_components/Paginate";
 
 const axiosJWT = axios.create();
 
@@ -55,6 +56,21 @@ const StoredUser = () => {
   const user = useSelector((state) => state.auth.login?.currentUser);
   const userList = useSelector((state) => state.users?.users?.allUsers?.users);
   const petList = useSelector((state) => state.pets?.pets?.allPets?.pets);
+
+  const [itemOffset, setItemOffset] = useState(0);
+
+  const itemsPerPage = 4;
+
+  const endOffset = itemOffset + itemsPerPage;
+
+  const currentPetList = petList?.slice(itemOffset, endOffset);
+
+  const pageCount = Math.ceil(petList?.length / itemsPerPage);
+
+  const handlePageClick = (e) => {
+    const newOffset = (e.selected * itemsPerPage) % petList?.length;
+    setItemOffset(newOffset);
+  };
 
   const dispatch = useDispatch();
   const navigate = useRouter();
@@ -257,7 +273,7 @@ const StoredUser = () => {
               </Tr>
             </Thead>
             <Tbody>
-              {petList?.map((pet, index) => {
+              {currentPetList?.map((pet, index) => {
                 const username = userList.find((user) => user._id === pet.user);
                 return (
                   <Tr key={pet._id}>
@@ -434,6 +450,9 @@ const StoredUser = () => {
           </AlertDialogContent>
         </AlertDialogOverlay>
       </AlertDialog>
+      <Box position="fixed" bottom="200px" left="40%">
+        <Paginate onPageClick={handlePageClick} pageCount={pageCount} />
+      </Box>
     </Flex>
   );
 };

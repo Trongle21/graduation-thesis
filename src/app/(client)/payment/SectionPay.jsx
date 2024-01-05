@@ -31,7 +31,8 @@ const contactForm = z.object({
 const SectionPay = () => {
   const [choosePayment, setChoosePayment] = useState("Bank transfer");
 
-  const { form, totalProductPrice, productInCart } = useAppContext();
+  const { form, totalProductPrice, productInCart, onTakeInfoUser } =
+    useAppContext();
 
   const user = useSelector((state) => state.auth?.login?.currentUser);
   const userList = useSelector((state) => state.users.users?.allUsers?.users);
@@ -88,6 +89,7 @@ const SectionPay = () => {
       };
 
       await createOrder(newOrder, dispatch, navigate);
+      onTakeInfoUser(data);
     } else {
       window.alert("Bạn cần đăng nhập để hoàn tất dịch vụ!");
     }
@@ -203,7 +205,7 @@ const SectionPay = () => {
             </div>
             <div className="payment--btn">
               <button type="submit" className="btn btn--primary link">
-                <h5>Continue</h5>
+                <h5>Đặt hàng</h5>
               </button>
             </div>
           </form>

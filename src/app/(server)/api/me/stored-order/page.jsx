@@ -38,6 +38,7 @@ import axios from "axios";
 const { jwtDecode } = require("jwt-decode");
 import { loginSuccess } from "@/redux/features/authSlice";
 import Navigation from "@/app/_components/Navigation";
+import Paginate from "@/app/_components/Paginate";
 
 const axiosJWT = axios.create();
 
@@ -50,6 +51,21 @@ const StoredOrder = () => {
   const orderList = useSelector(
     (state) => state.order?.orders?.allOrder?.order
   );
+
+  const [itemOffset, setItemOffset] = useState(0);
+
+  const itemsPerPage = 4;
+
+  const endOffset = itemOffset + itemsPerPage;
+
+  const currentOrderList = orderList?.slice(itemOffset, endOffset);
+
+  const pageCount = Math.ceil(orderList?.length / itemsPerPage);
+
+  const handlePageClick = (e) => {
+    const newOffset = (e.selected * itemsPerPage) % orderList?.length;
+    setItemOffset(newOffset);
+  };
 
   const dispatch = useDispatch();
   const navigate = useRouter();
@@ -205,7 +221,7 @@ const StoredOrder = () => {
   }, [selectedItems]);
 
   const handleSubmitForm = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     handleActionOrderForm(
       user?.accessToken,
       dispatch,
@@ -276,7 +292,7 @@ const StoredOrder = () => {
               </Tr>
             </Thead>
             <Tbody>
-              {orderList?.map((order, index) => {
+              {currentOrderList?.map((order, index) => {
                 const userName = userList?.find(
                   (user) => user._id === order.user
                 );
@@ -428,6 +444,9 @@ const StoredOrder = () => {
           </AlertDialogContent>
         </AlertDialogOverlay>
       </AlertDialog>
+      <Box position="fixed" bottom="100px" left="45%">
+        <Paginate onPageClick={handlePageClick} pageCount={pageCount} />
+      </Box>
     </Flex>
   );
 };

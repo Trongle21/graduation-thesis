@@ -33,15 +33,17 @@ const HeaderAccountIcon = () => {
           </MenuButton>
           <MenuList marginTop="10px">
             {user.admin ? (
-              <MenuItem fontSize="18px" display="flex" justifyContent="center">
+              <MenuItem fontSize="18px">
                 <Link href="http://localhost:3000/api/dash-board">
                   Trang quản trị
                 </Link>
               </MenuItem>
             ) : null}
+            <div className="straightLine"></div>
             <MenuItem fontSize="18px" textAlign="center">
               <Link href="/order">Đơn mua</Link>
             </MenuItem>
+            <div className="straightLine"></div>
             <MenuItem fontSize="18px">
               <Link href="/home" onClick={handelLogout}>
                 Đăng xuất

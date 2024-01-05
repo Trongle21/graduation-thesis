@@ -22,6 +22,7 @@ import {
   useDisclosure,
   Select,
   Image,
+  Box,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 
@@ -37,6 +38,7 @@ import axios from "axios";
 const { jwtDecode } = require("jwt-decode");
 import { loginSuccess } from "@/redux/features/authSlice";
 import Navigation from "@/app/_components/Navigation";
+import Paginate from "@/app/_components/Paginate";
 
 const axiosJWT = axios.create();
 
@@ -47,8 +49,25 @@ const TrashProduct = () => {
     (state) => state.products.products?.allProductsDeleted?.products
   );
 
-  const dispatch = useDispatch();
+  const [itemOffset, setItemOffset] = useState(0);
 
+  const itemsPerPage = 4;
+
+  const endOffset = itemOffset + itemsPerPage;
+
+  const currentProductDeletedList = productDeletedList?.slice(
+    itemOffset,
+    endOffset
+  );
+
+  const pageCount = Math.ceil(productDeletedList?.length / itemsPerPage);
+
+  const handlePageClick = (e) => {
+    const newOffset = (e.selected * itemsPerPage) % productDeletedList?.length;
+    setItemOffset(newOffset);
+  };
+
+  const dispatch = useDispatch();
   const navigate = useRouter();
 
   const refreshToken = async () => {
@@ -197,7 +216,7 @@ const TrashProduct = () => {
               </Tr>
             </Thead>
             <Tbody>
-              {productDeletedList?.map((product,index) => {
+              {currentProductDeletedList?.map((product, index) => {
                 if (product.deleted) {
                   return (
                     <Tr key={product._id}>
@@ -216,6 +235,7 @@ const TrashProduct = () => {
                           src={
                             `http://localhost:8000/images/` + product.thumbnail
                           }
+                          alt={product.name}
                         />
                       </Td>
                       <Td>{product.description}</Td>
@@ -277,6 +297,10 @@ const TrashProduct = () => {
           </AlertDialogContent>
         </AlertDialogOverlay>
       </AlertDialog>
+
+      <Box position="fixed" bottom="40px" left="36%">
+        <Paginate onPageClick={handlePageClick} pageCount={pageCount} />
+      </Box>
     </Flex>
   );
 };

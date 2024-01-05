@@ -3,9 +3,8 @@
 import React from "react";
 import HeroSection from "@/app/_components/HeroSection";
 import Cart from "@/app/_components/Cart";
-import CartIcon from "@/app/_components/CartIcon";
 import useAppContext from "@/app/_hooks/useAppContext";
-import OrderSection from "./OrderSection"
+import OrderSection from "./OrderSection";
 
 const Order = () => {
   const { isShowCart } = useAppContext();
@@ -19,7 +18,6 @@ const Order = () => {
       />
       <OrderSection />
       <Cart />
-      {!isShowCart && <CartIcon />}
     </main>
   );
 };

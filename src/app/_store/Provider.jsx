@@ -63,10 +63,9 @@ const AppProvider = ({ children }) => {
     setIsShowServiceBook(!isShowServiceBook);
   };
 
+  const productsCart = useSelector((state) => state.cart.productsCart);
   // render pagination
   const products = useSelector((state) => state.api.products);
-
-  const productsCart = useSelector((state) => state.cart.productsCart);
 
   const itemsPerPage = 8;
 

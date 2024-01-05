@@ -1,12 +1,17 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import HeroSection from "@/app/_components/HeroSection";
 import Link from "next/link";
 import PathLink from "@/app/_components/PathLink";
 import useAppContext from "@/app/_hooks/useAppContext";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteAllProduct } from "@/redux/features/cartSlice";
+import { useRouter } from "next/navigation";
+import axios from "axios";
+import { getAllOrder } from "@/redux/features/apiRequest";
+
+const axiosJWT = axios.create();
 
 const PaymentSuccess = () => {
   const { form, productInCart, totalProductPrice } = useAppContext();
@@ -14,6 +19,53 @@ const PaymentSuccess = () => {
   const user = useSelector((state) => state.auth?.login?.currentUser);
 
   const dispatch = useDispatch();
+  const navigate = useRouter();
+
+  const orderList = useSelector(
+    (state) => state.order?.orders?.allOrder?.order
+  );
+
+  const refreshToken = async () => {
+    try {
+      const res = await axios.post("http://localhost:8000/api/auth/refresh", {
+        withCredentials: true,
+      });
+
+      return res.data;
+    } catch (err) {
+      console.error("Error refreshing token:", err);
+    }
+  };
+
+  axiosJWT.interceptors.request.use(
+    async (config) => {
+      let date = new Date();
+      const decodedToken = jwtDecode(user?.accessToken);
+      if (decodedToken.exp < date.getTime() / 1000) {
+        const data = await refreshToken();
+        const refreshUser = {
+          ...user,
+          accessToken: data.accessToken,
+          refreshToken: data.refreshToken,
+        };
+        dispatch(loginSuccess(refreshUser));
+        config.headers["token"] = "Bearer" + data.accessToken;
+      }
+      return config;
+    },
+    (err) => {
+      return Promise.reject(err);
+    }
+  );
+
+  useEffect(() => {
+    if (!user) {
+      navigate.push("/home");
+    }
+    if (user?.accessToken) {
+      getAllOrder(user?.accessToken, dispatch, axiosJWT);
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -54,8 +106,8 @@ const PaymentSuccess = () => {
                 <div className="infor--user row">
                   <div className="infor--name l-6 m-5 c-12">
                     <h2>Customer information</h2>
-                    <h4>{user.username}</h4>
-                    <h4>{user.email}</h4>
+                    <h4>{user?.username}</h4>
+                    <h4>{user?.email}</h4>
                     <h4>{form?.info?.phone_number}</h4>
                   </div>
                   <div className="infor--method l-6 m-5 c-12">

@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
 import React from "react";
 import HeroSection from "@/app/_components/HeroSection";
 import SectionServiceBook from "./SectionServiceBook";
-
+import Cart from "@/app/_components/Cart";
 const ServiceBook = () => {
   return (
     <main>
@@ -13,6 +13,7 @@ const ServiceBook = () => {
         des="Your pet will have the environment of home, familiar smells, sights, and sounds, as well as food and treats"
       />
       <SectionServiceBook />
+      <Cart />
     </main>
   );
 };

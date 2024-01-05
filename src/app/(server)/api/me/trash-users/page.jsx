@@ -41,6 +41,7 @@ import axios from "axios";
 const { jwtDecode } = require("jwt-decode");
 import { loginSuccess } from "@/redux/features/authSlice";
 import Navigation from "@/app/_components/Navigation";
+import Paginate from "@/app/_components/Paginate";
 
 const axiosJWT = axios.create();
 
@@ -51,8 +52,22 @@ const TrashUser = () => {
     (state) => state.users.users?.allUsersDeleted?.users
   );
 
-  const dispatch = useDispatch();
+  const [itemOffset, setItemOffset] = useState(0);
 
+  const itemsPerPage = 4;
+
+  const endOffset = itemOffset + itemsPerPage;
+
+  const currentUserDeletedList = userDeletedList?.slice(itemOffset, endOffset);
+
+  const pageCount = Math.ceil(userDeletedList?.length / itemsPerPage);
+
+  const handlePageClick = (e) => {
+    const newOffset = (e.selected * itemsPerPage) % userDeletedList?.length;
+    setItemOffset(newOffset);
+  };
+
+  const dispatch = useDispatch();
   const navigate = useRouter();
 
   const refreshToken = async () => {
@@ -200,7 +215,7 @@ const TrashUser = () => {
               </Tr>
             </Thead>
             <Tbody>
-              {userDeletedList?.map((user, index) => {
+              {currentUserDeletedList?.map((user, index) => {
                 if (user.deleted) {
                   return (
                     <Tr key={user._id}>
@@ -270,6 +285,9 @@ const TrashUser = () => {
           </AlertDialogContent>
         </AlertDialogOverlay>
       </AlertDialog>
+      <Box position="fixed" bottom="200px" left="40%">
+        <Paginate onPageClick={handlePageClick} pageCount={pageCount} />
+      </Box>
     </Flex>
   );
 };

@@ -28,7 +28,6 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   getAllUser,
   getAllProduct,
-  deleteOrder,
   handleActionOrderForm,
   getAllOrderDeleted,
   restoreOrder,
@@ -38,6 +37,7 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 
 import Navigation from "@/app/_components/Navigation";
+import Paginate from "@/app/_components/Paginate";
 
 const axiosJWT = axios.create();
 
@@ -50,6 +50,24 @@ const StoredOrder = () => {
   const orderDeletedList = useSelector(
     (state) => state.order?.orders?.allOrderDeleted?.order
   );
+
+  const [itemOffset, setItemOffset] = useState(0);
+
+  const itemsPerPage = 4;
+
+  const endOffset = itemOffset + itemsPerPage;
+
+  const currentOrderDeletedList = orderDeletedList?.slice(
+    itemOffset,
+    endOffset
+  );
+
+  const pageCount = Math.ceil(orderDeletedList?.length / itemsPerPage);
+
+  const handlePageClick = (e) => {
+    const newOffset = (e.selected * itemsPerPage) % orderDeletedList?.length;
+    setItemOffset(newOffset);
+  };
 
   const dispatch = useDispatch();
   const navigate = useRouter();
@@ -82,12 +100,10 @@ const StoredOrder = () => {
 
   const handleDeleteOrder = (id) => {
     deleteOrderForce(user?.accessToken, dispatch, id);
-   
   };
 
   const handleRestoreOrder = (id) => {
     restoreOrder(user?.accessToken, dispatch, id);
-  
   };
 
   const [selectAll, setSelectAll] = useState(false);
@@ -193,7 +209,7 @@ const StoredOrder = () => {
               </Tr>
             </Thead>
             <Tbody>
-              {orderDeletedList?.map((order, index) => {
+              {currentOrderDeletedList?.map((order, index) => {
                 if (order.deleted) {
                   const userName = userList?.find(
                     (user) => user._id === order.user
@@ -266,7 +282,8 @@ const StoredOrder = () => {
       </form>
       <AlertDialog
         isOpen={isOpenDelete}
-        leastDestructiveRef={cancelRef}x
+        leastDestructiveRef={cancelRef}
+        x
         onClose={onCloseDelete}
       >
         <AlertDialogOverlay>
@@ -297,6 +314,9 @@ const StoredOrder = () => {
           </AlertDialogContent>
         </AlertDialogOverlay>
       </AlertDialog>
+      <Box position="fixed" bottom="200px" left="40%">
+        <Paginate onPageClick={handlePageClick} pageCount={pageCount} />
+      </Box>
     </Flex>
   );
 };

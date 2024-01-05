@@ -22,6 +22,7 @@ import {
   AlertDialogHeader,
   AlertDialogBody,
   AlertDialogFooter,
+  Box,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 
@@ -42,6 +43,7 @@ import axios from "axios";
 const { jwtDecode } = require("jwt-decode");
 import { loginSuccess } from "@/redux/features/authSlice";
 import Navigation from "@/app/_components/Navigation";
+import Paginate from "@/app/_components/Paginate";
 
 const axiosJWT = axios.create();
 
@@ -56,6 +58,25 @@ const StoredUser = () => {
     (state) =>
       state.appointments.appointments?.allAppointmentsDeleted?.appointment
   );
+
+  const [itemOffset, setItemOffset] = useState(0);
+
+  const itemsPerPage = 4;
+
+  const endOffset = itemOffset + itemsPerPage;
+
+  const currentAppointmentDeletedList = appointmentDeletedList?.slice(
+    itemOffset,
+    endOffset
+  );
+
+  const pageCount = Math.ceil(appointmentDeletedList?.length / itemsPerPage);
+
+  const handlePageClick = (e) => {
+    const newOffset =
+      (e.selected * itemsPerPage) % appointmentDeletedList?.length;
+    setItemOffset(newOffset);
+  };
 
   const dispatch = useDispatch();
   const navigate = useRouter();
@@ -217,7 +238,7 @@ const StoredUser = () => {
               </Tr>
             </Thead>
             <Tbody>
-              {appointmentDeletedList?.map((appointment, index) => {
+              {currentAppointmentDeletedList?.map((appointment, index) => {
                 const userName = userList?.find(
                   (user) => user._id === appointment.user
                 );
@@ -317,6 +338,9 @@ const StoredUser = () => {
           </AlertDialogContent>
         </AlertDialogOverlay>
       </AlertDialog>
+      <Box position="fixed" bottom="200px" left="40%">
+        <Paginate onPageClick={handlePageClick} pageCount={pageCount} />
+      </Box>
     </Flex>
   );
 };

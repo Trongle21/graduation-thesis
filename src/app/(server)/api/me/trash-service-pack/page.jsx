@@ -21,14 +21,12 @@ import {
   AlertDialogHeader,
   AlertDialogBody,
   AlertDialogFooter,
+  Box,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 import {
-  getAllServicePack,
-  deleteServicePack,
-  updateServicePack,
   handleActionServicePackForm,
   getAllServicePackDeleted,
   deleteServicePackForce,
@@ -39,6 +37,7 @@ import axios from "axios";
 const { jwtDecode } = require("jwt-decode");
 import { loginSuccess } from "@/redux/features/authSlice";
 import Navigation from "@/app/_components/Navigation";
+import Paginate from "@/app/_components/Paginate";
 
 const axiosJWT = axios.create();
 
@@ -46,8 +45,27 @@ const TrashServicePack = () => {
   const user = useSelector((state) => state.auth.login?.currentUser);
   const servicePackDeletedList = useSelector(
     (state) =>
-      state.servicePack.servicePacks?.allServicePacksDeleted.servicePack
+      state.servicePack.servicePacks?.allServicePacksDeleted?.servicePack
   );
+
+  const [itemOffset, setItemOffset] = useState(0);
+
+  const itemsPerPage = 4;
+
+  const endOffset = itemOffset + itemsPerPage;
+
+  const currentServicePackDeletedList = servicePackDeletedList?.slice(
+    itemOffset,
+    endOffset
+  );
+
+  const pageCount = Math.ceil(servicePackDeletedList?.length / itemsPerPage);
+
+  const handlePageClick = (e) => {
+    const newOffset =
+      (e.selected * itemsPerPage) % servicePackDeletedList?.length;
+    setItemOffset(newOffset);
+  };
 
   const dispatch = useDispatch();
   const navigate = useRouter();
@@ -213,7 +231,7 @@ const TrashServicePack = () => {
               </Tr>
             </Thead>
             <Tbody>
-              {servicePackDeletedList?.map((servicePack,index) => {
+              {currentServicePackDeletedList?.map((servicePack, index) => {
                 if (servicePack.deleted) {
                   return (
                     <Tr key={servicePack._id}>
@@ -298,6 +316,10 @@ const TrashServicePack = () => {
           </AlertDialogContent>
         </AlertDialogOverlay>
       </AlertDialog>
+
+      <Box position="fixed" bottom="200px" left="40%">
+        <Paginate onPageClick={handlePageClick} pageCount={pageCount} />
+      </Box>
     </Flex>
   );
 };

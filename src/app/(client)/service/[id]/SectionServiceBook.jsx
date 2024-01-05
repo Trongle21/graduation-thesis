@@ -10,7 +10,6 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import FormControl from "@/app/_components/FormControl";
 
-
 const contactForm = z.object({
   info: z.object({
     schedule_date: z.string().min(1, { message: "Vui lòng chọn ngày" }),
@@ -22,8 +21,6 @@ const contactForm = z.object({
 });
 
 const SectionServiceBook = () => {
- 
-
   const [petName, setPetName] = useState("");
   const [age, setAge] = useState("");
   const [choosePetType, setChoosePetType] = useState("cat");
@@ -31,6 +28,7 @@ const SectionServiceBook = () => {
   const [choosePack, setChoosePack] = useState("");
   const [date, setDate] = useState("");
   const [servicePack, setServicePack] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(0);
 
   const user = useSelector((state) => state.auth.login.currentUser);
   const servicePackList = useSelector(
@@ -60,6 +58,14 @@ const SectionServiceBook = () => {
     },
   });
 
+  useEffect(() => {
+    const price = servicePack[0]?.packages.find(
+      (pack) => pack._id === choosePack
+    );
+
+    setTotalPrice(price?.price);
+  }, [choosePack]);
+
   const handleSubmitForm = async (formData) => {
     if (user) {
       const newPet = {
@@ -74,15 +80,18 @@ const SectionServiceBook = () => {
         newPet,
         dispatch,
         user?.accessToken,
-        petName
+        petName,
+        user?._id
       );
       const newAppointment = {
         pet: petId,
         user: user._id,
         service: servicePack[0]._id,
         package: choosePack,
+        totalPrice: totalPrice,
         date: date,
       };
+
       await createAppointment(newAppointment, dispatch, navigate);
     } else {
       window.alert("Bạn cần đăng nhập để hoàn tất dịch vụ!");
@@ -167,9 +176,7 @@ const SectionServiceBook = () => {
                       value={choosePack}
                       onChange={(e) => setChoosePack(e.target.value)}
                     >
-                      <option value="" disabled hidden>
-                        Vui lòng chọn
-                      </option>
+                      <option>Vui lòng chọn gói</option>
                       {servicePack[0]?.packages?.map((pack) => (
                         <option key={pack._id} value={pack._id}>
                           {pack.name}
