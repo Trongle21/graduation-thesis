@@ -54,7 +54,7 @@ const HeaderSignIn = () => {
       ) : (
         <Button
           className="btn btn--primary"
-          content="Sign In"
+          content="Đăng nhập"
           onClick={onShowSignIn}
         />
       )}

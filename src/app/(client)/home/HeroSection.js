@@ -39,7 +39,7 @@ const HeroSection = () => {
                 <div className="content--info">{hero.name}</div>
                 <div className="content--info__des">{hero.description}</div>
                 <Link href="/service">
-                  <Button className={hero.button} content="Book a Schedule" />
+                  <Button className={hero.button} content="Đặt lịch ngay" />
                 </Link>
               </div>
             </div>

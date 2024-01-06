@@ -83,7 +83,7 @@ const SignInForm = () => {
             <div className="main--account__form-group">
               <div className="main--account__form-group">
                 <FormControl
-                  label="Password"
+                  label="Mật khẩu"
                   type="password"
                   name="info.password"
                   placeholder="Enter your password"
