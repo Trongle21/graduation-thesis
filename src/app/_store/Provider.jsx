@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import AppContext from "@/app/_context/AppContext";
 import { useDispatch, useSelector } from "react-redux";
 import { addProduct, deleteProduct } from "@/redux/features/cartSlice";
-import { getDataFailed, getDataSuccess } from "@/redux/features/apiSlice";
+import { getDataSuccess } from "@/redux/features/apiSlice";
 import { getAllProduct } from "@/redux/features/apiRequest";
 
 const AppProvider = ({ children }) => {

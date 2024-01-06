@@ -53,7 +53,7 @@ const ServiceDogWalking = () => {
                 <div className="service--image__mb">
                   <img src="https://i.ibb.co/GsY6JWd/service-1.webp" alt="" />
                 </div>
-                <h6>Pet Walking</h6>
+                <h6>Đi dạo</h6>
               </div>
               <div
                 className={`service--mb__icon ${
@@ -70,7 +70,7 @@ const ServiceDogWalking = () => {
                   isShowPetWalking ? "show--service" : "hidden--service"
                 }`}
               >
-                Book Now
+                Đặt ngay
               </Link>
             </button>
           </div>
@@ -79,16 +79,17 @@ const ServiceDogWalking = () => {
               isShowPetWalking ? "show--service" : "hidden--service"
             }`}
           >
-            <h5>Monday - Friday / 9:00am - 7:00pm</h5>
+            <h5>Thứ Hai - Thứ Sáu / 9:00 sáng - 7:00 tối</h5>
             <p>
-              Your Pet is well-being relies upon routine and consistency, which
-              is why we assign them a designated Pet Care Specialist and regular
-              pick-up window.
+              Sức khỏe của thú cưng của bạn phụ thuộc vào lịch trình và sự đồng
+              đều, đó là lý do tại sao chúng tôi chỉ định một Chuyên gia Chăm
+              sóc Thú cưng và thời gian đón thường xuyên cho chúng.
             </p>
+
             <div className="service--content row">
               <div className="service--content__info cheap l-6 m-6 c-12">
                 <div className="service--content__price">
-                  <h6>30 Minus</h6>
+                  <h6>30 phút</h6>
                   <h6>$30</h6>
                 </div>
                 <ul>
@@ -102,7 +103,7 @@ const ServiceDogWalking = () => {
               </div>
               <div className="service--content__info expensive l-6 m-6 c-12">
                 <div className="service--content__price">
-                  <h6>60 Minus</h6>
+                  <h6>60 phút</h6>
                   <h6>$50</h6>
                 </div>
                 <ul>

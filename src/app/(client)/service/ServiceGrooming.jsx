@@ -51,7 +51,7 @@ const ServiceGrooming = () => {
                 <div className="service--image__mb">
                   <img src="https://i.ibb.co/bgymvJT/service-2.webp" alt="" />
                 </div>
-                <h6>Grooming</h6>
+                <h6>Chải chuốt</h6>
               </div>
               <div
                 className={`service--mb__icon ${
@@ -68,7 +68,7 @@ const ServiceGrooming = () => {
                   isShowGrooming ? "show--service" : "hidden--service"
                 }`}
               >
-                Book Now
+                Đặt ngay
               </Link>
             </button>
           </div>
@@ -77,17 +77,19 @@ const ServiceGrooming = () => {
               isShowGrooming ? "show--service" : "hidden--service"
             }`}
           >
-            <h5>Monday - Sunday / 8:00am - 6:00pm</h5>
+            <h5>Thứ Hai - Chủ Nhật / 8:00 sáng - 6:00 tối</h5>
             <p>
-              We offer a full range of spa and grooming services. All grooming
-              options include a complete organic and hypoallergenic bath as well
-              as detailed nose-to-tail attention. Pricing may vary due to size,
-              the condition of the coat, matting, knots and the length of hair.
+              Chúng tôi cung cấp đầy đủ dịch vụ spa và làm đẹp. Tất cả các lựa
+              chọn làm đẹp bao gồm một bộ tắm hữu cơ và không gây dị ứng đầy đủ
+              cũng như sự chú ý chi tiết từ mũi đến đuôi. Giá có thể thay đổi
+              tùy thuộc vào kích thước, tình trạng của bộ lông, tình trạng rối,
+              nút và chiều dài của tóc.
             </p>
+
             <div className="service--content row">
               <div className="service--content__info luxury--bath l-6 m-6 c-12">
                 <div className="service--content__price">
-                  <h6>The Luxury Bath</h6>
+                  <h6>Gói sang trọng</h6>
                   <h6>$50</h6>
                 </div>
                 <ul>
@@ -100,7 +102,7 @@ const ServiceGrooming = () => {
               </div>
               <div className="service--content__info full--groom l-6 m-6 c-12">
                 <div className="service--content__price">
-                  <h6>The Full Groom</h6>
+                  <h6>Gói đầy đủ</h6>
                   <h6>$120</h6>
                 </div>
                 <ul>

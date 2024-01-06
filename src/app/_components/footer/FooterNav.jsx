@@ -9,7 +9,7 @@ const FooterNav = () => {
     <div className="page--footer__link l-4 m-6 c-12">
       <div className="page--footer__link--wrapper row">
         <nav className="page--footer__link--list l-4 m-4 c-4">
-          <h6 className=" fw-800">Support</h6>
+          <h6 className=" fw-800">Giúp đỡ</h6>
           <ul className="footerInfoSp">
             {footerInfoSp.map((infoSp, index) => (
               <a key={index} href={infoSp.url}>
@@ -20,7 +20,7 @@ const FooterNav = () => {
         </nav>
 
         <nav className="page--footer__link--list l-4 m-4 c-4">
-          <h6 className=" fw-800">About</h6>
+          <h6 className=" fw-800">Chúng tôi</h6>
           <ul className="footerInfoAbout">
             {footerInfoAbout.map((infoAb, index) => (
               <a key={index} href={infoAb.url}>

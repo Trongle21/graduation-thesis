@@ -9,11 +9,7 @@ import HeaderAccountIcon from "./HeaderAccountIcon.jsx";
 import HeaderNavMb from "./HeaderNavMb";
 import useAppContext from "@/app/_hooks/useAppContext";
 import SignInForm from "@/app/_components/SignInForm";
-import { useDispatch, useSelector } from "react-redux";
-import { useRouter } from "next/navigation";
-
 const Header = () => {
-  const user = useSelector((state) => state.auth.login.currentUser);
   const [isShowHeader, setIsShowHeader] = useState(false);
 
   const { isShowNavBar, onShowNavBar } = useAppContext();
@@ -21,12 +17,6 @@ const Header = () => {
   const handleCloseNavBar = () => {
     onShowNavBar();
   };
-
-  const dispatch = useDispatch();
-  const navigate = useRouter();
-
-  const id = user?._id;
-  const accessToken = user?.accessToken;
 
   // Thanh navbar
   useEffect(() => {

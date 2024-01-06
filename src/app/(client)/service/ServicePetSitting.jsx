@@ -53,7 +53,7 @@ const ServicePetSitting = () => {
                 <div className="service--image__mb">
                   <img src="https://i.ibb.co/q7XqphM/service-4.png" alt="" />
                 </div>
-                <h6>Pet Sitting</h6>
+                <h6>Huấn luyện</h6>
               </div>
               <div
                 className={`service--mb__icon ${
@@ -70,7 +70,7 @@ const ServicePetSitting = () => {
                   isShowPetSitting ? "show--service" : "hidden--service"
                 }`}
               >
-                Book Now
+                Đặt ngay
               </Link>
             </button>
           </div>
@@ -79,16 +79,18 @@ const ServicePetSitting = () => {
               isShowPetSitting ? "show--service" : "hidden--service"
             }`}
           >
-            <h5>Monday - Sunday / 8:00am - 6:00pm</h5>
+            <h5>Thứ Hai - Chủ Nhật / 8:00 sáng - 6:00 tối</h5>
             <p>
-              For cats and puppies. Each 30-minute visit includes feeding/fresh
-              water, litter/crate maintenance, and indoor playtime. Relief walks
-              can be provided for puppies upon request.
+              Dành cho mèo và chó con. Mỗi lần thăm 30 phút bao gồm việc cho
+              ăn/nước sạch, duy trì cát/hộp cát và thời gian chơi trong nhà. Đi
+              dạo để giảm cảm giác cho chó con cũng có thể được cung cấp khi
+              được yêu cầu.
             </p>
+
             <div className="service--content row">
               <div className="service--content__info pet--sitting l-12 m-12 c-12">
                 <div className="service--content__price">
-                  <h6>Pet Sitting</h6>
+                  <h6>Huấn luyện</h6>
                 </div>
                 <ul>
                   {data["petSitting"].map((service, index) => (

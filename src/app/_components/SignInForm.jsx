@@ -95,13 +95,13 @@ const SignInForm = () => {
 
             <div className="main--account__submit">
               <button className="btn btn--signIn" type="submit">
-                <Link href="">Sign In</Link>
+                <Link href="">Đăng nhập</Link>
               </button>
             </div>
             <div className="main--account_signUp">
-              <h5>Don`t have a account?</h5>
+              <h5>Bạn không có tài khoản?</h5>
               <Link href="/signIn" onClick={onShowSignIn}>
-                Sign up
+                Đăng ký
               </Link>
             </div>
           </form>

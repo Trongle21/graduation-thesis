@@ -59,10 +59,8 @@ const SectionDetail = ({ id }) => {
 
   return (
     <div className="section--detail__padding">
-      <Cart />
       <div className="container">
-        <CartIcon />
-        <PathLink content="Detail Product" />
+        <PathLink content="Chi tiết sản phẩm" />
         <div className="line"></div>
         <div className="section--detail__product--wrapper">
           <section className="section--detail__product">
@@ -141,7 +139,7 @@ const SectionDetail = ({ id }) => {
           </section>
         </div>
         <section className="section--product__recommend">
-          <h2>WE ALSO RECOMMEND</h2>
+          <h2>Chúng tôi khuyến nghị</h2>
           <div className="line"></div>
           <div className="section--product__slide">
             <RenderSlide />

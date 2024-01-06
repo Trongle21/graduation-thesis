@@ -19,15 +19,15 @@ const ServiceBookSuccess = () => {
               <i className="fa-regular fa-thumbs-up"></i>
             </div>
             <div className="book--success__info">
-              <h2>MEET & GREET REQUEST SENT!!</h2>
+              <h2>Bạn đã đặt lịch thành công</h2>
               <h6>
-                Thank you for requesting a Meet & Greet. We are excited to meet
-                you and your pup! Stay tuned for a confirmation from your
-                preferred daycare.
+                Cảm ơn bạn đã yêu cầu một buổi Gặp gỡ. Chúng tôi rất háo hức
+                được gặp bạn và pet của bạn! Hãy chờ xác nhận từ phía chúng tôi!
               </h6>
             </div>
-            <Link href="/">
-              <button className="btn btn--primary">Home page</button>
+
+            <Link href="/home">
+              <button className="btn btn--primary">Trang chủ</button>
             </Link>
           </div>
         </div>

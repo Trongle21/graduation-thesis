@@ -63,9 +63,9 @@ const ContactSection = () => {
   return (
     <section className="section--contact__form">
       <div className="container">
-        <PathLink content="Contact" />
+        <PathLink content="Liên hệ" />
         <div className="line"></div>
-        <h2>How can we help?</h2>
+        <h2>Chúng tôi có thể giúp gì cho bạn</h2>
         {!user?.admin && user ? (
           <>
             <Link href="/contact/responses" className="responses--user">
@@ -103,16 +103,15 @@ const ContactSection = () => {
             </div>
 
             <div className="contact--form__checkbox">
-              <h3>SERVICES YOU ARE INTERESTED IN, SELECT ALL THAT APPLY:</h3>
               <div className="contact--form__checkbox--wrapper">
                 <div className="contact--form__message">
-                  <label htmlFor="message">Message</label>
+                  <label htmlFor="message">Tin nhắn</label>
                   <FormControl
                     as="textarea"
                     name="info.message"
                     id="message"
                     rows="10"
-                    placeholder="Example text"
+                    placeholder="Để lại lời nhắn ..."
                   />
                 </div>
               </div>
@@ -120,7 +119,7 @@ const ContactSection = () => {
             <div className="contact--form__btn">
               <div>
                 <button type="submit" className="btn btn--secondary">
-                  Submit
+                  Gửi ý kiến
                 </button>
               </div>
             </div>

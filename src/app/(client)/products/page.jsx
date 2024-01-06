@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import React from "react";
 import ProductSection from "./ProductSection";
@@ -10,11 +10,10 @@ const Product = () => {
     <main>
       <HeroSection
         backgroundImg="https://i.ibb.co/njr1t1X/product-bg-1.jpg"
-        content="We enjoy our work"
-        des="  It is an excellent option for kenneling your pet, different turnout
-            times for potty and play, and not to mention all of this stress is
-            in addition to not having you around"
+        content="Chúng tôi thích công việc của mình"
+        des="Đây là một lựa chọn xuất sắc để chăm sóc thú cưng của bạn, với thời gian vui chơi và đi tiểu khác nhau, và đặc biệt không có sự hiện diện của bạn xung quanh."
       />
+
       <ProductSection />
       <Paginate />
     </main>

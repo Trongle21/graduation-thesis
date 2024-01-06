@@ -101,7 +101,7 @@ const SectionServiceBook = () => {
   return (
     <section className="section--service__book">
       <div className="container">
-        <h2>REQUEST A MEET & GREET</h2>
+        <h2>YÊU CẦU MỘT BUỔI GẶP GỠ</h2>
         <h6>Cảm ơn bạn đã chọn dịch vụ {servicePack[0]?.serviceName}</h6>
         <FormProvider {...methods}>
           <form

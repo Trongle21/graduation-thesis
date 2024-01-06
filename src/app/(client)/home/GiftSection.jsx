@@ -6,19 +6,19 @@ const GiftSection = () => {
     <section className="gift--section container-padding">
       <div className="gift--section__img"></div>
       <div className="container padding-bottom">
-        <h4 className="heading-lg text-center fw-800">Contact Us </h4>
+        <h4 className="heading-lg text-center fw-800">Liên hệ</h4>
         <h2 className="heading-sm text-center margin-bottom">
-          Our store is hard-working employees
+          Đội ngũ nhân viên chăm chỉ tại cửa hàng của chúng tôi
         </h2>
         <div className="gift--section__wrapper row">
           <div className="gift--section__wrapper--info l-6 m-6">
-            <h1>Get Contact Us!</h1>
+            <h1>Liên hệ với chúng tôi!</h1>
             <p>
-              Contact our customer services and get your special gift for the
-              first package purchase
+              Liên hệ với dịch vụ khách hàng của chúng tôi và nhận quà đặc biệt
+              cho gói dịch vụ đầu tiên của bạn
             </p>
             <Link href="/contact">
-              <button className="btn btn--primary">Contact Us</button>
+              <button className="btn btn--primary">Liên hệ Ngay</button>
             </Link>
           </div>
           <div

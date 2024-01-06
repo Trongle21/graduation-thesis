@@ -10,10 +10,12 @@ const TeamMember = () => {
     <section className="team-member--section container-padding">
       <div className="team-member--section__img"></div>
       <div className="container">
-        <h4 className="heading-lg text-center fw-800">Team Member</h4>
+        <h4 className="heading-lg text-center fw-800">Đội Ngũ Thành Viên</h4>
         <h2 className="heading-sm text-center margin-bottom">
-          Our store is hard-working employees
+          Cửa hàng của chúng tôi có những nhân viên chăm chỉ và làm việc chăm
+          chỉ
         </h2>
+
         <div className="team-member--list padding-bottom row">
           {homeMember.map((member, index) => (
             <div className="team-member--list__staff l-3 m-6 c-12" key={index}>

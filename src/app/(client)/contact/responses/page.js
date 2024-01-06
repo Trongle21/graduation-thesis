@@ -3,9 +3,9 @@
 import React, { useEffect, useState } from "react";
 
 import PathLink from "@/app/_components/PathLink";
-import Link from "next/link";
+
 import { useDispatch, useSelector } from "react-redux";
-import { createContact, getAllContact } from "@/redux/features/apiRequest";
+import { getAllContact } from "@/redux/features/apiRequest";
 import { useRouter } from "next/navigation";
 import HeroSection from "@/app/_components/HeroSection";
 import axios from "axios";
@@ -135,7 +135,6 @@ const ContactSection = () => {
                   <Th textAlign="center" fontSize="xl">
                     #
                   </Th>
-
                   <Th textAlign="center" fontSize="xl">
                     Chủ đề
                   </Th>
@@ -198,9 +197,7 @@ const ContactSection = () => {
         <form>
           <DrawerContent>
             <DrawerCloseButton />
-            <DrawerHeader fontSize="26px">
-              Xem chi tiết phản hồi 
-            </DrawerHeader>
+            <DrawerHeader fontSize="26px">Xem chi tiết phản hồi</DrawerHeader>
 
             <DrawerBody>
               <Box>

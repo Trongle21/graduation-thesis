@@ -29,14 +29,14 @@ const ProductInfo = () => {
   const selectedPetTypes = data["selectedPetTypes"];
   return (
     <div className="product--info">
-      <h4>Cat and Dog</h4>
+      <h4>Chó và mèo</h4>
       <div className={`product--search ${isShowSearch ? "show" : ""}`}>
         <input
           className="search--product"
           type="text"
           value={search}
           onChange={(e) => handleSearchProduct(e.target.value)}
-          placeholder="search..."
+          placeholder="Tìm kiếm ..."
         />
       </div>
       <div className="product--section__search">
@@ -51,7 +51,7 @@ const ProductInfo = () => {
             paddingRight={2}
             cursor="pointer"
           >
-            <FaSearch />
+            <MdCancel />
           </Box>
         ) : (
           <Box
@@ -61,7 +61,7 @@ const ProductInfo = () => {
             paddingRight={2}
             cursor="pointer"
           >
-            <MdCancel />
+            <FaSearch />
           </Box>
         )}
         <select

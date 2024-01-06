@@ -7,9 +7,10 @@ const Payment = () => {
     <main>
       <HeroSection
         backgroundImg="https://i.ibb.co/wKcTxM6/payment-bg-1.jpg"
-        content="For your pet’s all natural life"
-        des="You can’t buy happiness but you can buy Husky and that’s pretty much it"
+        content="Cho cuộc sống tự nhiên hoàn toàn của thú cưng của bạn"
+        des="Bạn không thể mua được hạnh phúc, nhưng bạn có thể mua được Husky và đó là hầu hết những gì bạn cần"
       />
+
       <SectionPay />
     </main>
   );

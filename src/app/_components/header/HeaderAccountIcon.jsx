@@ -1,11 +1,10 @@
 import { logoutUser } from "@/redux/features/apiRequest";
-import { Flex, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
+import { Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { FaUser } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
-import Button from "../Button";
 import useAppContext from "@/app/_hooks/useAppContext";
 const HeaderAccountIcon = () => {
   const { onShowSignIn } = useAppContext();
@@ -34,14 +33,20 @@ const HeaderAccountIcon = () => {
           <MenuList marginTop="10px">
             {user.admin ? (
               <MenuItem fontSize="18px">
-                <Link href="/api/dash-board">
-                  Trang quản trị
-                </Link>
+                <Link href="/api/dash-board">Trang quản trị</Link>
               </MenuItem>
             ) : null}
             <div className="straightLine"></div>
             <MenuItem fontSize="18px" textAlign="center">
               <Link href="/order">Đơn mua</Link>
+            </MenuItem>
+            <div className="straightLine"></div>
+            <MenuItem fontSize="18px">
+              <Link href="/info">Sửa thông tin</Link>
+            </MenuItem>
+            <div className="straightLine"></div>
+            <MenuItem fontSize="18px">
+              <Link href="/change-password">Đổi mật khẩu</Link>
             </MenuItem>
             <div className="straightLine"></div>
             <MenuItem fontSize="18px">

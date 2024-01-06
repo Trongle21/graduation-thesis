@@ -9,10 +9,10 @@ const Service = () => {
     <main>
       <HeroSection
         backgroundImg="https://i.ibb.co/R3pFqf8/service-bg-1.jpg"
-        content="We love pets too"
-        des=" Your pet will have the environment of home, familiar smells,
-              sights, and sounds, as well as food and treats"
+        content="Chúng tôi yêu pet"
+        des="Thú cưng của bạn sẽ có môi trường như ở nhà, với những mùi hương quen thuộc, cảnh đẹp và âm thanh, cũng như thức ăn và đặc sản"
       />
+
       <ServiceSection />
       <Cart />
     </main>

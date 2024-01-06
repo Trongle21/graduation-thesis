@@ -6,7 +6,7 @@ const FooterContact = () => {
   return (
     <div className="page--footer__contact l-4 m-6 c-12">
       <div className="page--footer__contact--wrapper">
-        <h6 className="fw-800">Contact</h6>
+        <h6 className="fw-800">Liên hệ</h6>
         <p>
           Có một câu hỏi cho chúng tôi? Chúng tôi sẽ giải đáp vấn đề của bạn tại
           đây

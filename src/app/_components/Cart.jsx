@@ -167,11 +167,11 @@ const Cart = () => {
             <Button
               className="btn btn--secondary"
               onClick={handleCheckProduct}
-              content="Place an order"
+              content="Thanh toán"
             />
           </Link>
           <div className="product--cart__total">
-            <h4>Total</h4>
+            <h4>Tổng</h4>
             <span>${totalProductPrice}</span>
           </div>
         </div>

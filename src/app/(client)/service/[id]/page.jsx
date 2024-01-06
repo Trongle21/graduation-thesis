@@ -9,9 +9,10 @@ const ServiceBook = () => {
     <main>
       <HeroSection
         backgroundImg="https://i.ibb.co/y6n9rt2/service-bg-1.jpg"
-        content="We love pets too"
-        des="Your pet will have the environment of home, familiar smells, sights, and sounds, as well as food and treats"
+        content="Chúng tôi yêu thú cưng"
+        des="Thú cưng của bạn sẽ có môi trường như ở nhà, với những mùi hương quen thuộc, cảnh đẹp và âm thanh, cũng như thức ăn và đặc sản"
       />
+
       <SectionServiceBook />
       <Cart />
     </main>

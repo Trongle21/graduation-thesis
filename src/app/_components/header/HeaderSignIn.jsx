@@ -2,7 +2,7 @@ import React from "react";
 import Button from "../Button";
 import useAppContext from "@/app/_hooks/useAppContext";
 import { useDispatch, useSelector } from "react-redux";
-import { Box, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
+import { Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import { logoutUser } from "@/redux/features/apiRequest";
 import Link from "next/link";
@@ -33,19 +33,17 @@ const HeaderSignIn = () => {
           <MenuList marginTop="10px">
             {user.admin ? (
               <MenuItem>
-                <Link href="/api/dash-board">
-                  Trang quản trị
-                </Link>
+                <Link href="/api/dash-board">Trang quản trị</Link>
               </MenuItem>
             ) : null}
 
-            <MenuItem >
+            <MenuItem>
               <Link href="/order">Đơn mua</Link>
             </MenuItem>
-            <MenuItem >
+            <MenuItem>
               <Link href="/info">Sửa thông tin</Link>
             </MenuItem>
-            <MenuItem >
+            <MenuItem>
               <Link href="/change-password">Đổi mật khẩu</Link>
             </MenuItem>
             <MenuItem onClick={handelLogout}>

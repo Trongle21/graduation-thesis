@@ -14,7 +14,7 @@ const FooterInfo = () => {
         </div>
         <div className="page--footer__info--policy">
           <h6>
-            © 2023 Petal, Alright Reserved Team of Service | Privacy Policy
+            © 2023 Petal, Đội Ngũ Dịch Vụ Đã Được Bảo Vệ | Chính Sách Bảo Mật
           </h6>
         </div>
       </div>

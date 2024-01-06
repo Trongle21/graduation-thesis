@@ -80,12 +80,13 @@ const PaymentSuccess = () => {
     <>
       <HeroSection
         backgroundImg="https://i.ibb.co/j8Wgp4T/payment-success-bg-1.jpg"
-        content="Thanks for ordering"
-        des="See you next time shopping!"
+        content="Cảm ơn bạn đã đặt hàng"
+        des="Hẹn gặp bạn lần sau khi mua sắm!"
       />
+
       <section className="section--pay">
         <div className="container">
-          <PathLink content="Payment Success" />
+          <PathLink content="Thanh toán thành công" />
           <div className="line"></div>
           <div className="section--pay__wrapper success row">
             <div className="section--pay__bill l-8 m-8 c-12">
@@ -94,33 +95,30 @@ const PaymentSuccess = () => {
                   <i className="fa-solid fa-check"></i>
                 </div>
                 <div className="noti--letter">
-                  <h2>Thank you for oder my shop</h2>
-                  <h4>
-                    A letter sent to your email
-                    <br /> Please check your email!
-                  </h4>
+                  <h2>Cảm ơn đã mua hàng</h2>
+                  <h4>Đơn hàng của bạn sẽ sớm được chấp nhận!</h4>
                 </div>
               </div>
               <div className="line"></div>
               <div className="infor--user--wrapper">
                 <div className="infor--user row">
                   <div className="infor--name l-6 m-5 c-12">
-                    <h2>Customer information</h2>
+                    <h2>Thông tin</h2>
                     <h4>{user?.username}</h4>
                     <h4>{user?.email}</h4>
                     <h4>{form?.info?.phone_number}</h4>
                   </div>
                   <div className="infor--method l-6 m-5 c-12">
-                    <h2>Payment methods</h2>
+                    <h2>Phương thức thanh toán</h2>
                     <h4>{form?.info?.paymentMethod}</h4>
                   </div>
                   <div className="info--address l-6 m-5 c-12">
-                    <h2>Address</h2>
+                    <h2>Địa chỉ</h2>
                     <h4>{form?.info?.address}</h4>
                   </div>
                   <div className="info--delivery-method l-6 m-5 c-12">
-                    <h2>Shipping method</h2>
-                    <h4>Direct delivery</h4>
+                    <h2>Phương vận chuyển</h2>
+                    <h4>Trực tiếp</h4>
                   </div>
                 </div>
               </div>
@@ -156,17 +154,17 @@ const PaymentSuccess = () => {
                 </div>
                 <div className="line"></div>
                 <div className="section--pay__info--total">
-                  <h5>Total</h5>
+                  <h5>Tổng tiền</h5>
                   <p>$ {totalProductPrice}</p>
                 </div>
               </div>
             </div>
             <div className="continue--shopping__btn l-12 m-12 c-12">
               <button className="btn btn--primary" onClick={handleSubmit}>
-                <Link href="/products">Continue shopping</Link>
+                <Link href="/products">Mua tiếp</Link>
               </button>
               <button className="btn btn--secondary" onClick={handleSubmit}>
-                <Link href="/home">Home</Link>
+                <Link href="/home">Trang chủ</Link>
               </button>
             </div>
           </div>

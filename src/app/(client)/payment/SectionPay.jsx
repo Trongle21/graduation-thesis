@@ -142,7 +142,7 @@ const SectionPay = () => {
 
               <div className="payment--methods l-4 m-4 c-12">
                 <div className="payment--methods__wrapper">
-                  <h3>Payment methods</h3>
+                  <h3>Phương thức thanh toán</h3>
                   <div className="payment checkbox">
                     <FormControl
                       label="Bank Transfer"
@@ -195,7 +195,7 @@ const SectionPay = () => {
                   ))}
                 </div>
                 <div className="section--pay__info--total">
-                  <h5>Total price</h5>
+                  <h5>Tổng tiền</h5>
                   <h4>
                     <span>$</span>
                     <p>{totalProductPrice}</p>

@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Link from "next/link";
+import { HiOutlineArrowSmRight } from "react-icons/hi";
 
 /**
  * @typedef PathLinkProps
@@ -17,8 +18,8 @@ import Link from "next/link";
 const PathLink = ({ content }) => {
   return (
     <div className="path--link">
-      <Link href="/">Home</Link>
-      <i className="fa-solid fa-chevron-right"></i>
+      <Link href="/home">Trang chủ</Link>
+      <HiOutlineArrowSmRight />
       <h6>{content}</h6>
     </div>
   );

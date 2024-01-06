@@ -45,7 +45,7 @@ const ProductList = () => {
                     handleAddProductToCart(product._id);
                     handleShowCart();
                   }}
-                  content="Add To Cart"
+                  content="Thêm vào giỏ hàng"
                 />
               </div>
             </div>

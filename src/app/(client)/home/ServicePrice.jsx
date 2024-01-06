@@ -17,10 +17,12 @@ const ServicePrice = () => {
     <section className="service-prices--section container-padding">
       <div className="service-prices--section__img"></div>
       <div className="container">
-        <h4 className="heading-lg text-center fw-800">Special Package</h4>
+        <h4 className="heading-lg text-center fw-800">Gói Đặc Biệt</h4>
         <h2 className="heading-sm text-center margin-bottom">
-          We offer special package just for you and your little family
+          Chúng tôi cung cấp gói đặc biệt dành riêng cho bạn và gia đình nhỏ của
+          bạn
         </h2>
+
         <div className="pricing--plan_list padding-bottom row">
           {homePackage.map((specialPackage, index) => (
             <div
@@ -56,7 +58,7 @@ const ServicePrice = () => {
                 </ul>
               </div>
               <Link href="/service" className="plane--price__btn">
-                <button className="btn btn--primary">Buy Now</button>
+                <button className="btn btn--primary">Đặt lịch ngay</button>
               </Link>
             </div>
           ))}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Accordion,
   AccordionItem,
@@ -44,7 +44,6 @@ import {
 import { MdContactPhone, MdOutlinePets } from "react-icons/md";
 import { BsFillCalendarDateFill } from "react-icons/bs";
 import { RiGameFill } from "react-icons/ri";
-
 
 const Navigation = () => {
   const {
@@ -199,7 +198,7 @@ const Navigation = () => {
           <AccordionButton fontSize="20px">
             <Flex flex="1" textAlign="left" alignItems="center" gap="10px">
               <FaUserAlt />
-              User
+              Người dùng
             </Flex>
             <AccordionIcon />
           </AccordionButton>
@@ -208,7 +207,7 @@ const Navigation = () => {
             <Box>
               <Flex flexDirection="column" gap="4px">
                 <Link href="#" fontSize="20px" onClick={onUserDrawerOpen}>
-                  Thêm user
+                  Thêm người dùng
                 </Link>
                 <Link href="/api/me/stored-users">Danh sách người dùng</Link>
                 <Link href="/api/me/trash-users">
@@ -230,7 +229,7 @@ const Navigation = () => {
                       <Stack pacing="24px">
                         <Box>
                           <FormLabel htmlFor="username" fontSize="20px">
-                            Name
+                            Tên
                           </FormLabel>
                           <Input
                             ref={firstField}
@@ -256,7 +255,7 @@ const Navigation = () => {
                         </Box>
                         <Box>
                           <FormLabel htmlFor="password" fontSize="20px">
-                            Password
+                            Mật khẩu
                           </FormLabel>
                           <InputGroup size="md">
                             <Input
@@ -287,7 +286,7 @@ const Navigation = () => {
                         mr={3}
                         onClick={onUserDrawerClose}
                       >
-                        Cancel
+                        Thoát
                       </Button>
                       <Button
                         colorScheme="blue"
@@ -295,7 +294,7 @@ const Navigation = () => {
                         disabled={isUserError}
                         type="submit"
                       >
-                        Save
+                        Lưu
                       </Button>
                     </DrawerFooter>
                   </DrawerContent>
@@ -309,7 +308,7 @@ const Navigation = () => {
           <AccordionButton fontSize="20px">
             <Flex flex="1" textAlign="left" alignItems="center" gap="10px">
               <FaProductHunt />
-              Product
+              Sản phẩm
             </Flex>
             <AccordionIcon />
           </AccordionButton>
@@ -443,7 +442,7 @@ const Navigation = () => {
                         mr={3}
                         onClick={onProductDrawerClose}
                       >
-                        Cancel
+                        Thoát
                       </Button>
                       <Button
                         colorScheme="blue"
@@ -451,7 +450,7 @@ const Navigation = () => {
                         disabled={isProductError}
                         type="submit"
                       >
-                        Save
+                        Lưu
                       </Button>
                     </DrawerFooter>
                   </DrawerContent>
@@ -583,7 +582,7 @@ const Navigation = () => {
                         mr={3}
                         onClick={onServicePackDrawerClose}
                       >
-                        Cancel
+                        Thoát
                       </Button>
                       <Button
                         colorScheme="blue"
@@ -591,7 +590,7 @@ const Navigation = () => {
                         disabled={isUserError}
                         type="submit"
                       >
-                        Save
+                        Lưu
                       </Button>
                     </DrawerFooter>
                   </DrawerContent>
@@ -628,7 +627,7 @@ const Navigation = () => {
           <AccordionButton fontSize="20px">
             <Flex flex="1" textAlign="left" alignItems="center" gap="10px">
               <FaCartArrowDown />
-              Order
+              Đơn hàng
             </Flex>
             <AccordionIcon />
           </AccordionButton>
@@ -649,7 +648,7 @@ const Navigation = () => {
           <AccordionButton fontSize="20px">
             <Flex flex="1" textAlign="left" alignItems="center" gap="10px">
               <MdContactPhone />
-              Contact
+              Liên hệ
             </Flex>
             <AccordionIcon />
           </AccordionButton>
