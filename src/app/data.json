@@ -122,19 +122,19 @@
     },
     {
       "name": "Sản phẩm",
-      "description": "Dọn dẹp, tắm toàn bộ để giữ cho chúng luôn sạch sẽ",
+      "description": "Sản phầm cửa hàng luốn ở chất lượng cao nhât. Nhập khẩu tại mỹ",
       "image": "https://i.ibb.co/QMjKtn5/service-teth-cleaning.jpg",
       "href": "/products"
     },
     {
       "name": "Giới thiệu",
-      "description": "Xe đẩy tổng quát để giữ cho thú cưng của bạn luôn khỏe mạnh",
+      "description": "Thành công ngày hôm nay là 1 hành trình dài, khó khăn và đầy trải nghiệm",
       "image": "https://i.ibb.co/gyTKSVc/service-bath-tub.png",
       "href": "/about"
     },
     {
       "name": "Liên hệ",
-      "description": "Kiểm soát liên tục nên được thực hiện để chăm sóc nướu",
+      "description": "Bạn có vấn đề hay muốn đóng góp ý kiến tới cửa hàng. Liên hệ với chúng tôi ngay",
       "image": "https://i.ibb.co/31zF81y/service-veterinarian.png",
       "href": "/contact"
     }
