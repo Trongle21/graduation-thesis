@@ -25,6 +25,7 @@ const appointmentController = {
   update: async (req, res) => {
     try {
       await Appointments.updateOne({ _id: req.params.id }, { $set: req.body });
+
       res.send("update thành công!");
     } catch (err) {
       console.error(err);

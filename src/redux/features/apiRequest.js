@@ -131,9 +131,7 @@ export const loginUser = async (user, dispatch, navigate) => {
     const res = await axios.post("http://localhost:8000/api/auth/login", user);
     dispatch(loginSuccess(res.data));
     const isAdmin = res.data.admin;
-    isAdmin
-      ? navigate.push("/api/dash-board")
-      : navigate.push("/home");
+    isAdmin ? navigate.push("/api/dash-board") : navigate.push("/home");
   } catch (err) {
     window.alert("Tài khoản hoặc mật khẩu không chính xác");
     dispatch(loginFailed());
@@ -241,7 +239,7 @@ export const createContact = async (contact, dispatch, navigate) => {
   try {
     await axios.post("http://localhost:8000/api/contact/store", contact);
     dispatch(getContactSuccess());
-    navigate.push("/contact/contactSuccess")
+    navigate.push("/contact/contactSuccess");
   } catch (err) {
     dispatch(getContactFailed());
   }
@@ -574,12 +572,13 @@ export const updateAppointment = async (appointment, accessToken, dispatch) => {
   window.location.reload();
   try {
     const res = await axios.put(
-      "/api/appointments/" + appointment._id,
+      "http://localhost:8000/api/appointments/" + appointment._id,
       appointment,
       {
         headers: { token: `Bearer ${accessToken}` },
       }
     );
+
     dispatch(updateAppointmentSuccess(res.data));
   } catch (err) {
     dispatch(updateAppointmentFailed());

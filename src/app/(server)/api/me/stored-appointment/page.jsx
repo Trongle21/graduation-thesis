@@ -4,7 +4,6 @@ import {
   Button,
   Checkbox,
   Flex,
-  Link,
   Table,
   Thead,
   Tbody,
@@ -13,7 +12,6 @@ import {
   Td,
   TableContainer,
   useDisclosure,
-  Drawer,
   Select,
   Text,
   AlertDialog,
@@ -219,12 +217,7 @@ const StoredAppointment = () => {
       status = "Pending";
     }
     const newAppointment = {
-      _id: appointment._id,
-      pet: appointment.pet,
-      user: appointment.user,
-      service: appointment.service,
-      package: appointment.packages,
-      date: appointment.date,
+      ...appointment,
       status: status,
     };
     updateAppointment(newAppointment, user?.accessToken, dispatch, navigate);
@@ -316,7 +309,7 @@ const StoredAppointment = () => {
                     <Td>{foundPackage?.price}</Td>
                     <Td>{appointment.date}</Td>
                     <Td textAlign="center">
-                      <Link>
+                      <Box>
                         <Button
                           colorScheme={
                             appointment.status === "Pending"
@@ -346,7 +339,7 @@ const StoredAppointment = () => {
                         >
                           Xóa
                         </Button>
-                      </Link>
+                      </Box>
                     </Td>
                   </Tr>
                 );

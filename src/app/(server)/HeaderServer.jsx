@@ -10,6 +10,7 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  Box,
 } from "@chakra-ui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
@@ -33,9 +34,9 @@ const HeaderServer = () => {
     <header>
       <Container bg="#ca956b" maxW="100%" marginBottom="2px" boxShadow="lg">
         <Flex justifyContent="space-between">
-          <Link className="logo--admin" href="/home">
+          <Box className="logo--admin" href="/home">
             <HeaderLogo />
-          </Link>
+          </Box>
 
           <Flex
             justifyContent="space-between"
