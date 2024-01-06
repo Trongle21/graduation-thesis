@@ -86,7 +86,7 @@ const PaymentSuccess = () => {
 
       <section className="section--pay">
         <div className="container">
-          <PathLink content="Thanh toán thành công" />
+          <PathLink content="Đặt hành thành công" />
           <div className="line"></div>
           <div className="section--pay__wrapper success row">
             <div className="section--pay__bill l-8 m-8 c-12">
