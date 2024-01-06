@@ -241,6 +241,7 @@ export const createContact = async (contact, dispatch, navigate) => {
   try {
     await axios.post("http://localhost:8000/api/contact/store", contact);
     dispatch(getContactSuccess());
+    navigate.push("/contact/contactSuccess")
   } catch (err) {
     dispatch(getContactFailed());
   }

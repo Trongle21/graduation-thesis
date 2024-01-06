@@ -10,8 +10,8 @@ const ContactSuccess = () => {
         }}
       >
         <div className="section--hero__wrapper">
-          <div className="content--hero__name">Thank you for contact</div>
-          <div className="content--hero__des">See you next time shopping!</div>
+          <div className="content--hero__name">Cảm ơn đã liên hệ với chúng tôi</div>
+          <div className="content--hero__des">Ý kiến phản hồi sẽ sớm được gửi đến bạn!</div>
         </div>
       </div>
     </section>

@@ -53,8 +53,6 @@ const ContactSection = () => {
         message: data.info.message,
       };
       createContact(newContact, dispatch, navigate);
-      window.alert("Cảm ơn bạn đã gửi ý kiến phản hồi");
-      window.location.reload();
     } else {
       window.alert("Bạn cần đăng nhập để liên hệ");
     }
