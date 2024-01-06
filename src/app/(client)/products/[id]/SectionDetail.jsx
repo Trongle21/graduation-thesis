@@ -125,7 +125,7 @@ const SectionDetail = ({ id }) => {
                           handleOpenCart();
                       }}
                     >
-                      Add To Cart
+                      Thêm vào giỏ hàng
                     </button>
                   </div>
                   <div className="detail--product__info--content">
