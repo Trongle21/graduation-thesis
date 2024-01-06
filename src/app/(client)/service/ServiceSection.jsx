@@ -6,7 +6,7 @@ const ServiceSection = () => {
   return (
     <section className="service--section__page pc container--padding">
       <div className="container--service">
-        <PathLink content="Service" />
+        <PathLink content="Dịch vụ" />
         <div className="line" />
         <ServicePackage />
       </div>
