@@ -13,9 +13,10 @@ const Order = () => {
     <main>
       <HeroSection
         backgroundImg="https://i.ibb.co/mDFGRFh/Order-bg-1.jpg"
-        content="We enjoy our work"
-        des="You can’t buy happiness but you can buy lil doggo and that’s pretty much it"
+        content="Chúng tôi đam mê công việc của mình"
+        des="Bạn không thể mua được hạnh phúc, nhưng bạn có thể mua một chú chó nhỏ và đó là khá là đủ"
       />
+
       <OrderSection />
       <Cart />
     </main>

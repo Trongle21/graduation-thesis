@@ -148,7 +148,7 @@ const OrderSection = () => {
   return (
     <section>
       <div className="container">
-        <PathLink content="Purchase" />
+        <PathLink content="Đơn mua" />
         <div className="line"></div>
         <Tabs isFitted variant="enclosed">
           <TabList mb="1em">
