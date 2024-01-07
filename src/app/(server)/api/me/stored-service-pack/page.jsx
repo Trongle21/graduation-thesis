@@ -32,6 +32,7 @@ import {
   FormControl,
   FormLabel,
   Stack,
+  DrawerOverlay,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 
@@ -296,6 +297,7 @@ const StoredUser = () => {
                           finalFocusRef={btnRef}
                         >
                           <form onSubmit={handleSubmit}>
+                          <DrawerOverlay bg="rgba(0, 0, 0, 0.2)" />
                             <DrawerContent>
                               <DrawerCloseButton />
                               <DrawerHeader fontSize="26px">

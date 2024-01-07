@@ -32,6 +32,7 @@ import {
   DrawerCloseButton,
   AlertDialog,
   Textarea,
+  DrawerOverlay,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 
@@ -321,6 +322,7 @@ const StoredUser = () => {
                       finalFocusRef={resUserRef}
                     >
                       <form>
+                      <DrawerOverlay bg="rgba(0, 0, 0, 0.2)" />
                         <DrawerContent>
                           <DrawerCloseButton />
                           <DrawerHeader fontSize="26px">
@@ -377,6 +379,7 @@ const StoredUser = () => {
                       finalFocusRef={resAdminRef}
                     >
                       <form>
+                      <DrawerOverlay bg="rgba(0, 0, 0, 0.2)" />
                         <DrawerContent>
                           <DrawerCloseButton />
                           <DrawerHeader fontSize="26px">
@@ -479,6 +482,7 @@ const StoredUser = () => {
         finalFocusRef={btnRef}
       >
         <form>
+        <DrawerOverlay bg="rgba(0, 0, 0, 0.2)" />
           <DrawerContent>
             <DrawerCloseButton />
             <DrawerHeader fontSize="26px">

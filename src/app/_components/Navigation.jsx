@@ -221,7 +221,7 @@ const Navigation = () => {
                 size="md"
               >
                 <form onSubmit={handleSubmit}>
-                  <DrawerOverlay />
+                  <DrawerOverlay bg="rgba(0, 0, 0, 0.2)" />
                   <DrawerContent>
                     <DrawerCloseButton />
                     <DrawerHeader fontSize="26px">Create User</DrawerHeader>
@@ -331,7 +331,7 @@ const Navigation = () => {
                 size="md"
               >
                 <form onSubmit={handleSubmitProduct}>
-                  <DrawerOverlay />
+                  <DrawerOverlay bg="rgba(0, 0, 0, 0.2)" />
                   <DrawerContent>
                     <DrawerCloseButton />
                     <DrawerHeader fontSize="26px">Create Product</DrawerHeader>
@@ -512,7 +512,7 @@ const Navigation = () => {
                 size="md"
               >
                 <form onSubmit={handleSubmitService}>
-                  <DrawerOverlay />
+                  <DrawerOverlay bg="rgba(0, 0, 0, 0.2)" />
                   <DrawerContent>
                     <DrawerCloseButton />
                     <DrawerHeader fontSize="26px">Tạo dịch vụ</DrawerHeader>
