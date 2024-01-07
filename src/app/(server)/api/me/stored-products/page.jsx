@@ -448,10 +448,10 @@ const StoredUser = () => {
         <AlertDialogOverlay>
           <AlertDialogContent>
             <AlertDialogHeader fontSize="lg" fontWeight="bold">
-              Xóa người dùng
+              Xóa sản phẩm
             </AlertDialogHeader>
 
-            <AlertDialogBody>Bạn chắc chắn xóa người dùng này</AlertDialogBody>
+            <AlertDialogBody>Bạn chắc chắn xóa sản phẩm này</AlertDialogBody>
 
             <AlertDialogFooter>
               <Button ref={cancelRef} onClick={onCloseDelete}>
