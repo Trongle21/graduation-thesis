@@ -16,8 +16,7 @@ const contactForm = z.object({
   info: z.object({
     phone_number: z
       .string({ required_error: "Bạn chưa số điện thoại" })
-      .min(8, { message: "Số điện thoại tối thiểu 8 số" })
-      .max(11, { message: "Số điện thoại tối đa 10 số" }),
+      .min(8, { message: "Số điện thoại tối thiểu 8 số" }),
     address: z
       .string({ required_error: "Bạn chưa nhập địa chỉ" })
       .trim()
