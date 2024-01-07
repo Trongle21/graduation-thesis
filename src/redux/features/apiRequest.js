@@ -960,7 +960,7 @@ export const handleActionUserForm = async (
   window.location.reload();
   try {
     const res = await axiosJWT.post(
-      "/api/users/handle-action-form",
+      "http://localhost:8000/api/users/handle-action-form",
       { userId: userList, action: action },
       {
         headers: { token: `Bearer ${accessToken}` },
@@ -983,7 +983,7 @@ export const handleActionProductForm = async (
   try {
     window.location.reload();
     const res = await axios.post(
-      "/api/products/handle-action-form",
+      "http://localhost:8000/api/products/handle-action-form",
       { productId: productList, action: action },
       {
         headers: { token: `Bearer ${accessToken}` },
@@ -1005,13 +1005,15 @@ export const handleActionPetForm = async (
   try {
     window.location.reload();
     const res = await axios.post(
-      "/api/pets/handle-action-form",
+      "http://localhost:8000/api/pets/handle-action-form",
       { petId: petList, action: action },
       {
         headers: { token: `Bearer ${accessToken}` },
       }
     );
 
+
+      
     dispatch(getPetSuccess(res.data));
   } catch (err) {
     dispatch(getPetFailed());
@@ -1029,7 +1031,7 @@ export const handleActionServicePackForm = async (
     window.location.reload();
     console.log(servicePackList, action);
     const res = await axios.post(
-      "/api/service-pack/handle-action-form",
+      "http://localhost:8000/api/service-pack/handle-action-form",
       { servicePackListId: servicePackList, action: action },
       {
         headers: { token: `Bearer ${accessToken}` },
@@ -1052,7 +1054,7 @@ export const handleActionAppointmentForm = async (
   try {
     window.location.reload();
     const res = await axios.post(
-      "/api/appointments/handle-action-form",
+      "http://localhost:8000/api/appointments/handle-action-form",
       { appointmentId: appointmentList, action: action },
       {
         headers: { token: `Bearer ${accessToken}` },
@@ -1075,7 +1077,7 @@ export const handleActionOrderForm = async (
   try {
     window.location.reload();
     const res = await axios.post(
-      "/api/order/handle-action-form",
+      "http://localhost:8000/api/order/handle-action-form",
       { orderId: orderList, action: action },
       {
         headers: { token: `Bearer ${accessToken}` },
@@ -1097,7 +1099,7 @@ export const handleActionContactForm = async (
   try {
     window.location.reload();
     const res = await axios.post(
-      "/api/contact/handle-action-form",
+      "http://localhost:8000/api/contact/handle-action-form",
       { contactId: orderList, action: action },
       {
         headers: { token: `Bearer ${accessToken}` },
