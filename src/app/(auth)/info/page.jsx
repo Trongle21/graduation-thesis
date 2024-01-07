@@ -82,6 +82,7 @@ const SignIn = () => {
       address: address,
       phoneNumber: phoneNumber,
     };
+    window.alert("Cập nhật thông tin thành công")
     updateUser(newUser, user?.accessToken, dispatch, navigate);
   };
 

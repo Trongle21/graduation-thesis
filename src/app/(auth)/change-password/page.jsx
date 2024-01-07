@@ -65,8 +65,8 @@ const SignIn = () => {
       ...findUser,
       password: password,
     };
-    changePasswordUser(newUser, user?.accessToken, dispatch, navigate);
     window.alert("Đổi mật khẩu thành công")
+    changePasswordUser(newUser, user?.accessToken, dispatch, navigate);
   };
 
   return (
