@@ -169,9 +169,7 @@ const OrderSection = () => {
                       <Table variant="simple" size="lg">
                         <Thead>
                           <Tr>
-                            <Th fontSize="xl" textAlign="center">
-                              #
-                            </Th>
+  
                             <Th fontSize="xl" textAlign="center">
                               Sản phẩm
                             </Th>
@@ -196,9 +194,7 @@ const OrderSection = () => {
                               if (order.status === "Solved") {
                                 return (
                                   <Tr key={order._id}>
-                                    <Td textAlign="center" fontSize="40px">
-                                      {index + 1}
-                                    </Td>
+      
                                     <Td textAlign="center">
                                       {orderProductDetails.map(
                                         (product, index) => (
@@ -254,9 +250,7 @@ const OrderSection = () => {
                       <Table variant="simple" size="lg">
                         <Thead>
                           <Tr>
-                            <Th fontSize="xl" textAlign="center">
-                              #
-                            </Th>
+ 
                             <Th fontSize="xl" textAlign="center">
                               Sản phẩm
                             </Th>
@@ -284,9 +278,6 @@ const OrderSection = () => {
                               if (order.status === "Pending") {
                                 return (
                                   <Tr key={order._id + 200}>
-                                    <Td textAlign="center" fontSize="40px">
-                                      {index + 1}
-                                    </Td>
                                     <Td textAlign="center">
                                       {orderProductDetails.map(
                                         (product, index) => (
